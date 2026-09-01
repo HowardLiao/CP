@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>雲杉長青 CEDAR PARTNERED | 企業多雲、AI與智慧製造長青技術夥伴</title>
   <meta name="description" content="雲杉長青（CEDAR PARTNERED）由廖倫豪博士創立，深耕多雲治理、雲原生高可用架構、可信任 AI 治理（ISO 42001）、FinOps 成本優化與 AIoT 智慧製造，打造企業長青數位底座。">
+  <link rel="icon" type="image/png" href="assets/logo_cyber_tree.png">
   
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -62,8 +63,9 @@
             mono: ['JetBrains Mono', 'monospace'],
           },
           boxShadow: {
-            'glow-cedar': '0 0 35px -5px rgba(16, 185, 129, 0.3)',
-            'glow-cyan': '0 0 35px -5px rgba(6, 182, 212, 0.3)',
+            'glow-cedar': '0 0 35px -5px rgba(16, 185, 129, 0.35)',
+            'glow-cyan': '0 0 35px -5px rgba(6, 182, 212, 0.35)',
+            'glow-amber': '0 0 35px -5px rgba(245, 158, 11, 0.35)',
             'inner-card': 'inset 0 1px 1px 0 rgba(255, 255, 255, 0.08)',
           },
           animation: {
@@ -138,23 +140,6 @@
       background-image: radial-gradient(rgba(16, 185, 129, 0.15) 1px, transparent 1px);
       background-size: 24px 24px;
     }
-
-    /* Interactive Tree Branch Lines */
-    .tree-line {
-      position: relative;
-    }
-    .tree-line::before {
-      content: '';
-      position: absolute;
-      left: 19px;
-      top: 36px;
-      bottom: -24px;
-      width: 2px;
-      background: linear-gradient(to bottom, #10b981, rgba(16, 185, 129, 0.1));
-    }
-    .tree-line:last-child::before {
-      display: none;
-    }
   </style>
 </head>
 
@@ -167,7 +152,7 @@
   <!-- Subtle Ambient Glows -->
   <div class="fixed top-0 left-1/4 w-[600px] h-[600px] bg-cedar-600/10 rounded-full blur-[140px] pointer-events-none z-0"></div>
   <div class="fixed bottom-10 right-10 w-[500px] h-[500px] bg-cyan-600/10 rounded-full blur-[140px] pointer-events-none z-0"></div>
-  <div class="fixed top-1/2 left-3/4 w-[400px] h-[400px] bg-emerald-700/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+  <div class="fixed top-1/2 left-3/4 w-[400px] h-[400px] bg-amber-600/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
 
   <!-- Main Container -->
   <div class="relative z-10 flex flex-col min-h-screen">
@@ -176,17 +161,17 @@
     <header class="sticky top-0 z-50 glass-card border-b border-slate-800/80 backdrop-blur-xl">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
         
-        <!-- Brand Logo -->
-        <a href="#hero" class="flex items-center gap-3 group">
-          <div class="relative w-11 h-11 rounded-xl bg-gradient-to-br from-cedar-800 to-obsidian-900 border border-cedar-500/40 flex items-center justify-center shadow-glow-cedar group-hover:scale-105 transition-transform duration-300">
-            <i class="fa-solid fa-tree text-cedar-400 text-xl group-hover:text-cedar-300 transition-colors"></i>
-            <div class="absolute -top-1 -right-1 w-3 h-3 bg-cedar-400 rounded-full animate-ping opacity-75"></div>
-            <div class="absolute -top-1 -right-1 w-3 h-3 bg-cedar-500 rounded-full"></div>
+        <!-- Brand Logo with official assets -->
+        <a href="#hero" class="flex items-center gap-3.5 group">
+          <div class="relative w-12 h-12 rounded-xl bg-gradient-to-br from-obsidian-900 to-obsidian-950 border border-cedar-500/40 p-1 flex items-center justify-center shadow-glow-cedar group-hover:scale-105 transition-transform duration-300 overflow-hidden">
+            <img src="assets/logo_cyber_tree.png" alt="CEDAR PARTNERED Logo" class="w-full h-full object-contain filter drop-shadow">
+            <div class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-cedar-400 rounded-full animate-ping opacity-75"></div>
+            <div class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-cedar-500 rounded-full"></div>
           </div>
           <div class="flex flex-col">
             <div class="flex items-center gap-2">
               <span class="font-display font-black text-xl tracking-tight text-white group-hover:text-cedar-300 transition-colors">雲杉長青</span>
-              <span class="text-xs px-2 py-0.5 rounded-full bg-cedar-950/80 border border-cedar-500/30 text-cedar-300 font-mono tracking-wider">EVERGREEN</span>
+              <span class="text-[10px] px-2 py-0.5 rounded-full bg-cedar-950/90 border border-cedar-500/30 text-cedar-300 font-mono tracking-wider">EVERGREEN</span>
             </div>
             <span class="text-[11px] font-mono tracking-widest text-slate-400 font-medium">CEDAR PARTNERED</span>
           </div>
@@ -206,9 +191,9 @@
             <i class="fa-solid fa-calculator text-xs text-cedar-500"></i>
             <span x-text="t('nav_simulator')"></span>
           </a>
-          <a href="#governance" class="text-slate-300 hover:text-cedar-400 transition-colors flex items-center gap-1.5" :class="activeSection === 'governance' ? 'text-cedar-400' : ''">
-            <i class="fa-solid fa-shield-halved text-xs text-cedar-500"></i>
-            <span x-text="t('nav_governance')"></span>
+          <a href="#brand-identity" class="text-slate-300 hover:text-cedar-400 transition-colors flex items-center gap-1.5" :class="activeSection === 'brand-identity' ? 'text-cedar-400' : ''">
+            <i class="fa-solid fa-palette text-xs text-cedar-500"></i>
+            <span x-text="t('nav_identity')">視覺識別</span>
           </a>
           <a href="#founder" class="text-slate-300 hover:text-cedar-400 transition-colors flex items-center gap-1.5" :class="activeSection === 'founder' ? 'text-cedar-400' : ''">
             <i class="fa-solid fa-user-tie text-xs text-cedar-500"></i>
@@ -245,7 +230,7 @@
         <a @click="mobileMenuOpen = false" href="#story" class="block py-2 text-slate-300 hover:text-cedar-400 font-medium" x-text="t('nav_story')"></a>
         <a @click="mobileMenuOpen = false" href="#pillars" class="block py-2 text-slate-300 hover:text-cedar-400 font-medium" x-text="t('nav_pillars')"></a>
         <a @click="mobileMenuOpen = false" href="#simulator" class="block py-2 text-slate-300 hover:text-cedar-400 font-medium" x-text="t('nav_simulator')"></a>
-        <a @click="mobileMenuOpen = false" href="#governance" class="block py-2 text-slate-300 hover:text-cedar-400 font-medium" x-text="t('nav_governance')"></a>
+        <a @click="mobileMenuOpen = false" href="#brand-identity" class="block py-2 text-slate-300 hover:text-cedar-400 font-medium" x-text="t('nav_identity')"></a>
         <a @click="mobileMenuOpen = false" href="#founder" class="block py-2 text-slate-300 hover:text-cedar-400 font-medium" x-text="t('nav_founder')"></a>
         <div class="pt-3 border-t border-slate-800">
           <button @click="mobileMenuOpen = false; openModal = 'contact'" class="w-full py-2.5 rounded-xl bg-cedar-600 text-obsidian-950 font-bold text-sm text-center">
@@ -255,8 +240,8 @@
       </div>
     </header>
 
-    <!-- HERO SECTION -->
-    <section id="hero" class="relative pt-16 pb-24 md:pt-24 md:pb-32 overflow-hidden bg-grid-pattern">
+    <!-- HERO SECTION WITH OFFICIAL LOGO SHOWCASE -->
+    <section id="hero" class="relative pt-12 pb-24 md:pt-20 md:pb-32 overflow-hidden bg-grid-pattern">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <!-- Top Badge -->
@@ -268,33 +253,109 @@
           </div>
         </div>
 
-        <!-- Main Title & Tagline -->
-        <div class="text-center max-w-4xl mx-auto space-y-6">
-          <h1 class="font-display text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.15]">
-            <span class="text-white block" x-text="t('hero_title_1')">在多雲與 AI 的高地上種樹</span>
-            <span class="cedar-gradient-text block mt-2" x-text="t('hero_title_2')">陪企業一同長青的技術之樹</span>
-          </h1>
+        <!-- HERO SPLIT LAYOUT: Typography Left, Official Interactive Logo Right -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          
+          <!-- Left Column: Title & Proposition -->
+          <div class="lg:col-span-7 space-y-6 text-left">
+            <h1 class="font-display text-4xl sm:text-6xl lg:text-6xl font-extrabold tracking-tight leading-[1.15]">
+              <span class="text-white block" x-text="t('hero_title_1')">在多雲與 AI 的高地上種樹</span>
+              <span class="cedar-gradient-text block mt-2" x-text="t('hero_title_2')">陪企業一同長青的技術之樹</span>
+            </h1>
 
-          <p class="text-base sm:text-xl text-slate-300 leading-relaxed max-w-3xl mx-auto font-normal" x-text="t('hero_desc')">
-            雲杉長青（CEDAR PARTNERED），象徵一棵從台中出發、深植製造業實戰與遊戲多雲戰場的技術大樹。不只追求技術的炫目，更在零停機架構、DevSecOps、FinOps 成本紀律與 ISO 42001 可信任 AI 治理中，成為企業長期並肩前行的技術主樑。
-          </p>
+            <p class="text-base sm:text-lg text-slate-300 leading-relaxed font-normal" x-text="t('hero_desc')">
+              雲杉長青（CEDAR PARTNERED），象徵一棵從台中出發、深植製造業實戰與遊戲多雲戰場的技術大樹。不只追求技術的炫目，更在零停機架構、DevSecOps、FinOps 成本紀律與 ISO 42001 可信任 AI 治理中，成為企業長期並肩前行的技術主樑。
+            </p>
 
-          <!-- Interactive Action Buttons -->
-          <div class="pt-6 flex flex-wrap items-center justify-center gap-4">
-            <a href="#simulator" class="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-xl bg-gradient-to-r from-cedar-500 to-emerald-400 text-obsidian-950 font-extrabold text-base shadow-glow-cedar hover:scale-105 active:scale-95 transition-all">
-              <i class="fa-solid fa-chart-line text-sm"></i>
-              <span x-text="t('hero_btn_simulator')">進入架構與 FinOps 模擬器</span>
-            </a>
+            <!-- Interactive Action Buttons -->
+            <div class="pt-4 flex flex-wrap items-center gap-3 sm:gap-4">
+              <a href="#simulator" class="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-xl bg-gradient-to-r from-cedar-500 to-emerald-400 text-obsidian-950 font-extrabold text-sm sm:text-base shadow-glow-cedar hover:scale-105 active:scale-95 transition-all">
+                <i class="fa-solid fa-chart-line text-sm"></i>
+                <span x-text="t('hero_btn_simulator')">進入架構與 FinOps 模擬器</span>
+              </a>
+              
+              <button @click="openModal = 'proposal'" class="inline-flex items-center gap-2 px-5 py-3.5 rounded-xl glass-card border border-slate-700 hover:border-cedar-500/50 text-white font-semibold text-sm sm:text-base hover:bg-slate-800/80 transition-all">
+                <i class="fa-solid fa-file-signature text-cedar-400"></i>
+                <span x-text="t('hero_btn_proposal')">生成專案建議書</span>
+              </button>
+
+              <button @click="playElevatorPitch()" class="inline-flex items-center gap-2 px-4 py-3.5 rounded-xl bg-obsidian-900 border border-slate-700 text-slate-300 hover:text-white hover:border-cedar-400 text-xs sm:text-sm font-medium transition-all">
+                <i :class="isPlayingPitch ? 'fa-solid fa-circle-stop text-red-400 animate-pulse' : 'fa-solid fa-circle-play text-cedar-400'" class="text-sm"></i>
+                <span x-text="isPlayingPitch ? t('pitch_playing') : t('pitch_listen')">聆聽 30秒 簡報</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Right Column: Official Dual Logo Presentation Card -->
+          <div class="lg:col-span-5 relative">
             
-            <button @click="openModal = 'proposal'" class="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-xl glass-card border border-slate-700 hover:border-cedar-500/50 text-white font-semibold text-base hover:bg-slate-800/80 transition-all">
-              <i class="fa-solid fa-file-signature text-cedar-400"></i>
-              <span x-text="t('hero_btn_proposal')">生成專案建議書</span>
-            </button>
+            <!-- Logo Switcher & Frame -->
+            <div class="glass-card p-6 sm:p-7 rounded-3xl border border-slate-700/80 shadow-2xl relative overflow-hidden group">
+              <div class="absolute -right-12 -top-12 w-40 h-40 bg-cedar-500/15 rounded-full blur-2xl group-hover:bg-cedar-500/25 transition-all"></div>
+              
+              <!-- Tab Switcher for Dual Logos -->
+              <div class="flex items-center justify-between mb-4 border-b border-slate-800 pb-3">
+                <div class="flex items-center gap-2">
+                  <button @click="heroLogoMode = 'tech'" 
+                          :class="heroLogoMode === 'tech' ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500 font-bold' : 'text-slate-400 border-transparent hover:text-slate-200'"
+                          class="px-3 py-1 rounded-lg border text-xs font-mono transition-all flex items-center gap-1.5">
+                    <i class="fa-solid fa-microchip text-[10px]"></i>
+                    <span>未來數位樹 (Cyber Tree)</span>
+                  </button>
+                  <button @click="heroLogoMode = 'plaque'" 
+                          :class="heroLogoMode === 'plaque' ? 'bg-amber-500/20 text-amber-300 border-amber-500 font-bold' : 'text-slate-400 border-transparent hover:text-slate-200'"
+                          class="px-3 py-1 rounded-lg border text-xs font-mono transition-all flex items-center gap-1.5">
+                    <i class="fa-solid fa-award text-[10px]"></i>
+                    <span>書法金匾 (Heritage Plaque)</span>
+                  </button>
+                </div>
+                <span class="text-[10px] font-mono text-slate-500">OFFICIAL IDENTITY</span>
+              </div>
 
-            <button @click="playElevatorPitch()" class="inline-flex items-center gap-2 px-5 py-3.5 rounded-xl bg-obsidian-900 border border-slate-700 text-slate-300 hover:text-white hover:border-cedar-400 text-sm font-medium transition-all">
-              <i :class="isPlayingPitch ? 'fa-solid fa-circle-stop text-red-400 animate-pulse' : 'fa-solid fa-circle-play text-cedar-400'" class="text-base"></i>
-              <span x-text="isPlayingPitch ? t('pitch_playing') : t('pitch_listen')">聆聽 30秒 品牌簡報</span>
-            </button>
+              <!-- Visual Viewport 1: Tech Cyber Tree Logo -->
+              <div x-show="heroLogoMode === 'tech'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" class="flex flex-col items-center justify-center p-2 text-center space-y-4">
+                <div class="relative w-full max-w-[280px] aspect-square rounded-2xl bg-obsidian-950/90 border border-cyan-500/30 p-3 flex items-center justify-center shadow-glow-cyan overflow-hidden group/img cursor-pointer"
+                     @click="openModal = 'logo_tech'">
+                  <img src="assets/logo_cyber_tree.png" alt="CEDAR PARTNERED Cyber Tree Logo" class="w-full h-full object-contain filter drop-shadow-lg group-hover/img:scale-105 transition-transform duration-500">
+                  <div class="absolute inset-0 bg-gradient-to-t from-obsidian-950/80 via-transparent to-transparent opacity-0 group-hover/img:opacity-100 transition-opacity flex items-end justify-center pb-2">
+                    <span class="text-[10px] font-mono text-cyan-300 flex items-center gap-1">
+                      <i class="fa-solid fa-magnifying-glass-plus"></i> 點擊放大檢視
+                    </span>
+                  </div>
+                </div>
+                <div class="space-y-1">
+                  <h4 class="text-sm font-bold text-white flex items-center justify-center gap-2">
+                    <span>CEDAR PARTNERED 數位神經樹標識</span>
+                  </h4>
+                  <p class="text-[11px] text-slate-400 leading-relaxed max-w-xs">
+                    根植伺服器底座，向上枝展雲端與 AI 節點，象徵可自我調度、零停機生長的現代數位架構。
+                  </p>
+                </div>
+              </div>
+
+              <!-- Visual Viewport 2: Calligraphy Halo-lit Plaque Logo -->
+              <div x-show="heroLogoMode === 'plaque'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" class="flex flex-col items-center justify-center p-2 text-center space-y-4">
+                <div class="relative w-full max-w-[280px] aspect-[4/5] rounded-2xl bg-obsidian-950/90 border border-amber-500/30 p-3 flex items-center justify-center shadow-glow-amber overflow-hidden group/img cursor-pointer"
+                     @click="openModal = 'logo_plaque'">
+                  <img src="assets/logo_calligraphy_plaque.png" alt="云杉長青 Calligraphy Heritage Plaque Logo" class="w-full h-full object-contain filter drop-shadow-lg group-hover/img:scale-105 transition-transform duration-500">
+                  <div class="absolute inset-0 bg-gradient-to-t from-obsidian-950/80 via-transparent to-transparent opacity-0 group-hover/img:opacity-100 transition-opacity flex items-end justify-center pb-2">
+                    <span class="text-[10px] font-mono text-amber-300 flex items-center gap-1">
+                      <i class="fa-solid fa-magnifying-glass-plus"></i> 點擊放大檢視
+                    </span>
+                  </div>
+                </div>
+                <div class="space-y-1">
+                  <h4 class="text-sm font-bold text-white flex items-center justify-center gap-2">
+                    <span>「云杉長青」新中式浮雕背光金匾</span>
+                  </h4>
+                  <p class="text-[11px] text-slate-400 leading-relaxed max-w-xs">
+                    行草飛白雷射金屬雕刻與暖金背光，破框氣韻象徵穩健扎根、歷久彌新、基業長青。
+                  </p>
+                </div>
+              </div>
+
+            </div>
+
           </div>
 
         </div>
@@ -883,8 +944,86 @@
       </div>
     </section>
 
+    <!-- SECTION: OFFICIAL BRAND IDENTITY GALLERY (品牌標識與雙重視覺系統) -->
+    <section id="brand-identity" class="py-24 bg-obsidian-950 border-t border-slate-800/80 relative">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="text-center max-w-3xl mx-auto mb-16">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-cedar-950 border border-cedar-500/30 text-cedar-400 text-xs font-mono uppercase mb-3">
+            <i class="fa-solid fa-palette"></i>
+            <span>BRAND IDENTITY & DESIGN TOKENS</span>
+          </div>
+          <h2 class="font-display text-3xl sm:text-5xl font-bold text-white tracking-tight">
+            品牌視覺識別：科技雪松與長青金匾
+          </h2>
+          <p class="mt-4 text-slate-300 text-base sm:text-lg leading-relaxed">
+            融合「新中式書法金屬浮雕」的人文底蘊，與「賽博龐克數位神經雪松」的雲端前瞻算力，共同構築 CEDAR PARTNERED 獨一無二的品牌識別系統。
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          
+          <!-- Identity Card 1: Cyber Tree -->
+          <div class="glass-card glass-card-hover p-8 rounded-3xl border border-slate-800 flex flex-col justify-between space-y-6 group">
+            <div class="space-y-4">
+              <div class="flex items-center justify-between">
+                <span class="px-3 py-1 rounded-full bg-cyan-950/80 border border-cyan-500/30 text-cyan-300 text-xs font-mono">
+                  DIGITAL TECH EMBLEM
+                </span>
+                <span class="text-xs font-mono text-slate-400">2.5D ISOMETRIC / NEON BLOOM</span>
+              </div>
+              <h3 class="text-2xl font-bold text-white">CEDAR PARTNERED 數位神經樹標識</h3>
+              <p class="text-xs text-slate-300 leading-relaxed">
+                以電路軌跡與智慧光節點勾勒雪松樹冠；底部為 3D 伺服器主機與晶片基座，左展雲端運算（Cloud），右銜人工智慧（AI）。象徵技術大樹扎根於堅實的算力底座，持續自我呼吸與繁衍。
+              </p>
+            </div>
+
+            <!-- Image Frame -->
+            <div class="rounded-2xl bg-obsidian-950 border border-slate-800 p-6 flex items-center justify-center cursor-pointer group-hover:border-cyan-500/50 transition-all"
+                 @click="openModal = 'logo_tech'">
+              <img src="assets/logo_cyber_tree.png" alt="CEDAR PARTNERED Cyber Tree Logo" class="max-h-64 object-contain filter drop-shadow-2xl group-hover:scale-105 transition-transform duration-500">
+            </div>
+
+            <div class="flex items-center justify-between text-xs text-slate-400 border-t border-slate-800 pt-3 font-mono">
+              <span>顏色：電光青藍 (#06B6D4) • 曜石黑 (#020617)</span>
+              <button @click="openModal = 'logo_tech'" class="text-cyan-400 hover:underline">檢視原圖</button>
+            </div>
+          </div>
+
+          <!-- Identity Card 2: Calligraphy Plaque -->
+          <div class="glass-card glass-card-hover p-8 rounded-3xl border border-slate-800 flex flex-col justify-between space-y-6 group">
+            <div class="space-y-4">
+              <div class="flex items-center justify-between">
+                <span class="px-3 py-1 rounded-full bg-amber-950/80 border border-amber-500/30 text-amber-300 text-xs font-mono">
+                  HERITAGE CALLIGRAPHY PLAQUE
+                </span>
+                <span class="text-xs font-mono text-slate-400">HALO-LIT 3D RELIEF</span>
+              </div>
+              <h3 class="text-2xl font-bold text-white">「云杉長青」新中式浮雕背光金匾</h3>
+              <p class="text-xs text-slate-300 leading-relaxed">
+                採用行草書法飛白金屬雷射切割，表面冷冽拉絲金屬與背光暖金相互輝映。錯落的「Z」字氣韻與破框筆畫，象徵打破技術邊界的宏偉格局，與企業共鑄長青基業。
+              </p>
+            </div>
+
+            <!-- Image Frame -->
+            <div class="rounded-2xl bg-obsidian-950 border border-slate-800 p-6 flex items-center justify-center cursor-pointer group-hover:border-amber-500/50 transition-all"
+                 @click="openModal = 'logo_plaque'">
+              <img src="assets/logo_calligraphy_plaque.png" alt="云杉長青 Calligraphy Plaque Logo" class="max-h-64 object-contain filter drop-shadow-2xl group-hover:scale-105 transition-transform duration-500">
+            </div>
+
+            <div class="flex items-center justify-between text-xs text-slate-400 border-t border-slate-800 pt-3 font-mono">
+              <span>材質：拉絲鋼金屬 • 琥珀暖金背光 • 金箔皺紋</span>
+              <button @click="openModal = 'logo_plaque'" class="text-amber-400 hover:underline">檢視原圖</button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
     <!-- SECTION: FOUNDER PERSPECTIVE & EXECUTIVE PROFILE (廖倫豪 博士 / Howard Liao, Ph.D.) -->
-    <section id="founder" class="py-24 bg-obsidian-950 border-t border-slate-800/80 relative">
+    <section id="founder" class="py-24 bg-obsidian-900/60 border-t border-slate-800/80 relative">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
@@ -1032,8 +1171,8 @@
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6">
         
         <div class="flex items-center gap-3">
-          <div class="w-8 h-8 rounded-lg bg-cedar-800/50 border border-cedar-500/40 flex items-center justify-center text-cedar-400">
-            <i class="fa-solid fa-tree text-sm"></i>
+          <div class="w-10 h-10 rounded-xl bg-obsidian-900 border border-cedar-500/40 p-1 flex items-center justify-center">
+            <img src="assets/logo_cyber_tree.png" alt="Logo" class="w-full h-full object-contain">
           </div>
           <div>
             <span class="font-display font-bold text-white text-sm">雲杉長青 | CEDAR PARTNERED</span>
@@ -1048,6 +1187,48 @@
 
       </div>
     </footer>
+
+    <!-- MODAL: LOGO TECH HD PREVIEW -->
+    <div x-show="openModal === 'logo_tech'" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+      <div @click.away="openModal = null" class="glass-card max-w-xl w-full p-6 rounded-3xl border border-cyan-500/40 shadow-2xl relative space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+          <span class="font-bold text-white text-base flex items-center gap-2">
+            <i class="fa-solid fa-microchip text-cyan-400"></i>
+            <span>CEDAR PARTNERED 數位科技雪松標識 (高清預覽)</span>
+          </span>
+          <button @click="openModal = null" class="text-slate-400 hover:text-white p-1">
+            <i class="fa-solid fa-xmark text-lg"></i>
+          </button>
+        </div>
+        <div class="rounded-2xl bg-obsidian-950 p-4 border border-slate-800 flex items-center justify-center">
+          <img src="assets/logo_cyber_tree.png" alt="CEDAR PARTNERED HD" class="max-h-96 object-contain">
+        </div>
+        <p class="text-xs text-slate-400 leading-relaxed font-mono">
+          雪松樹冠由數據電路與智慧節點構成，底座為 3D 伺服器硬體，兩翼象徵 Cloud 與 AI 算力整合。
+        </p>
+      </div>
+    </div>
+
+    <!-- MODAL: LOGO PLAQUE HD PREVIEW -->
+    <div x-show="openModal === 'logo_plaque'" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+      <div @click.away="openModal = null" class="glass-card max-w-xl w-full p-6 rounded-3xl border border-amber-500/40 shadow-2xl relative space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+          <span class="font-bold text-white text-base flex items-center gap-2">
+            <i class="fa-solid fa-award text-amber-400"></i>
+            <span>「云杉長青」書法金屬浮雕金匾 (高清預覽)</span>
+          </span>
+          <button @click="openModal = null" class="text-slate-400 hover:text-white p-1">
+            <i class="fa-solid fa-xmark text-lg"></i>
+          </button>
+        </div>
+        <div class="rounded-2xl bg-obsidian-950 p-4 border border-slate-800 flex items-center justify-center">
+          <img src="assets/logo_calligraphy_plaque.png" alt="云杉長青 HD" class="max-h-96 object-contain">
+        </div>
+        <p class="text-xs text-slate-400 leading-relaxed font-mono">
+          金箔皺紋底板結合拉絲冷金屬與暖金背光，行草筆畫破框延伸，寓意跨越界限、永續長青。
+        </p>
+      </div>
+    </div>
 
     <!-- MODAL: PROPOSAL GENERATOR -->
     <div x-show="openModal === 'proposal'" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
@@ -1171,6 +1352,7 @@
         mobileMenuOpen: false,
         activeStage: 2,
         openModal: null,
+        heroLogoMode: 'tech',
         isPlayingPitch: false,
         copiedMessage: '',
 
@@ -1188,6 +1370,7 @@
             nav_story: '長青故事',
             nav_pillars: '四大支柱',
             nav_simulator: '效益試算',
+            nav_identity: '視覺識別',
             nav_governance: '合規引證',
             nav_founder: '創辦人視角',
             cta_consult: '預約架構諮詢',
@@ -1225,6 +1408,7 @@
             nav_story: 'Our Story',
             nav_pillars: 'Pillars',
             nav_simulator: 'ROI Simulator',
+            nav_identity: 'Identity',
             nav_governance: 'Governance',
             nav_founder: 'Founder',
             cta_consult: 'Book Consultation',
@@ -1262,6 +1446,7 @@
             nav_story: 'ブランドストーリー',
             nav_pillars: '4つの柱',
             nav_simulator: '効果試算',
+            nav_identity: 'ビジュアル',
             nav_governance: 'ガバナンス',
             nav_founder: '創業者紹介',
             cta_consult: '個別相談を予約',
@@ -1303,7 +1488,7 @@
           this.recalcSimulator();
 
           window.addEventListener('scroll', () => {
-            const sections = ['hero', 'story', 'pillars', 'simulator', 'founder', 'governance'];
+            const sections = ['hero', 'story', 'pillars', 'simulator', 'brand-identity', 'founder', 'governance'];
             const scrollY = window.scrollY + 200;
             for (let s of sections) {
               const el = document.getElementById(s);
