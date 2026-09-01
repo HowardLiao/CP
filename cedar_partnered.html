@@ -154,11 +154,18 @@
   <div class="fixed bottom-10 right-10 w-[500px] h-[500px] bg-cyan-600/10 rounded-full blur-[140px] pointer-events-none z-0"></div>
   <div class="fixed top-1/2 left-3/4 w-[400px] h-[400px] bg-amber-600/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
 
+  <!-- Global Toast Notification -->
+  <div x-show="toastMessage" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform translate-y-4" x-transition:enter-end="opacity-100 transform translate-y-0" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+       class="fixed bottom-6 right-6 z-50 glass-card px-5 py-3.5 rounded-2xl border border-cedar-500/50 shadow-glow-cedar flex items-center gap-3 text-sm text-white font-mono">
+    <i class="fa-solid fa-circle-check text-cedar-400 text-base animate-bounce"></i>
+    <span x-text="toastMessage"></span>
+  </div>
+
   <!-- Main Container -->
   <div class="relative z-10 flex flex-col min-h-screen">
 
     <!-- Top Navigation Bar -->
-    <header class="sticky top-0 z-50 glass-card border-b border-slate-800/80 backdrop-blur-xl">
+    <header class="sticky top-0 z-40 glass-card border-b border-slate-800/80 backdrop-blur-xl">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
         
         <!-- Brand Logo with official assets -->
@@ -212,7 +219,7 @@
           </div>
 
           <!-- Proposal / Consultation CTA Button -->
-          <button @click="openModal = 'contact'" class="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-cedar-600 to-emerald-500 hover:from-cedar-500 hover:to-emerald-400 text-obsidian-950 font-bold text-sm shadow-glow-cedar transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]">
+          <button @click="openConsultationModal()" class="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-cedar-600 to-emerald-500 hover:from-cedar-500 hover:to-emerald-400 text-obsidian-950 font-bold text-sm shadow-glow-cedar transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]">
             <i class="fa-solid fa-paper-plane text-xs"></i>
             <span x-text="t('cta_consult')">預約架構師諮詢</span>
           </button>
@@ -233,7 +240,7 @@
         <a @click="mobileMenuOpen = false" href="#brand-identity" class="block py-2 text-slate-300 hover:text-cedar-400 font-medium" x-text="t('nav_identity')"></a>
         <a @click="mobileMenuOpen = false" href="#founder" class="block py-2 text-slate-300 hover:text-cedar-400 font-medium" x-text="t('nav_founder')"></a>
         <div class="pt-3 border-t border-slate-800">
-          <button @click="mobileMenuOpen = false; openModal = 'contact'" class="w-full py-2.5 rounded-xl bg-cedar-600 text-obsidian-950 font-bold text-sm text-center">
+          <button @click="mobileMenuOpen = false; openConsultationModal()" class="w-full py-2.5 rounded-xl bg-cedar-600 text-obsidian-950 font-bold text-sm text-center">
             <i class="fa-solid fa-paper-plane mr-2"></i><span x-text="t('cta_consult')"></span>
           </button>
         </div>
@@ -260,7 +267,7 @@
           <div class="lg:col-span-7 space-y-6 text-left">
             <h1 class="font-display text-4xl sm:text-6xl lg:text-6xl font-extrabold tracking-tight leading-[1.15]">
               <span class="text-white block" x-text="t('hero_title_1')">在多雲與 AI 的高地上種樹</span>
-              <span class="cedar-gradient-text block mt-2" x-text="t('hero_title_2')">陪企業一同長青的技術之樹</span>
+              <span class="cedar-gradient-text block mt-2" x-text="t('hero_title_2')">陪企業一同長青的技術夥伴</span>
             </h1>
 
             <p class="text-base sm:text-lg text-slate-300 leading-relaxed font-normal" x-text="t('hero_desc')">
@@ -274,9 +281,9 @@
                 <span x-text="t('hero_btn_simulator')">進入架構與 FinOps 模擬器</span>
               </a>
               
-              <button @click="openModal = 'proposal'" class="inline-flex items-center gap-2 px-5 py-3.5 rounded-xl glass-card border border-slate-700 hover:border-cedar-500/50 text-white font-semibold text-sm sm:text-base hover:bg-slate-800/80 transition-all">
-                <i class="fa-solid fa-file-signature text-cedar-400"></i>
-                <span x-text="t('hero_btn_proposal')">生成專案建議書</span>
+              <button @click="openConsultationModal()" class="inline-flex items-center gap-2 px-5 py-3.5 rounded-xl glass-card border border-slate-700 hover:border-cedar-500/50 text-white font-semibold text-sm sm:text-base hover:bg-slate-800/80 transition-all">
+                <i class="fa-solid fa-paper-plane text-cedar-400"></i>
+                <span>預約總架構師諮詢</span>
               </button>
 
               <button @click="playElevatorPitch()" class="inline-flex items-center gap-2 px-4 py-3.5 rounded-xl bg-obsidian-900 border border-slate-700 text-slate-300 hover:text-white hover:border-cedar-400 text-xs sm:text-sm font-medium transition-all">
@@ -360,7 +367,7 @@
 
         </div>
 
-        <!-- BENTO GRID EXECUTIVE KPIS (60-30-10 Obsidian & Emerald Palette) -->
+        <!-- BENTO GRID EXECUTIVE KPIS -->
         <div class="mt-20 grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           
           <!-- KPI 1: Zero Outage -->
@@ -448,7 +455,7 @@
           <!-- Left: Stage Selectors (3 Stages of the Cedar) -->
           <div class="lg:col-span-5 space-y-4">
             
-            <!-- Stage 1: Roots (Manufacturing & Data Governance) -->
+            <!-- Stage 1: Roots -->
             <div @click="activeStage = 1" 
                  :class="activeStage === 1 ? 'border-cedar-500 bg-slate-800/90 shadow-glow-cedar' : 'border-slate-800 bg-obsidian-900/80 hover:border-slate-700'"
                  class="cursor-pointer p-6 rounded-2xl border transition-all duration-300 relative group">
@@ -469,7 +476,7 @@
               </div>
             </div>
 
-            <!-- Stage 2: Trunk (Global Cloud & Gaming Battlefield) -->
+            <!-- Stage 2: Trunk -->
             <div @click="activeStage = 2" 
                  :class="activeStage === 2 ? 'border-cedar-500 bg-slate-800/90 shadow-glow-cedar' : 'border-slate-800 bg-obsidian-900/80 hover:border-slate-700'"
                  class="cursor-pointer p-6 rounded-2xl border transition-all duration-300 relative group">
@@ -490,7 +497,7 @@
               </div>
             </div>
 
-            <!-- Stage 3: Canopy (Governance, ISO 42001 & Agentic AI) -->
+            <!-- Stage 3: Canopy -->
             <div @click="activeStage = 3" 
                  :class="activeStage === 3 ? 'border-cedar-500 bg-slate-800/90 shadow-glow-cedar' : 'border-slate-800 bg-obsidian-900/80 hover:border-slate-700'"
                  class="cursor-pointer p-6 rounded-2xl border transition-all duration-300 relative group">
@@ -553,7 +560,7 @@
                 </div>
               </div>
 
-              <!-- Terminal-style Code / Architecture Snippet -->
+              <!-- Terminal Snippet -->
               <div class="rounded-xl bg-obsidian-950 p-4 border border-slate-800 font-mono text-xs text-slate-300 space-y-1">
                 <div class="flex items-center justify-between text-[11px] text-slate-500 border-b border-slate-800/80 pb-2 mb-2">
                   <span>ROOT_ARCHITECTURE // DATA_GOVERNANCE.sh</span>
@@ -602,7 +609,7 @@
                 </div>
               </div>
 
-              <!-- Terminal-style Code / Architecture Snippet -->
+              <!-- Terminal Snippet -->
               <div class="rounded-xl bg-obsidian-950 p-4 border border-slate-800 font-mono text-xs text-slate-300 space-y-1">
                 <div class="flex items-center justify-between text-[11px] text-slate-500 border-b border-slate-800/80 pb-2 mb-2">
                   <span>MULTI_CLOUD_STATUS // GLOBAL_LB.yaml</span>
@@ -651,7 +658,7 @@
                 </div>
               </div>
 
-              <!-- Terminal-style Code / Architecture Snippet -->
+              <!-- Terminal Snippet -->
               <div class="rounded-xl bg-obsidian-950 p-4 border border-slate-800 font-mono text-xs text-slate-300 space-y-1">
                 <div class="flex items-center justify-between text-[11px] text-slate-500 border-b border-slate-800/80 pb-2 mb-2">
                   <span>TRUSTWORTHY_AI // ISO42001_AUDIT.json</span>
@@ -882,8 +889,8 @@
               </div>
             </div>
 
-            <button @click="openModal = 'proposal'" class="w-full py-3 rounded-xl bg-cedar-600 hover:bg-cedar-500 text-obsidian-950 font-bold text-sm shadow-glow-cedar transition-all">
-              <i class="fa-solid fa-file-export mr-2"></i>輸出客製化架構白皮書建議
+            <button @click="openConsultationModal()" class="w-full py-3 rounded-xl bg-cedar-600 hover:bg-cedar-500 text-obsidian-950 font-bold text-sm shadow-glow-cedar transition-all">
+              <i class="fa-solid fa-paper-plane mr-2"></i>依此試算預約總架構師諮詢
             </button>
           </div>
 
@@ -944,7 +951,7 @@
       </div>
     </section>
 
-    <!-- SECTION: OFFICIAL BRAND IDENTITY GALLERY (品牌標識與雙重視覺系統) -->
+    <!-- SECTION: OFFICIAL BRAND IDENTITY GALLERY -->
     <section id="brand-identity" class="py-24 bg-obsidian-950 border-t border-slate-800/80 relative">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
@@ -1022,7 +1029,7 @@
       </div>
     </section>
 
-    <!-- SECTION: FOUNDER PERSPECTIVE & EXECUTIVE PROFILE (廖倫豪 博士 / Howard Liao, Ph.D.) -->
+    <!-- SECTION: FOUNDER PERSPECTIVE & EXECUTIVE PROFILE -->
     <section id="founder" class="py-24 bg-obsidian-900/60 border-t border-slate-800/80 relative">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
@@ -1081,11 +1088,10 @@
                 <span>複製 About 簡介</span>
               </button>
             </div>
-            <div x-show="copiedMessage" x-transition class="text-center text-xs text-cedar-400 mt-2 font-mono" x-text="copiedMessage"></div>
 
           </div>
 
-          <!-- Right: Manifesto & The Tree Architect's Philosophy -->
+          <!-- Right: Manifesto & Philosophy -->
           <div class="lg:col-span-7 space-y-6">
             <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-cedar-950 border border-cedar-500/30 text-cedar-400 text-xs font-mono uppercase">
               <i class="fa-solid fa-compass"></i>
@@ -1108,7 +1114,7 @@
               </p>
             </div>
 
-            <div class="pt-4 flex items-center gap-6">
+            <div class="pt-4 flex flex-wrap items-center gap-6">
               <a href="mailto:Liao.Howard@gmail.com" class="inline-flex items-center gap-2 text-sm font-semibold text-cedar-400 hover:text-cedar-300">
                 <i class="fa-solid fa-envelope"></i>
                 <span>Liao.Howard@gmail.com</span>
@@ -1117,6 +1123,9 @@
                 <i class="fa-solid fa-phone"></i>
                 <span>+886-975-323-161</span>
               </a>
+              <button @click="openConsultationModal()" class="px-4 py-2 rounded-xl bg-cedar-600 text-obsidian-950 font-bold text-xs shadow-glow-cedar">
+                <i class="fa-solid fa-calendar-check mr-1.5"></i>即刻預約架構師
+              </button>
             </div>
 
           </div>
@@ -1230,114 +1239,186 @@
       </div>
     </div>
 
-    <!-- MODAL: PROPOSAL GENERATOR -->
-    <div x-show="openModal === 'proposal'" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-      <div @click.away="openModal = null" class="glass-card max-w-2xl w-full p-8 rounded-3xl border border-slate-700 shadow-2xl relative space-y-6 max-h-[90vh] overflow-y-auto">
+    <!-- MODAL: 預約總架構師深度諮詢 (INTERACTIVE FORM WITH DIRECT EMAIL DISPATCH & SIMULTANEOUS EXPORTS) -->
+    <div x-show="openModal === 'consultation'" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+      <div @click.away="openModal = null" class="glass-card max-w-2xl w-full p-6 sm:p-8 rounded-3xl border border-cedar-500/40 shadow-2xl relative space-y-6 max-h-[90vh] overflow-y-auto">
+        
+        <!-- Header -->
         <div class="flex items-center justify-between border-b border-slate-800 pb-4">
-          <div class="flex items-center gap-2.5">
-            <i class="fa-solid fa-file-signature text-cedar-400 text-xl"></i>
-            <h3 class="text-xl font-bold text-white">客製化企業技術架構建議書生成</h3>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-cedar-950 border border-cedar-500/40 flex items-center justify-center text-cedar-400">
+              <i class="fa-solid fa-paper-plane text-lg"></i>
+            </div>
+            <div>
+              <h3 class="text-xl font-bold text-white">預約總架構師深度諮詢</h3>
+              <p class="text-xs text-slate-400 font-mono">直接寄件至 <span class="text-cedar-300 font-bold">Liao.Howard@gmail.com</span></p>
+            </div>
           </div>
           <button @click="openModal = null" class="text-slate-400 hover:text-white p-2">
             <i class="fa-solid fa-xmark text-lg"></i>
           </button>
         </div>
 
-        <div class="space-y-4">
-          <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1">企業名稱 (Company Name)</label>
-            <input type="text" x-model="proposalCompany" placeholder="例：跨國高科技製造集團 / 數位娛樂服務" 
-                   class="w-full px-4 py-2.5 rounded-xl bg-obsidian-900 border border-slate-700 text-sm text-white focus:border-cedar-500 outline-none">
+        <!-- Consultation Form Fields -->
+        <form @submit.prevent="submitConsultation()" class="space-y-4">
+          
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">
+                企業 / 組織名稱 <span class="text-red-400">*</span>
+              </label>
+              <input type="text" x-model="form.company" required placeholder="例：跨國科技製造 / 數位娛樂集團" 
+                     class="w-full px-3.5 py-2.5 rounded-xl bg-obsidian-900 border border-slate-700 text-sm text-white focus:border-cedar-500 focus:ring-1 focus:ring-cedar-500 outline-none transition-all">
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">
+                聯絡人姓名與職稱 <span class="text-red-400">*</span>
+              </label>
+              <input type="text" x-model="form.contactName" required placeholder="例：張總經理 / 李技術副總" 
+                     class="w-full px-3.5 py-2.5 rounded-xl bg-obsidian-900 border border-slate-700 text-sm text-white focus:border-cedar-500 focus:ring-1 focus:ring-cedar-500 outline-none transition-all">
+            </div>
           </div>
 
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">
+                聯絡 Email (接收評估報告) <span class="text-red-400">*</span>
+              </label>
+              <input type="email" x-model="form.email" required placeholder="name@company.com" 
+                     class="w-full px-3.5 py-2.5 rounded-xl bg-obsidian-900 border border-slate-700 text-sm text-white focus:border-cedar-500 focus:ring-1 focus:ring-cedar-500 outline-none transition-all font-mono">
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">
+                聯絡電話 / 手機 <span class="text-red-400">*</span>
+              </label>
+              <input type="tel" x-model="form.phone" required placeholder="例：0912-345-678 或 +886..." 
+                     class="w-full px-3.5 py-2.5 rounded-xl bg-obsidian-900 border border-slate-700 text-sm text-white focus:border-cedar-500 focus:ring-1 focus:ring-cedar-500 outline-none transition-all font-mono">
+            </div>
+          </div>
+
+          <!-- Topics Checkboxes -->
           <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1">主要評估領域 (Select Focus Areas)</label>
-            <div class="grid grid-cols-2 gap-2 text-xs">
-              <label class="flex items-center gap-2 p-2.5 rounded-lg bg-obsidian-900 border border-slate-800 cursor-pointer">
-                <input type="checkbox" checked class="accent-cedar-500">
-                <span>多雲分散式與 GKE 零停機</span>
+            <label class="block text-xs font-semibold text-slate-300 mb-1.5">主要諮詢領域與架構挑戰 (可複選)</label>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+              <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-obsidian-900 border border-slate-800 hover:border-slate-700 cursor-pointer">
+                <input type="checkbox" value="多雲分散式與 GKE 零停機架構" x-model="form.topics" class="accent-cedar-500">
+                <span class="text-slate-200">⚡ 多雲 GKE 零停機架構</span>
               </label>
-              <label class="flex items-center gap-2 p-2.5 rounded-lg bg-obsidian-900 border border-slate-800 cursor-pointer">
-                <input type="checkbox" checked class="accent-cedar-500">
-                <span>ISO 42001 可信任 AI 治理</span>
+              <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-obsidian-900 border border-slate-800 hover:border-slate-700 cursor-pointer">
+                <input type="checkbox" value="ISO 42001 可信任 AI 治理與零信任" x-model="form.topics" class="accent-cedar-500">
+                <span class="text-slate-200">🧠 ISO 42001 可信任 AI 治理</span>
               </label>
-              <label class="flex items-center gap-2 p-2.5 rounded-lg bg-obsidian-900 border border-slate-800 cursor-pointer">
-                <input type="checkbox" checked class="accent-cedar-500">
-                <span>FinOps 雲端成本精準降減 30%</span>
+              <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-obsidian-900 border border-slate-800 hover:border-slate-700 cursor-pointer">
+                <input type="checkbox" value="FinOps 雲端成本精準降減 30%" x-model="form.topics" class="accent-cedar-500">
+                <span class="text-slate-200">💰 FinOps 雲端成本降減 30%</span>
               </label>
-              <label class="flex items-center gap-2 p-2.5 rounded-lg bg-obsidian-900 border border-slate-800 cursor-pointer">
-                <input type="checkbox" checked class="accent-cedar-500">
-                <span>智慧製造 AIoT 數據治理</span>
+              <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-obsidian-900 border border-slate-800 hover:border-slate-700 cursor-pointer">
+                <input type="checkbox" value="智慧製造 AIoT 數據 Clean Core" x-model="form.topics" class="accent-cedar-500">
+                <span class="text-slate-200">🏭 智慧製造 AIoT 數據治理</span>
               </label>
             </div>
           </div>
 
-          <!-- Live Proposal Preview Box -->
-          <div class="p-4 rounded-xl bg-obsidian-950 border border-slate-800 space-y-2 text-xs font-mono text-slate-300">
-            <div class="text-cedar-400 font-bold">📄 建議書草案預覽 (Executive Summary Draft)</div>
-            <p class="text-slate-400">
-              致 <span class="text-white font-bold" x-text="proposalCompany || '[貴企業團隊]'"></span>：<br>
-              針對貴單位在多雲規模化、AI 治理合規與雲端營運成本優化之需求，雲杉長青（CEDAR PARTNERED）提出長青架構藍圖：內嵌 DevSecOps 零信任防護，以 GKE 與 FinOps 實現兼具 100% 零停機與 -30% 支出之營運底座，並遵循 ISO 42001 標準建立可審計 AI 治理體系。
-            </p>
-          </div>
-        </div>
+          <!-- Spend Tier & Timeline -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">現有月度雲端支出規模</label>
+              <select x-model="form.budget" class="w-full px-3.5 py-2.5 rounded-xl bg-obsidian-900 border border-slate-700 text-xs text-white focus:border-cedar-500 outline-none">
+                <option value="每月 < $30,000 USD">每月 < $30,000 USD</option>
+                <option value="每月 $30,000 ~ $100,000 USD" selected>每月 $30,000 ~ $100,000 USD</option>
+                <option value="每月 $100,000 ~ $300,000 USD">每月 $100,000 ~ $300,000 USD</option>
+                <option value="每月 > $300,000 USD (跨國大規模部署)">每月 > $300,000 USD (跨國大規模)</option>
+              </select>
+            </div>
 
-        <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-800">
-          <button @click="openModal = null" class="px-5 py-2.5 rounded-xl border border-slate-700 text-slate-300 hover:text-white text-xs font-semibold">取消</button>
-          <button @click="downloadProposalMock()" class="px-6 py-2.5 rounded-xl bg-cedar-600 hover:bg-cedar-500 text-obsidian-950 font-bold text-xs shadow-glow-cedar flex items-center gap-2">
-            <i class="fa-solid fa-download"></i>
-            <span>下載完整建議書規格 (Word / PDF)</span>
-          </button>
-        </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">預計落地時程</label>
+              <select x-model="form.timeline" class="w-full px-3.5 py-2.5 rounded-xl bg-obsidian-900 border border-slate-700 text-xs text-white focus:border-cedar-500 outline-none">
+                <option value="即刻啟動 (1 個月內)" selected>即刻啟動 (1 個月內)</option>
+                <option value="近期規劃 (1 ~ 3 個月內)">近期規劃 (1 ~ 3 個月內)</option>
+                <option value="技術評估調研中 (3 ~ 6 個月內)">技術評估調研中 (3 ~ 6 個月內)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Message -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">具體痛點或架構需求說明</label>
+            <textarea x-model="form.message" rows="3" placeholder="請簡述貴企業目前遇到的架構瓶頸（如：多雲成本過高、AI合規認證需求、跨廠區數據孤島等）..." 
+                      class="w-full px-3.5 py-2.5 rounded-xl bg-obsidian-900 border border-slate-700 text-xs text-white focus:border-cedar-500 outline-none"></textarea>
+          </div>
+
+          <!-- Action Buttons Bar -->
+          <div class="pt-3 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div class="text-[11px] text-slate-400 font-mono flex items-center gap-1.5">
+              <i class="fa-solid fa-lock text-cedar-400"></i>
+              <span>資訊受嚴格 NDA 保護・24hr 內回覆</span>
+            </div>
+
+            <div class="flex items-center gap-2 w-full sm:w-auto">
+              <button type="button" @click="copyConsultationSummary()" 
+                      class="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-obsidian-900 hover:bg-slate-800 border border-slate-700 text-xs text-slate-300 hover:text-white font-mono flex items-center justify-center gap-1.5">
+                <i class="fa-regular fa-copy text-cedar-400"></i>
+                <span>複製 LINE 格式</span>
+              </button>
+
+              <button type="submit" 
+                      class="flex-1 sm:flex-initial px-6 py-2.5 rounded-xl bg-gradient-to-r from-cedar-600 to-emerald-500 hover:from-cedar-500 hover:to-emerald-400 text-obsidian-950 font-bold text-xs shadow-glow-cedar flex items-center justify-center gap-2 transition-all">
+                <i class="fa-solid fa-paper-plane"></i>
+                <span>確認送出並寄信</span>
+              </button>
+            </div>
+          </div>
+
+        </form>
+
       </div>
     </div>
 
-    <!-- MODAL: CONTACT & CONSULTATION -->
-    <div x-show="openModal === 'contact'" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-      <div @click.away="openModal = null" class="glass-card max-w-lg w-full p-8 rounded-3xl border border-slate-700 shadow-2xl relative space-y-6">
-        <div class="flex items-center justify-between border-b border-slate-800 pb-4">
-          <div class="flex items-center gap-2.5">
-            <i class="fa-solid fa-paper-plane text-cedar-400 text-xl"></i>
-            <h3 class="text-xl font-bold text-white">預約總架構師深度諮詢</h3>
+    <!-- MODAL: CONSULTATION SUCCESS CONFIRMATION -->
+    <div x-show="openModal === 'consult_success'" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+      <div @click.away="openModal = null" class="glass-card max-w-lg w-full p-8 rounded-3xl border border-cedar-500/50 shadow-2xl relative space-y-5 text-center">
+        
+        <div class="w-16 h-16 rounded-2xl bg-cedar-950/90 border border-cedar-500/50 flex items-center justify-center text-cedar-400 text-3xl mx-auto shadow-glow-cedar">
+          <i class="fa-solid fa-check"></i>
+        </div>
+
+        <div class="space-y-1">
+          <h3 class="text-xl font-bold text-white">諮詢預約與郵件已成功建立！</h3>
+          <p class="text-xs text-slate-400 font-mono">預約單號：<span class="text-cedar-300 font-bold" x-text="consultationReceiptId"></span></p>
+        </div>
+
+        <div class="p-4 rounded-xl bg-obsidian-950 border border-slate-800 text-left space-y-2 text-xs font-mono text-slate-300">
+          <div class="text-cedar-400 font-bold flex items-center justify-between border-b border-slate-800 pb-1.5">
+            <span>📋 已同步執行以下動作：</span>
+            <span class="text-[10px] text-slate-500">COMPLETED</span>
           </div>
-          <button @click="openModal = null" class="text-slate-400 hover:text-white p-2">
-            <i class="fa-solid fa-xmark text-lg"></i>
+          <div class="flex items-center gap-2 text-slate-300">
+            <i class="fa-solid fa-check text-cedar-400 text-[10px]"></i>
+            <span>已開啟郵件客戶端發送至 <strong>Liao.Howard@gmail.com</strong></span>
+          </div>
+          <div class="flex items-center gap-2 text-slate-300">
+            <i class="fa-solid fa-check text-cedar-400 text-[10px]"></i>
+            <span>已自動將諮詢完整摘要複製到您的剪貼簿</span>
+          </div>
+          <div class="flex items-center gap-2 text-slate-300">
+            <i class="fa-solid fa-check text-cedar-400 text-[10px]"></i>
+            <span>已下載「企業架構諮詢需求確認單 (.txt)」</span>
+          </div>
+        </div>
+
+        <div class="pt-3 flex flex-col sm:flex-row gap-2.5">
+          <a href="tel:+886975323161" class="flex-1 py-2.5 rounded-xl bg-obsidian-900 border border-slate-700 text-slate-200 hover:text-white text-xs font-semibold flex items-center justify-center gap-2">
+            <i class="fa-solid fa-phone text-cedar-400"></i>
+            <span>致電總架構師專線</span>
+          </a>
+          <button @click="openModal = null" class="flex-1 py-2.5 rounded-xl bg-cedar-600 text-obsidian-950 font-bold text-xs shadow-glow-cedar">
+            完成關閉
           </button>
         </div>
 
-        <div class="space-y-4">
-          <div class="p-4 rounded-xl bg-obsidian-900/90 border border-cedar-500/30 space-y-3">
-            <div class="text-xs font-mono text-cedar-400 font-semibold uppercase">DIRECT CONTACT INFORMATION</div>
-            <div class="space-y-2 text-sm text-slate-200">
-              <div class="flex items-center gap-3">
-                <i class="fa-solid fa-user-tie text-cedar-400 w-5"></i>
-                <span>廖倫豪 博士 (Howard Liao, Ph.D.)</span>
-              </div>
-              <div class="flex items-center gap-3">
-                <i class="fa-solid fa-envelope text-cedar-400 w-5"></i>
-                <a href="mailto:Liao.Howard@gmail.com" class="hover:underline text-cedar-300">Liao.Howard@gmail.com</a>
-              </div>
-              <div class="flex items-center gap-3">
-                <i class="fa-solid fa-phone text-cedar-400 w-5"></i>
-                <a href="tel:+886975323161" class="hover:underline text-cedar-300">+886-975-323-161</a>
-              </div>
-              <div class="flex items-center gap-3">
-                <i class="fa-solid fa-location-dot text-cedar-400 w-5"></i>
-                <span class="text-slate-400 text-xs">台灣・台中 / 台北 (全球跨國多雲諮詢支援)</span>
-              </div>
-            </div>
-          </div>
-
-          <p class="text-xs text-slate-400 leading-relaxed">
-            無論是企業正在經歷多雲成本膨脹、AI 合規落地瓶頸，或智慧製造數據孤島，歡迎直接來信或來電，我們將在 24 小時內與您安排 C-Level 架構評估會議。
-          </p>
-        </div>
-
-        <div class="pt-4 border-t border-slate-800 flex justify-end">
-          <a href="mailto:Liao.Howard@gmail.com?subject=諮詢雲杉長青企業架構規劃" class="w-full py-3 rounded-xl bg-cedar-600 hover:bg-cedar-500 text-obsidian-950 font-bold text-sm text-center shadow-glow-cedar transition-all">
-            <i class="fa-solid fa-envelope-open mr-2"></i>即刻寄信聯絡
-          </a>
-        </div>
       </div>
     </div>
 
@@ -1354,7 +1435,8 @@
         openModal: null,
         heroLogoMode: 'tech',
         isPlayingPitch: false,
-        copiedMessage: '',
+        toastMessage: '',
+        consultationReceiptId: '',
 
         // Simulator State
         monthlySpend: 60,
@@ -1362,7 +1444,18 @@
         simFocus: 'finops',
         simAnnualSavings: 230,
         simGovernanceScore: 94,
-        proposalCompany: '',
+
+        // Consultation Form State
+        form: {
+          company: '',
+          contactName: '',
+          email: '',
+          phone: '',
+          topics: ['多雲分散式與 GKE 零停機架構', 'FinOps 雲端成本精準降減 30%'],
+          budget: '每月 $30,000 ~ $100,000 USD',
+          timeline: '即刻啟動 (1 個月內)',
+          message: ''
+        },
 
         // Trilingual Dictionary
         dict: {
@@ -1508,11 +1601,95 @@
           this.lang = l;
         },
 
+        showToast(msg) {
+          this.toastMessage = msg;
+          setTimeout(() => { this.toastMessage = ''; }, 3500);
+        },
+
+        openConsultationModal() {
+          this.openModal = 'consultation';
+        },
+
+        generateConsultationText(receiptId) {
+          const topicsStr = this.form.topics.length > 0 ? this.form.topics.join('\n- ') : '整體企業架構與雲端治理評估';
+          return `【雲杉長青 CEDAR PARTNERED - 總架構師深度諮詢預約單】
+單號：${receiptId}
+日期：${new Date().toLocaleString()}
+
+1. 企業與聯絡資訊：
+- 企業名稱：${this.form.company || '未填寫'}
+- 聯絡貴賓：${this.form.contactName || '未填寫'}
+- 電子信箱：${this.form.email || '未填寫'}
+- 聯絡電話：${this.form.phone || '未填寫'}
+
+2. 諮詢主題與挑戰：
+- ${topicsStr}
+
+3. 現況規模與時程：
+- 預估月度雲端支出：${this.form.budget}
+- 預計落地時程：${this.form.timeline}
+
+4. 具體痛點與需求說明：
+${this.form.message || '（暫無額外補充，由總架構師於會議中深入訪談）'}
+
+=========================================
+收件信箱：Liao.Howard@gmail.com
+官方電話：+886-975-323-161
+首席架構師：廖倫豪 博士 (Howard Liao, Ph.D.)
+雲杉長青官網：https://howardliao.github.io/CP/`;
+        },
+
+        submitConsultation() {
+          const now = new Date();
+          const pad = (n) => String(n).padStart(2, '0');
+          const timeStr = `${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}-${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
+          const receiptId = `CEDAR-CONSULT-${timeStr}`;
+          this.consultationReceiptId = receiptId;
+
+          const consultationBody = this.generateConsultationText(receiptId);
+
+          // 1. 自動複製到剪貼簿
+          if (navigator.clipboard) {
+            navigator.clipboard.writeText(consultationBody).catch(() => {});
+          }
+
+          // 2. 自動下載確認需求文字單
+          try {
+            const blob = new Blob([consultationBody], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `CEDAR_Consultation_${(this.form.company || 'Enterprise').replace(/\s+/g, '_')}_${timeStr}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+          } catch(e) {}
+
+          // 3. 呼叫 mailto: 寄件至 Liao.Howard@gmail.com
+          const subject = `【架構師諮詢預約】${this.form.company || '企業諮詢'} - ${this.form.contactName || ''} (${receiptId})`;
+          const mailtoUrl = `mailto:Liao.Howard@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(consultationBody)}`;
+          
+          window.location.href = mailtoUrl;
+
+          // 4. 切換為成功彈窗
+          this.openModal = 'consult_success';
+          this.showToast('✅ 諮詢單已生成並複製到剪貼簿，正在開啟郵件！');
+        },
+
+        copyConsultationSummary() {
+          const receiptId = `CEDAR-DRAFT-${Date.now().toString().slice(-6)}`;
+          const summary = this.generateConsultationText(receiptId);
+          navigator.clipboard.writeText(summary).then(() => {
+            this.showToast('📋 已複製 LINE / WeChat 格式諮詢明細！');
+          });
+        },
+
         recalcSimulator() {
           const spend = parseFloat(this.monthlySpend);
           const nodes = parseInt(this.instanceCount);
           
-          let rate = 0.32; // 32% savings on average
+          let rate = 0.32;
           if (this.simFocus === 'finops') rate = 0.36;
           if (this.simFocus === 'ha') rate = 0.28;
           if (this.simFocus === 'ai') rate = 0.30;
@@ -1535,12 +1712,10 @@
           let cumCedar = 0;
 
           for (let i = 1; i <= 5; i++) {
-            // Traditional growth with 12% inflation/sprawl
             const tradYear = annual * Math.pow(1.12, i - 1);
             cumTrad += tradYear;
             traditional.push(Math.round(cumTrad));
 
-            // Cedar optimized with FinOps compounding savings
             const cedarYear = (annual * (1 - rate)) * Math.pow(1.04, i - 1);
             cumCedar += cedarYear;
             cedarOptimized.push(Math.round(cumCedar));
@@ -1656,55 +1831,8 @@
           }
 
           navigator.clipboard.writeText(str).then(() => {
-            this.copiedMessage = '✅ 已成功複製到剪貼簿！';
-            setTimeout(() => { this.copiedMessage = ''; }, 3000);
+            this.showToast('✅ 已成功複製到剪貼簿！');
           });
-        },
-
-        downloadProposalMock() {
-          const comp = this.proposalCompany || '企業夥伴';
-          const content = `=====================================================
-雲杉長青 (CEDAR PARTNERED) 企業技術架構建議書
-ARCHITECTURAL BLUEPRINT & GOVERNANCE PROPOSAL
-=====================================================
-受文單位: ${comp}
-首席架構師: 廖倫豪 博士 (Howard Liao, Ph.D.)
-聯絡信箱: Liao.Howard@gmail.com
-官方電話: +886-975-323-161
-
-【執行摘要 (Executive Summary)】
-雲杉長青（CEDAR PARTNERED）致力於將前瞻多雲與 AI 技術轉化為可量化、可治理、可長青的商業成果。
-針對貴公司之規模與目標，提出四大維度落地路徑：
-
-1. 雲原生與多雲分散式架構 (Cloud-Native HA):
-   - 導入 GKE 容器化與 Cloud Load Balancing，達成 100% 零停機營運標準。
-   - 毫秒級自動容災切換機制，優化全域連線延遲。
-
-2. 可信任 AI 治理與 ISO 42001 (Trustworthy AI):
-   - 導入 AISDLC 安全開發流程與資料血統追蹤。
-   - 建立 Agentic AI 智慧維運安全邊界，杜絕失控黑箱。
-
-3. 企業級 FinOps 與雲端財務優化:
-   - 建立單位經濟指標 (Unit Economics) 與透明化帳單歸因。
-   - 透過自動化 Spot/RI 調度與架構優化，預期實現 30%+ 雲端費用結構性節省。
-
-4. 智慧製造與 AIoT 數據治理:
-   - 跨廠區 ERP/BPM Clean Core 整合，消除資訊孤島。
-   - 部署邊緣 AI 感測即時推論，提升產線預測性維護與良率。
-
-=====================================================
-版權所有 © 2026 雲杉長青 CEDAR PARTNERED. All rights reserved.`;
-
-          const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = `CEDAR_PARTNERED_Proposal_${comp.replace(/\s+/g, '_')}.txt`;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
-          this.openModal = null;
         },
 
         initCanvas() {
@@ -1719,7 +1847,7 @@ ARCHITECTURAL BLUEPRINT & GOVERNANCE PROPOSAL
             height = canvas.height = window.innerHeight;
           });
 
-          // Generate Node Network (representing Evergreen Cedar roots & branches + cloud nodes)
+          // Generate Node Network
           const nodeCount = 45;
           const nodes = [];
           for (let i = 0; i < nodeCount; i++) {
