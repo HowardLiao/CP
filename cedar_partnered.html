@@ -1,0 +1,1598 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>雲杉長青 CEDAR PARTNERED | 企業多雲、AI與智慧製造長青技術夥伴</title>
+  <meta name="description" content="雲杉長青（CEDAR PARTNERED）由廖倫豪博士創立，深耕多雲治理、雲原生高可用架構、可信任 AI 治理（ISO 42001）、FinOps 成本優化與 AIoT 智慧製造，打造企業長青數位底座。">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+TC:wght@300;400;500;700;900&family=Noto+Sans+JP:wght@400;500;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Alpine.js for interactive state -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.5/dist/cdn.min.js"></script>
+
+  <!-- Chart.js for FinOps & Architecture Visualizer -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            obsidian: {
+              950: '#020617',
+              900: '#0b1120',
+              850: '#0f172a',
+              800: '#1e293b',
+              700: '#334155',
+            },
+            cedar: {
+              50: '#ecfdf5',
+              100: '#d1fae5',
+              200: '#a7f3d0',
+              300: '#6ee7b7',
+              400: '#34d399',
+              500: '#10b981',
+              600: '#059669',
+              700: '#047857',
+              800: '#065f46',
+              900: '#064e3b',
+              950: '#022c22',
+            },
+            amberAccent: {
+              400: '#fbbf24',
+              500: '#f59e0b',
+              600: '#d97706',
+            },
+            neonCyan: '#06b6d4',
+          },
+          fontFamily: {
+            sans: ['Inter', 'Noto Sans TC', 'Noto Sans JP', 'system-ui', 'sans-serif'],
+            display: ['Outfit', 'Noto Sans TC', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          boxShadow: {
+            'glow-cedar': '0 0 35px -5px rgba(16, 185, 129, 0.3)',
+            'glow-cyan': '0 0 35px -5px rgba(6, 182, 212, 0.3)',
+            'inner-card': 'inset 0 1px 1px 0 rgba(255, 255, 255, 0.08)',
+          },
+          animation: {
+            'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'float': 'float 6s ease-in-out infinite',
+            'spin-slow': 'spin 20s linear infinite',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-10px)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #020617;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 4px;
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #059669;
+    }
+
+    /* Glassmorphism Classes */
+    .glass-card {
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .glass-card-hover {
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .glass-card-hover:hover {
+      border-color: rgba(16, 185, 129, 0.4);
+      box-shadow: 0 12px 40px -10px rgba(16, 185, 129, 0.2), inset 0 1px 1px 0 rgba(255, 255, 255, 0.15);
+      transform: translateY(-3px);
+    }
+
+    .cedar-gradient-text {
+      background: linear-gradient(135deg, #ffffff 10%, #6ee7b7 60%, #10b981 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .gold-gradient-text {
+      background: linear-gradient(135deg, #fef08a 0%, #f59e0b 70%, #d97706 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Background Grid */
+    .bg-grid-pattern {
+      background-size: 40px 40px;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    }
+    .bg-dots-pattern {
+      background-image: radial-gradient(rgba(16, 185, 129, 0.15) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+
+    /* Interactive Tree Branch Lines */
+    .tree-line {
+      position: relative;
+    }
+    .tree-line::before {
+      content: '';
+      position: absolute;
+      left: 19px;
+      top: 36px;
+      bottom: -24px;
+      width: 2px;
+      background: linear-gradient(to bottom, #10b981, rgba(16, 185, 129, 0.1));
+    }
+    .tree-line:last-child::before {
+      display: none;
+    }
+  </style>
+</head>
+
+<body class="bg-obsidian-950 text-slate-200 antialiased font-sans min-h-screen selection:bg-cedar-500 selection:text-obsidian-950 relative overflow-x-hidden"
+      x-data="cedarApp()" x-init="initApp()">
+
+  <!-- Background Particle & Neural Tree Canvas -->
+  <canvas id="treeCanvas" class="fixed inset-0 pointer-events-none z-0 opacity-40"></canvas>
+  
+  <!-- Subtle Ambient Glows -->
+  <div class="fixed top-0 left-1/4 w-[600px] h-[600px] bg-cedar-600/10 rounded-full blur-[140px] pointer-events-none z-0"></div>
+  <div class="fixed bottom-10 right-10 w-[500px] h-[500px] bg-cyan-600/10 rounded-full blur-[140px] pointer-events-none z-0"></div>
+  <div class="fixed top-1/2 left-3/4 w-[400px] h-[400px] bg-emerald-700/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+
+  <!-- Main Container -->
+  <div class="relative z-10 flex flex-col min-h-screen">
+
+    <!-- Top Navigation Bar -->
+    <header class="sticky top-0 z-50 glass-card border-b border-slate-800/80 backdrop-blur-xl">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+        
+        <!-- Brand Logo -->
+        <a href="#hero" class="flex items-center gap-3 group">
+          <div class="relative w-11 h-11 rounded-xl bg-gradient-to-br from-cedar-800 to-obsidian-900 border border-cedar-500/40 flex items-center justify-center shadow-glow-cedar group-hover:scale-105 transition-transform duration-300">
+            <i class="fa-solid fa-tree text-cedar-400 text-xl group-hover:text-cedar-300 transition-colors"></i>
+            <div class="absolute -top-1 -right-1 w-3 h-3 bg-cedar-400 rounded-full animate-ping opacity-75"></div>
+            <div class="absolute -top-1 -right-1 w-3 h-3 bg-cedar-500 rounded-full"></div>
+          </div>
+          <div class="flex flex-col">
+            <div class="flex items-center gap-2">
+              <span class="font-display font-black text-xl tracking-tight text-white group-hover:text-cedar-300 transition-colors">雲杉長青</span>
+              <span class="text-xs px-2 py-0.5 rounded-full bg-cedar-950/80 border border-cedar-500/30 text-cedar-300 font-mono tracking-wider">EVERGREEN</span>
+            </div>
+            <span class="text-[11px] font-mono tracking-widest text-slate-400 font-medium">CEDAR PARTNERED</span>
+          </div>
+        </a>
+
+        <!-- Desktop Nav Links -->
+        <nav class="hidden md:flex items-center gap-8 text-sm font-medium">
+          <a href="#story" class="text-slate-300 hover:text-cedar-400 transition-colors flex items-center gap-1.5" :class="activeSection === 'story' ? 'text-cedar-400' : ''">
+            <i class="fa-solid fa-seedling text-xs text-cedar-500"></i>
+            <span x-text="t('nav_story')"></span>
+          </a>
+          <a href="#pillars" class="text-slate-300 hover:text-cedar-400 transition-colors flex items-center gap-1.5" :class="activeSection === 'pillars' ? 'text-cedar-400' : ''">
+            <i class="fa-solid fa-layer-group text-xs text-cedar-500"></i>
+            <span x-text="t('nav_pillars')"></span>
+          </a>
+          <a href="#simulator" class="text-slate-300 hover:text-cedar-400 transition-colors flex items-center gap-1.5" :class="activeSection === 'simulator' ? 'text-cedar-400' : ''">
+            <i class="fa-solid fa-calculator text-xs text-cedar-500"></i>
+            <span x-text="t('nav_simulator')"></span>
+          </a>
+          <a href="#governance" class="text-slate-300 hover:text-cedar-400 transition-colors flex items-center gap-1.5" :class="activeSection === 'governance' ? 'text-cedar-400' : ''">
+            <i class="fa-solid fa-shield-halved text-xs text-cedar-500"></i>
+            <span x-text="t('nav_governance')"></span>
+          </a>
+          <a href="#founder" class="text-slate-300 hover:text-cedar-400 transition-colors flex items-center gap-1.5" :class="activeSection === 'founder' ? 'text-cedar-400' : ''">
+            <i class="fa-solid fa-user-tie text-xs text-cedar-500"></i>
+            <span x-text="t('nav_founder')"></span>
+          </a>
+        </nav>
+
+        <!-- Action Area (Language Selector + Contact Button) -->
+        <div class="flex items-center gap-3">
+          
+          <!-- Trilingual Toggle -->
+          <div class="flex items-center bg-obsidian-900/90 p-1 rounded-lg border border-slate-700/70 text-xs font-mono">
+            <button @click="setLang('zh')" :class="lang === 'zh' ? 'bg-cedar-600 text-white font-bold shadow' : 'text-slate-400 hover:text-slate-200'" class="px-2.5 py-1 rounded transition-all">繁中</button>
+            <button @click="setLang('en')" :class="lang === 'en' ? 'bg-cedar-600 text-white font-bold shadow' : 'text-slate-400 hover:text-slate-200'" class="px-2.5 py-1 rounded transition-all">EN</button>
+            <button @click="setLang('jp')" :class="lang === 'jp' ? 'bg-cedar-600 text-white font-bold shadow' : 'text-slate-400 hover:text-slate-200'" class="px-2.5 py-1 rounded transition-all">日本語</button>
+          </div>
+
+          <!-- Proposal / Consultation CTA Button -->
+          <button @click="openModal = 'contact'" class="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-cedar-600 to-emerald-500 hover:from-cedar-500 hover:to-emerald-400 text-obsidian-950 font-bold text-sm shadow-glow-cedar transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]">
+            <i class="fa-solid fa-paper-plane text-xs"></i>
+            <span x-text="t('cta_consult')">預約架構師諮詢</span>
+          </button>
+
+          <!-- Mobile Menu Button -->
+          <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden p-2.5 rounded-lg bg-obsidian-900 border border-slate-700 text-slate-300 hover:text-white">
+            <i :class="mobileMenuOpen ? 'fa-solid fa-xmark' : 'fa-solid fa-bars'" class="text-base"></i>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Mobile Dropdown Menu -->
+      <div x-show="mobileMenuOpen" x-transition class="md:hidden glass-card border-b border-slate-800 px-6 py-5 space-y-3">
+        <a @click="mobileMenuOpen = false" href="#story" class="block py-2 text-slate-300 hover:text-cedar-400 font-medium" x-text="t('nav_story')"></a>
+        <a @click="mobileMenuOpen = false" href="#pillars" class="block py-2 text-slate-300 hover:text-cedar-400 font-medium" x-text="t('nav_pillars')"></a>
+        <a @click="mobileMenuOpen = false" href="#simulator" class="block py-2 text-slate-300 hover:text-cedar-400 font-medium" x-text="t('nav_simulator')"></a>
+        <a @click="mobileMenuOpen = false" href="#governance" class="block py-2 text-slate-300 hover:text-cedar-400 font-medium" x-text="t('nav_governance')"></a>
+        <a @click="mobileMenuOpen = false" href="#founder" class="block py-2 text-slate-300 hover:text-cedar-400 font-medium" x-text="t('nav_founder')"></a>
+        <div class="pt-3 border-t border-slate-800">
+          <button @click="mobileMenuOpen = false; openModal = 'contact'" class="w-full py-2.5 rounded-xl bg-cedar-600 text-obsidian-950 font-bold text-sm text-center">
+            <i class="fa-solid fa-paper-plane mr-2"></i><span x-text="t('cta_consult')"></span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section id="hero" class="relative pt-16 pb-24 md:pt-24 md:pb-32 overflow-hidden bg-grid-pattern">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Top Badge -->
+        <div class="flex justify-center mb-8">
+          <div class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full glass-card border border-cedar-500/30 text-xs font-mono text-cedar-300 shadow-inner-card">
+            <span class="w-2 h-2 rounded-full bg-cedar-400 animate-pulse"></span>
+            <span x-text="t('hero_badge')">以雪松之姿・鑄長青之基｜跨國多雲架構與可信任 AI 治理</span>
+            <i class="fa-solid fa-arrow-right text-[10px] text-cedar-400"></i>
+          </div>
+        </div>
+
+        <!-- Main Title & Tagline -->
+        <div class="text-center max-w-4xl mx-auto space-y-6">
+          <h1 class="font-display text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.15]">
+            <span class="text-white block" x-text="t('hero_title_1')">在多雲與 AI 的高地上種樹</span>
+            <span class="cedar-gradient-text block mt-2" x-text="t('hero_title_2')">陪企業一同長青的技術之樹</span>
+          </h1>
+
+          <p class="text-base sm:text-xl text-slate-300 leading-relaxed max-w-3xl mx-auto font-normal" x-text="t('hero_desc')">
+            雲杉長青（CEDAR PARTNERED），象徵一棵從台中出發、深植製造業實戰與遊戲多雲戰場的技術大樹。不只追求技術的炫目，更在零停機架構、DevSecOps、FinOps 成本紀律與 ISO 42001 可信任 AI 治理中，成為企業長期並肩前行的技術主樑。
+          </p>
+
+          <!-- Interactive Action Buttons -->
+          <div class="pt-6 flex flex-wrap items-center justify-center gap-4">
+            <a href="#simulator" class="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-xl bg-gradient-to-r from-cedar-500 to-emerald-400 text-obsidian-950 font-extrabold text-base shadow-glow-cedar hover:scale-105 active:scale-95 transition-all">
+              <i class="fa-solid fa-chart-line text-sm"></i>
+              <span x-text="t('hero_btn_simulator')">進入架構與 FinOps 模擬器</span>
+            </a>
+            
+            <button @click="openModal = 'proposal'" class="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-xl glass-card border border-slate-700 hover:border-cedar-500/50 text-white font-semibold text-base hover:bg-slate-800/80 transition-all">
+              <i class="fa-solid fa-file-signature text-cedar-400"></i>
+              <span x-text="t('hero_btn_proposal')">生成專案建議書</span>
+            </button>
+
+            <button @click="playElevatorPitch()" class="inline-flex items-center gap-2 px-5 py-3.5 rounded-xl bg-obsidian-900 border border-slate-700 text-slate-300 hover:text-white hover:border-cedar-400 text-sm font-medium transition-all">
+              <i :class="isPlayingPitch ? 'fa-solid fa-circle-stop text-red-400 animate-pulse' : 'fa-solid fa-circle-play text-cedar-400'" class="text-base"></i>
+              <span x-text="isPlayingPitch ? t('pitch_playing') : t('pitch_listen')">聆聽 30秒 品牌簡報</span>
+            </button>
+          </div>
+
+        </div>
+
+        <!-- BENTO GRID EXECUTIVE KPIS (60-30-10 Obsidian & Emerald Palette) -->
+        <div class="mt-20 grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+          
+          <!-- KPI 1: Zero Outage -->
+          <div class="glass-card glass-card-hover p-6 rounded-2xl border border-slate-800 relative overflow-hidden group">
+            <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-cedar-500/5 rounded-full blur-xl group-hover:bg-cedar-500/15 transition-all"></div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-mono uppercase tracking-wider text-slate-400">High Availability</span>
+              <div class="w-8 h-8 rounded-lg bg-cedar-950/80 border border-cedar-500/30 flex items-center justify-center text-cedar-400">
+                <i class="fa-solid fa-server text-xs"></i>
+              </div>
+            </div>
+            <div class="font-mono text-3xl sm:text-4xl font-extrabold text-white group-hover:text-cedar-300 transition-colors">100%</div>
+            <div class="text-sm font-semibold text-cedar-400 mt-1">Zero Outage</div>
+            <div class="text-xs text-slate-400 mt-1 leading-relaxed" x-text="t('kpi_desc_1')">六朵雲跨國分散式架構，容災切換與毫秒負載均衡。</div>
+          </div>
+
+          <!-- KPI 2: FinOps Cost Optimization -->
+          <div class="glass-card glass-card-hover p-6 rounded-2xl border border-slate-800 relative overflow-hidden group">
+            <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-amber-500/5 rounded-full blur-xl group-hover:bg-amber-500/15 transition-all"></div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-mono uppercase tracking-wider text-slate-400">FinOps Efficiency</span>
+              <div class="w-8 h-8 rounded-lg bg-amber-950/80 border border-amber-500/30 flex items-center justify-center text-amber-400">
+                <i class="fa-solid fa-coins text-xs"></i>
+              </div>
+            </div>
+            <div class="font-mono text-3xl sm:text-4xl font-extrabold text-white group-hover:text-amber-300 transition-colors">-30%</div>
+            <div class="text-sm font-semibold text-amber-400 mt-1">Cloud TCO Reduction</div>
+            <div class="text-xs text-slate-400 mt-1 leading-relaxed" x-text="t('kpi_desc_2')">雲端成本透明化與單位經濟模型，投資與效能同步達標。</div>
+          </div>
+
+          <!-- KPI 3: AI Engineering Efficiency -->
+          <div class="glass-card glass-card-hover p-6 rounded-2xl border border-slate-800 relative overflow-hidden group">
+            <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-neonCyan/5 rounded-full blur-xl group-hover:bg-neonCyan/15 transition-all"></div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-mono uppercase tracking-wider text-slate-400">AI Acceleration</span>
+              <div class="w-8 h-8 rounded-lg bg-cyan-950/80 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+                <i class="fa-solid fa-brain text-xs"></i>
+              </div>
+            </div>
+            <div class="font-mono text-3xl sm:text-4xl font-extrabold text-white group-hover:text-cyan-300 transition-colors">+55%</div>
+            <div class="text-sm font-semibold text-cyan-400 mt-1">AI Engineering Velocity</div>
+            <div class="text-xs text-slate-400 mt-1 leading-relaxed" x-text="t('kpi_desc_3')">Agentic AI 自動化基礎架構管理與 AISDLC 合規治理流程。</div>
+          </div>
+
+          <!-- KPI 4: Experience & Leadership -->
+          <div class="glass-card glass-card-hover p-6 rounded-2xl border border-slate-800 relative overflow-hidden group">
+            <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-emerald-500/5 rounded-full blur-xl group-hover:bg-emerald-500/15 transition-all"></div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-mono uppercase tracking-wider text-slate-400">Proven Leadership</span>
+              <div class="w-8 h-8 rounded-lg bg-emerald-950/80 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+                <i class="fa-solid fa-award text-xs"></i>
+              </div>
+            </div>
+            <div class="font-mono text-3xl sm:text-4xl font-extrabold text-white group-hover:text-emerald-300 transition-colors">27+ Yrs</div>
+            <div class="text-sm font-semibold text-emerald-400 mt-1">IT & C-Level Practice</div>
+            <div class="text-xs text-slate-400 mt-1 leading-relaxed" x-text="t('kpi_desc_4')">橫跨製造業 ERP/AIoT、遊戲多雲服務與 ISO 27001/42001。</div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION: THE CEDAR STORY (樹木年輪與生長歷程) -->
+    <section id="story" class="py-24 bg-obsidian-900/60 border-t border-slate-800/80 relative">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Section Header -->
+        <div class="max-w-3xl mb-16">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-cedar-950 border border-cedar-500/30 text-cedar-400 text-xs font-mono uppercase mb-3">
+            <i class="fa-solid fa-seedling"></i>
+            <span>THE ORIGIN & ANATOMY</span>
+          </div>
+          <h2 class="font-display text-3xl sm:text-5xl font-bold text-white tracking-tight">
+            一棵從工程師長成的「雲杉」
+          </h2>
+          <p class="mt-4 text-slate-300 text-base sm:text-lg leading-relaxed" x-text="t('story_subtitle')">
+            二十多年前，從一行行程式碼與單一系統起步；歷經智慧工廠數據治理、遊戲產業全球六朵雲高壓戰場，最終淬鍊為守護企業長青的數位生態總架構師。
+          </p>
+        </div>
+
+        <!-- Interactive 3-Layer Cedar Anatomy Explorer -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          
+          <!-- Left: Stage Selectors (3 Stages of the Cedar) -->
+          <div class="lg:col-span-5 space-y-4">
+            
+            <!-- Stage 1: Roots (Manufacturing & Data Governance) -->
+            <div @click="activeStage = 1" 
+                 :class="activeStage === 1 ? 'border-cedar-500 bg-slate-800/90 shadow-glow-cedar' : 'border-slate-800 bg-obsidian-900/80 hover:border-slate-700'"
+                 class="cursor-pointer p-6 rounded-2xl border transition-all duration-300 relative group">
+              <div class="flex items-start gap-4">
+                <div :class="activeStage === 1 ? 'bg-cedar-600 text-obsidian-950' : 'bg-slate-800 text-slate-400 group-hover:text-cedar-400'"
+                     class="w-12 h-12 rounded-xl flex-shrink-0 flex items-center justify-center font-mono font-bold text-lg transition-colors">
+                  01
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <h3 class="font-display font-bold text-lg text-white" x-text="t('stage1_title')">根系扎深：製造業數據治理與 AIoT</h3>
+                    <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">ROOTS</span>
+                  </div>
+                  <p class="text-xs text-slate-400 mt-2 leading-relaxed" x-text="t('stage1_summary')">
+                    導入 ERP、BPM 與跨廠區數據治理，串聯各廠資訊扎入土地。感測器與 AIoT 實現自主監控與良率預測，讓機台理解自己正在做什麼。
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Stage 2: Trunk (Global Cloud & Gaming Battlefield) -->
+            <div @click="activeStage = 2" 
+                 :class="activeStage === 2 ? 'border-cedar-500 bg-slate-800/90 shadow-glow-cedar' : 'border-slate-800 bg-obsidian-900/80 hover:border-slate-700'"
+                 class="cursor-pointer p-6 rounded-2xl border transition-all duration-300 relative group">
+              <div class="flex items-start gap-4">
+                <div :class="activeStage === 2 ? 'bg-cedar-600 text-obsidian-950' : 'bg-slate-800 text-slate-400 group-hover:text-cedar-400'"
+                     class="w-12 h-12 rounded-xl flex-shrink-0 flex items-center justify-center font-mono font-bold text-lg transition-colors">
+                  02
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <h3 class="font-display font-bold text-lg text-white" x-text="t('stage2_title')">樹幹挺拔：遊戲與跨六朵雲高壓戰場</h3>
+                    <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">TRUNK</span>
+                  </div>
+                  <p class="text-xs text-slate-400 mt-2 leading-relaxed" x-text="t('stage2_summary')">
+                    面對爆炸性用戶成長與零停機挑戰，主導 GKE 容器化跨六朵雲布署，以 FinOps 財務紀律調度成本與效能，速度超越其他平台 2 倍以上。
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Stage 3: Canopy (Governance, ISO 42001 & Agentic AI) -->
+            <div @click="activeStage = 3" 
+                 :class="activeStage === 3 ? 'border-cedar-500 bg-slate-800/90 shadow-glow-cedar' : 'border-slate-800 bg-obsidian-900/80 hover:border-slate-700'"
+                 class="cursor-pointer p-6 rounded-2xl border transition-all duration-300 relative group">
+              <div class="flex items-start gap-4">
+                <div :class="activeStage === 3 ? 'bg-cedar-600 text-obsidian-950' : 'bg-slate-800 text-slate-400 group-hover:text-cedar-400'"
+                     class="w-12 h-12 rounded-xl flex-shrink-0 flex items-center justify-center font-mono font-bold text-lg transition-colors">
+                  03
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <h3 class="font-display font-bold text-lg text-white" x-text="t('stage3_title')">樹冠長青：ISO 42001 可信任 AI 與永續治理</h3>
+                    <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">CANOPY</span>
+                  </div>
+                  <p class="text-xs text-slate-400 mt-2 leading-relaxed" x-text="t('stage3_summary')">
+                    在多雲與 AI 浪潮下，內嵌 DevSecOps 與零信任安全，導入 Agentic AI 智慧維運，建構能穩定運行 10 年以上的可持續數位森林。
+                  </p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Right: Deep Interactive Stage Visualizer & Technical Breakdown -->
+          <div class="lg:col-span-7 glass-card p-8 rounded-3xl border border-slate-700/80 shadow-2xl relative overflow-hidden min-h-[460px]">
+            
+            <!-- Stage 1 Details -->
+            <div x-show="activeStage === 1" x-transition.opacity.duration.400ms class="space-y-6">
+              <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+                <div class="flex items-center gap-3">
+                  <div class="p-2.5 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/30">
+                    <i class="fa-solid fa-industry text-lg"></i>
+                  </div>
+                  <div>
+                    <h4 class="text-xl font-bold text-white">智慧製造與底層數據根系</h4>
+                    <span class="text-xs font-mono text-slate-400">ERP / BPM Clean Core • AIoT Sensor Integration • Anomaly Detection</span>
+                  </div>
+                </div>
+                <span class="text-xs font-mono px-2.5 py-1 rounded-full bg-amber-950/80 text-amber-300 border border-amber-500/30">+15% 良率提升</span>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="p-4 rounded-xl bg-obsidian-900/80 border border-slate-800 space-y-2">
+                  <div class="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
+                    <i class="fa-solid fa-circle-check text-cedar-400 text-[10px]"></i>
+                    <span>跨廠區 ERP/BPM 數據整合</span>
+                  </div>
+                  <p class="text-xs text-slate-400 leading-relaxed">
+                    如同龐大雪松根系深扎土地，打通生產、採購、庫存與營運資料孤島，建立統一資料標準。
+                  </p>
+                </div>
+
+                <div class="p-4 rounded-xl bg-obsidian-900/80 border border-slate-800 space-y-2">
+                  <div class="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
+                    <i class="fa-solid fa-circle-check text-cedar-400 text-[10px]"></i>
+                    <span>AIoT 機台邊緣邊緣智慧</span>
+                  </div>
+                  <p class="text-xs text-slate-400 leading-relaxed">
+                    將邊緣運算與深度學習置於生產線第一線，即時振動、溫度與視覺檢測，機台異常自動預警。
+                  </p>
+                </div>
+              </div>
+
+              <!-- Terminal-style Code / Architecture Snippet -->
+              <div class="rounded-xl bg-obsidian-950 p-4 border border-slate-800 font-mono text-xs text-slate-300 space-y-1">
+                <div class="flex items-center justify-between text-[11px] text-slate-500 border-b border-slate-800/80 pb-2 mb-2">
+                  <span>ROOT_ARCHITECTURE // DATA_GOVERNANCE.sh</span>
+                  <span class="text-cedar-400">ACTIVE: 100% HEALTHY</span>
+                </div>
+                <div class="text-slate-400">> ingest_stream: <span class="text-amber-300">kafka.factory_telemetry</span> [Rate: 120,000 msg/sec]</div>
+                <div class="text-slate-400">> edge_inference: <span class="text-cedar-300">yield_anomaly_detector_v4</span> -> LATENCY: 2.1ms</div>
+                <div class="text-slate-400">> erp_bridge: <span class="text-cyan-300">Clean_Core_OData_Sync</span> [Transactions: Verified]</div>
+              </div>
+            </div>
+
+            <!-- Stage 2 Details -->
+            <div x-show="activeStage === 2" x-transition.opacity.duration.400ms class="space-y-6">
+              <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+                <div class="flex items-center gap-3">
+                  <div class="p-2.5 rounded-xl bg-cedar-500/10 text-cedar-400 border border-cedar-500/30">
+                    <i class="fa-solid fa-cloud text-lg"></i>
+                  </div>
+                  <div>
+                    <h4 class="text-xl font-bold text-white">全球多雲分散式與零停機架構</h4>
+                    <span class="text-xs font-mono text-slate-400">GKE Kubernetes • 6-Cloud Orchestration • FinOps Discipline</span>
+                  </div>
+                </div>
+                <span class="text-xs font-mono px-2.5 py-1 rounded-full bg-cedar-950/80 text-cedar-300 border border-cedar-500/30">100% 零停機</span>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="p-4 rounded-xl bg-obsidian-900/80 border border-slate-800 space-y-2">
+                  <div class="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
+                    <i class="fa-solid fa-circle-check text-cedar-400 text-[10px]"></i>
+                    <span>跨 6 朵雲動態負載調度</span>
+                  </div>
+                  <p class="text-xs text-slate-400 leading-relaxed">
+                    在海量玩家高併發下，透過 Cloud Load Balancing 與 Anycast CDN，內容分發速度超越一般單雲 2 倍以上。
+                  </p>
+                </div>
+
+                <div class="p-4 rounded-xl bg-obsidian-900/80 border border-slate-800 space-y-2">
+                  <div class="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
+                    <i class="fa-solid fa-circle-check text-cedar-400 text-[10px]"></i>
+                    <span>FinOps 雲端財務投資矩陣</span>
+                  </div>
+                  <p class="text-xs text-slate-400 leading-relaxed">
+                    拒絕看不懂的雲端黑箱帳單，建立自動化 Spot 實例調度與權限治理，直接省下 30% 基礎設施費用。
+                  </p>
+                </div>
+              </div>
+
+              <!-- Terminal-style Code / Architecture Snippet -->
+              <div class="rounded-xl bg-obsidian-950 p-4 border border-slate-800 font-mono text-xs text-slate-300 space-y-1">
+                <div class="flex items-center justify-between text-[11px] text-slate-500 border-b border-slate-800/80 pb-2 mb-2">
+                  <span>MULTI_CLOUD_STATUS // GLOBAL_LB.yaml</span>
+                  <span class="text-emerald-400">STATUS: 0 OUTAGE</span>
+                </div>
+                <div class="text-slate-400">> clusters: [GKE_Primary, AWS_EKS_Failover, Azure_Edge]</div>
+                <div class="text-slate-400">> finops_governor: <span class="text-amber-300">Spot_AutoScaler</span> -> Cost Saving: -31.4%</div>
+                <div class="text-slate-400">> health_probe: <span class="text-cedar-300">Global Anycast Latency &lt; 18ms</span></div>
+              </div>
+            </div>
+
+            <!-- Stage 3 Details -->
+            <div x-show="activeStage === 3" x-transition.opacity.duration.400ms class="space-y-6">
+              <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+                <div class="flex items-center gap-3">
+                  <div class="p-2.5 rounded-xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">
+                    <i class="fa-solid fa-shield-halved text-lg"></i>
+                  </div>
+                  <div>
+                    <h4 class="text-xl font-bold text-white">可信任 AI (ISO 42001) 與 Agentic 治理</h4>
+                    <span class="text-xs font-mono text-slate-400">Trustworthy AI • Zero Trust Architecture • Autonomous SRE Agents</span>
+                  </div>
+                </div>
+                <span class="text-xs font-mono px-2.5 py-1 rounded-full bg-cyan-950/80 text-cyan-300 border border-cyan-500/30">ISO 42001 / 27001</span>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="p-4 rounded-xl bg-obsidian-900/80 border border-slate-800 space-y-2">
+                  <div class="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
+                    <i class="fa-solid fa-circle-check text-cyan-400 text-[10px]"></i>
+                    <span>ISO 42001 可信任 AI 框架</span>
+                  </div>
+                  <p class="text-xs text-slate-400 leading-relaxed">
+                    涵蓋資料來源審計、模型可解釋性、倫理邊界與隱私保護，確保 AI 成為推動業務的合規護城河。
+                  </p>
+                </div>
+
+                <div class="p-4 rounded-xl bg-obsidian-900/80 border border-slate-800 space-y-2">
+                  <div class="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
+                    <i class="fa-solid fa-circle-check text-cyan-400 text-[10px]"></i>
+                    <span>Agentic AI 智慧基礎架構管家</span>
+                  </div>
+                  <p class="text-xs text-slate-400 leading-relaxed">
+                    AI 代理不是失控的野藤，而是受到嚴格零信任權限約束的架構維護助手，實現自動化修復與審計。
+                  </p>
+                </div>
+              </div>
+
+              <!-- Terminal-style Code / Architecture Snippet -->
+              <div class="rounded-xl bg-obsidian-950 p-4 border border-slate-800 font-mono text-xs text-slate-300 space-y-1">
+                <div class="flex items-center justify-between text-[11px] text-slate-500 border-b border-slate-800/80 pb-2 mb-2">
+                  <span>TRUSTWORTHY_AI // ISO42001_AUDIT.json</span>
+                  <span class="text-cyan-400">GOVERNANCE: COMPLIANT</span>
+                </div>
+                <div class="text-slate-400">> zero_trust_policy: <span class="text-cyan-300">Strict_RBAC_Enforced</span></div>
+                <div class="text-slate-400">> agentic_monitor: <span class="text-cedar-300">Infra_Autonomous_Agent</span> (Boundaries Checked)</div>
+                <div class="text-slate-400">> privacy_vault: <span class="text-amber-300">Differential_Privacy_Enabled</span></div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION: FOUR CORE EVERGREEN PILLARS (四大長青核心支柱) -->
+    <section id="pillars" class="py-24 bg-obsidian-950 relative">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="text-center max-w-3xl mx-auto mb-20">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-cedar-950 border border-cedar-500/30 text-cedar-400 text-xs font-mono uppercase mb-3">
+            <i class="fa-solid fa-shapes"></i>
+            <span>EVERGREEN ARCHITECTURE PILLARS</span>
+          </div>
+          <h2 class="font-display text-3xl sm:text-5xl font-bold text-white tracking-tight">
+            四大長青支柱：支撐企業穩健運行的主樑
+          </h2>
+          <p class="mt-4 text-slate-300 text-base sm:text-lg leading-relaxed" x-text="t('pillars_subtitle')">
+            如同雪松作為殿堂主樑，我們不只解決單點技術故障，而是為企業構築經得起十年檢驗的數位營運架構。
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          
+          <!-- Pillar 1 -->
+          <div class="glass-card glass-card-hover p-8 rounded-3xl border border-slate-800 relative group">
+            <div class="w-14 h-14 rounded-2xl bg-cedar-950/80 border border-cedar-500/40 flex items-center justify-center text-cedar-400 text-2xl mb-6 shadow-glow-cedar group-hover:scale-110 transition-transform">
+              <i class="fa-solid fa-cloud-bolt"></i>
+            </div>
+            <h3 class="font-display text-2xl font-bold text-white mb-3" x-text="t('pillar1_title')">
+              雲原生與多雲分散式架構 (Cloud-Native HA)
+            </h3>
+            <p class="text-slate-300 text-sm leading-relaxed mb-6" x-text="t('pillar1_desc')">
+              基於 Kubernetes (GKE / EKS)、服務網格 (Service Mesh) 與全局負載均衡，打造具備自動修復、毫秒容災與彈性伸縮的零停機架構。
+            </p>
+            <ul class="space-y-2.5 text-xs text-slate-300 border-t border-slate-800/80 pt-4 font-mono">
+              <li class="flex items-center gap-2">
+                <i class="fa-solid fa-check text-cedar-400"></i>
+                <span>跨雲災備與動態流量調度 (Active-Active Multi-Cloud)</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <i class="fa-solid fa-check text-cedar-400"></i>
+                <span>無狀態微服務與分散式資料庫快取加速</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <i class="fa-solid fa-check text-cedar-400"></i>
+                <span>2x 內容載入提速與全鏈路可觀測性 (Observability)</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Pillar 2 -->
+          <div class="glass-card glass-card-hover p-8 rounded-3xl border border-slate-800 relative group">
+            <div class="w-14 h-14 rounded-2xl bg-cyan-950/80 border border-cyan-500/40 flex items-center justify-center text-cyan-400 text-2xl mb-6 shadow-glow-cyan group-hover:scale-110 transition-transform">
+              <i class="fa-solid fa-shield-virus"></i>
+            </div>
+            <h3 class="font-display text-2xl font-bold text-white mb-3" x-text="t('pillar2_title')">
+              可信任 AI 治理與 ISO 42001 (Trustworthy AI)
+            </h3>
+            <p class="text-slate-300 text-sm leading-relaxed mb-6" x-text="t('pillar2_desc')">
+              拒絕失控黑箱，從資料血統、模型審計、偏差偵測到 AISDLC 流程內嵌安全標準，協助企業取得國際認證與客戶信任。
+            </p>
+            <ul class="space-y-2.5 text-xs text-slate-300 border-t border-slate-800/80 pt-4 font-mono">
+              <li class="flex items-center gap-2">
+                <i class="fa-solid fa-check text-cyan-400"></i>
+                <span>ISO 42001 人工智慧管理系統 (AIMS) 導入顧問</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <i class="fa-solid fa-check text-cyan-400"></i>
+                <span>零信任架構 (Zero Trust) 整合與身分邊界控管</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <i class="fa-solid fa-check text-cyan-400"></i>
+                <span>Agentic AI 基礎設施自主運維防護與防漂移機制</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Pillar 3 -->
+          <div class="glass-card glass-card-hover p-8 rounded-3xl border border-slate-800 relative group">
+            <div class="w-14 h-14 rounded-2xl bg-amber-950/80 border border-amber-500/40 flex items-center justify-center text-amber-400 text-2xl mb-6 group-hover:scale-110 transition-transform">
+              <i class="fa-solid fa-chart-pie"></i>
+            </div>
+            <h3 class="font-display text-2xl font-bold text-white mb-3" x-text="t('pillar3_title')">
+              企業級 FinOps 與雲端財務優化 (FinOps Mastery)
+            </h3>
+            <p class="text-slate-300 text-sm leading-relaxed mb-6" x-text="t('pillar3_desc')">
+              打破雲端成本黑箱，將混亂的月結帳單轉化為可量化、可追溯的投資組合，實現單位經濟效益最大化。
+            </p>
+            <ul class="space-y-2.5 text-xs text-slate-300 border-t border-slate-800/80 pt-4 font-mono">
+              <li class="flex items-center gap-2">
+                <i class="fa-solid fa-check text-amber-400"></i>
+                <span>30%+ 雲端成本精準降減與 Spot/RI 智能調度</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <i class="fa-solid fa-check text-amber-400"></i>
+                <span>各業務部門雲端成本分攤與單位利潤歸因</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <i class="fa-solid fa-check text-amber-400"></i>
+                <span>持續性 FinOps 治理看板與自動化預算警報</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Pillar 4 -->
+          <div class="glass-card glass-card-hover p-8 rounded-3xl border border-slate-800 relative group">
+            <div class="w-14 h-14 rounded-2xl bg-emerald-950/80 border border-emerald-500/40 flex items-center justify-center text-emerald-400 text-2xl mb-6 group-hover:scale-110 transition-transform">
+              <i class="fa-solid fa-microchip"></i>
+            </div>
+            <h3 class="font-display text-2xl font-bold text-white mb-3" x-text="t('pillar4_title')">
+              智慧製造與 AIoT 數據治理 (Smart Factory)
+            </h3>
+            <p class="text-slate-300 text-sm leading-relaxed mb-6" x-text="t('pillar4_desc')">
+              融合 27 年資訊工程與製造業實戰經驗，以 Clean Core 概念整合 ERP/BPM 與現場感測器數據，實現機台自主診斷。
+            </p>
+            <ul class="space-y-2.5 text-xs text-slate-300 border-t border-slate-800/80 pt-4 font-mono">
+              <li class="flex items-center gap-2">
+                <i class="fa-solid fa-check text-emerald-400"></i>
+                <span>跨廠區製造執行系統 (MES) 與 ERP 核心資料整合</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <i class="fa-solid fa-check text-emerald-400"></i>
+                <span>邊緣 AI 機台異常偵測與良率自動預測</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <i class="fa-solid fa-check text-emerald-400"></i>
+                <span>工業物聯網數據治理與數位雙生 (Digital Twin) 基礎</span>
+              </li>
+            </ul>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION: INTERACTIVE ARCHITECTURE & FINOPS SIMULATOR -->
+    <section id="simulator" class="py-24 bg-obsidian-900/80 border-t border-slate-800/80 relative">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="text-center max-w-3xl mx-auto mb-16">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-cedar-950 border border-cedar-500/30 text-cedar-400 text-xs font-mono uppercase mb-3">
+            <i class="fa-solid fa-calculator"></i>
+            <span>INTERACTIVE ARCHITECTURE & FINOPS SIMULATOR</span>
+          </div>
+          <h2 class="font-display text-3xl sm:text-5xl font-bold text-white tracking-tight">
+            互動式架構評估與 FinOps 效益試算
+          </h2>
+          <p class="mt-4 text-slate-300 text-base sm:text-lg leading-relaxed" x-text="t('sim_subtitle')">
+            調整您的企業月度雲端支出與架構需求，即時模擬雲杉長青架構下的成本節省、可用性提升與治理成熟度。
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+          
+          <!-- Left: Sliders & Parameter Control -->
+          <div class="lg:col-span-5 glass-card p-8 rounded-3xl border border-slate-700/80 flex flex-col justify-between space-y-6">
+            <div>
+              <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-sliders text-cedar-400"></i>
+                <span>企業現狀參數設定</span>
+              </h3>
+
+              <!-- Monthly Cloud Spend Slider -->
+              <div class="space-y-2 mb-6">
+                <div class="flex justify-between text-xs">
+                  <span class="text-slate-300">每月雲端支出 (Monthly Cloud Spend)</span>
+                  <span class="font-mono font-bold text-cedar-400 text-sm">$<span x-text="monthlySpend"></span>K USD</span>
+                </div>
+                <input type="range" min="10" max="300" step="5" x-model="monthlySpend" @input="recalcSimulator()" 
+                       class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cedar-500">
+                <div class="flex justify-between text-[10px] text-slate-500 font-mono">
+                  <span>$10,000 / mo</span>
+                  <span>$150,000 / mo</span>
+                  <span>$300,000 / mo</span>
+                </div>
+              </div>
+
+              <!-- Workload Scale / Servers -->
+              <div class="space-y-2 mb-6">
+                <div class="flex justify-between text-xs">
+                  <span class="text-slate-300">容器/實例規模 (Workload Instances)</span>
+                  <span class="font-mono font-bold text-cyan-400 text-sm"><span x-text="instanceCount"></span> Nodes</span>
+                </div>
+                <input type="range" min="20" max="1000" step="20" x-model="instanceCount" @input="recalcSimulator()" 
+                       class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-500">
+              </div>
+
+              <!-- Priority Focus Selector -->
+              <div class="space-y-2 mb-4">
+                <span class="text-xs text-slate-300">首要治理戰略重點 (Strategic Focus)</span>
+                <div class="grid grid-cols-2 gap-2 text-xs">
+                  <button @click="simFocus = 'finops'; recalcSimulator()" 
+                          :class="simFocus === 'finops' ? 'bg-amber-500/20 border-amber-500 text-amber-300 font-bold' : 'bg-obsidian-900 border-slate-800 text-slate-400'"
+                          class="p-2.5 rounded-xl border text-center transition-all">
+                    💰 FinOps 成本優化
+                  </button>
+                  <button @click="simFocus = 'ha'; recalcSimulator()" 
+                          :class="simFocus === 'ha' ? 'bg-cedar-500/20 border-cedar-500 text-cedar-300 font-bold' : 'bg-obsidian-900 border-slate-800 text-slate-400'"
+                          class="p-2.5 rounded-xl border text-center transition-all">
+                    ⚡ 零停機多雲高可用
+                  </button>
+                  <button @click="simFocus = 'ai'; recalcSimulator()" 
+                          :class="simFocus === 'ai' ? 'bg-cyan-500/20 border-cyan-500 text-cyan-300 font-bold' : 'bg-obsidian-900 border-slate-800 text-slate-400'"
+                          class="p-2.5 rounded-xl border text-center transition-all">
+                    🧠 ISO 42001 AI 治理
+                  </button>
+                  <button @click="simFocus = 'iot'; recalcSimulator()" 
+                          :class="simFocus === 'iot' ? 'bg-emerald-500/20 border-emerald-500 text-emerald-300 font-bold' : 'bg-obsidian-900 border-slate-800 text-slate-400'"
+                          class="p-2.5 rounded-xl border text-center transition-all">
+                    🏭 智慧製造 AIoT
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <button @click="openModal = 'proposal'" class="w-full py-3 rounded-xl bg-cedar-600 hover:bg-cedar-500 text-obsidian-950 font-bold text-sm shadow-glow-cedar transition-all">
+              <i class="fa-solid fa-file-export mr-2"></i>輸出客製化架構白皮書建議
+            </button>
+          </div>
+
+          <!-- Right: Live Visualized Outputs & Dynamic Chart -->
+          <div class="lg:col-span-7 glass-card p-8 rounded-3xl border border-slate-700/80 flex flex-col justify-between space-y-6">
+            
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              
+              <div class="p-4 rounded-2xl bg-obsidian-900/90 border border-amber-500/30">
+                <span class="text-[11px] font-mono text-amber-400 block uppercase">預估年度成本節省</span>
+                <div class="font-mono text-2xl sm:text-3xl font-extrabold text-white mt-1">
+                  $<span x-text="simAnnualSavings"></span>K
+                </div>
+                <span class="text-[10px] text-slate-400">平均可降減 28% ~ 35%</span>
+              </div>
+
+              <div class="p-4 rounded-2xl bg-obsidian-900/90 border border-cedar-500/30">
+                <span class="text-[11px] font-mono text-cedar-400 block uppercase">可用性 SLA 提升</span>
+                <div class="font-mono text-2xl sm:text-3xl font-extrabold text-white mt-1">
+                  99.999%
+                </div>
+                <span class="text-[10px] text-slate-400">六朵雲容災零停機</span>
+              </div>
+
+              <div class="p-4 rounded-2xl bg-obsidian-900/90 border border-cyan-500/30">
+                <span class="text-[11px] font-mono text-cyan-400 block uppercase">AI 治理成熟度分數</span>
+                <div class="font-mono text-2xl sm:text-3xl font-extrabold text-white mt-1">
+                  <span x-text="simGovernanceScore"></span> / 100
+                </div>
+                <span class="text-[10px] text-slate-400">符合 ISO 42001 標準</span>
+              </div>
+
+            </div>
+
+            <!-- Interactive Dynamic Chart Container -->
+            <div class="rounded-2xl bg-obsidian-950 p-4 border border-slate-800">
+              <div class="flex items-center justify-between mb-3 text-xs">
+                <span class="font-semibold text-slate-300 flex items-center gap-2">
+                  <i class="fa-solid fa-chart-column text-cedar-400"></i>
+                  <span>5年雲端累計支出對比 (傳統模式 vs 雲杉長青架構)</span>
+                </span>
+                <span class="text-xs font-mono text-cedar-400">單位: USD (千元)</span>
+              </div>
+              <div class="h-56 relative">
+                <canvas id="simulatorChart"></canvas>
+              </div>
+            </div>
+
+            <div class="text-xs text-slate-400 flex items-center justify-between border-t border-slate-800 pt-3">
+              <span>* 試算結果依據 FinOps Foundation 標準與跨國六雲實務調度模型推估。</span>
+              <span class="font-mono text-cedar-400">CEDAR SIMULATOR v2.6</span>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION: FOUNDER PERSPECTIVE & EXECUTIVE PROFILE (廖倫豪 博士 / Howard Liao, Ph.D.) -->
+    <section id="founder" class="py-24 bg-obsidian-950 border-t border-slate-800/80 relative">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          
+          <!-- Left: Profile & Credentials Card -->
+          <div class="lg:col-span-5 glass-card p-8 rounded-3xl border border-slate-700/80 shadow-2xl relative">
+            <div class="flex items-start justify-between mb-6">
+              <div class="space-y-1">
+                <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cedar-950 border border-cedar-500/40 text-cedar-300 text-xs font-mono">
+                  <i class="fa-solid fa-user-shield"></i>
+                  <span>FOUNDER & CHIEF ARCHITECT</span>
+                </div>
+                <h3 class="font-display text-3xl font-extrabold text-white mt-2">
+                  廖倫豪 博士
+                </h3>
+                <p class="text-slate-400 font-mono text-sm">Howard Liao, Ph.D.</p>
+              </div>
+              <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-cedar-700 to-obsidian-900 border border-cedar-500/50 flex items-center justify-center text-cedar-300 text-2xl shadow-glow-cedar">
+                <i class="fa-solid fa-graduation-cap"></i>
+              </div>
+            </div>
+
+            <div class="space-y-3 text-xs text-slate-300 leading-relaxed border-t border-slate-800 pt-4">
+              <div class="flex items-start gap-2.5">
+                <i class="fa-solid fa-briefcase text-cedar-400 mt-0.5"></i>
+                <div>
+                  <strong class="text-white">全球應用治理與交付負責人 / 首席架構師</strong>
+                  <div class="text-slate-400">27+ 年資訊工程、20+ 年 C-Level 資訊科技管理經驗</div>
+                </div>
+              </div>
+              <div class="flex items-start gap-2.5">
+                <i class="fa-solid fa-certificate text-cyan-400 mt-0.5"></i>
+                <div>
+                  <strong class="text-white">ISO 27001 / ISO 42001 主導稽核員 (Lead Auditor)</strong>
+                  <div class="text-slate-400">具備國際資安與人工智慧治理認證資格</div>
+                </div>
+              </div>
+              <div class="flex items-start gap-2.5">
+                <i class="fa-solid fa-book-bookmark text-amber-400 mt-0.5"></i>
+                <div>
+                  <strong class="text-white">Springer SCI 國際期刊作者 (DOI: 10.1007/s11042-012-1190-1)</strong>
+                  <div class="text-slate-400">橫跨 Google Cloud APAC、CIO Taiwan、iThome 專訪報導</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick Action Links & Copier -->
+            <div class="mt-6 pt-6 border-t border-slate-800 flex flex-wrap gap-2">
+              <button @click="copyText('headline')" class="flex-1 py-2 px-3 rounded-lg bg-obsidian-900 hover:bg-slate-800 border border-slate-700 text-xs font-mono text-slate-300 hover:text-white transition-all flex items-center justify-center gap-1.5">
+                <i class="fa-regular fa-copy text-cedar-400"></i>
+                <span>複製 LinkedIn Headline</span>
+              </button>
+              <button @click="copyText('bio')" class="flex-1 py-2 px-3 rounded-lg bg-obsidian-900 hover:bg-slate-800 border border-slate-700 text-xs font-mono text-slate-300 hover:text-white transition-all flex items-center justify-center gap-1.5">
+                <i class="fa-regular fa-copy text-cedar-400"></i>
+                <span>複製 About 簡介</span>
+              </button>
+            </div>
+            <div x-show="copiedMessage" x-transition class="text-center text-xs text-cedar-400 mt-2 font-mono" x-text="copiedMessage"></div>
+
+          </div>
+
+          <!-- Right: Manifesto & The Tree Architect's Philosophy -->
+          <div class="lg:col-span-7 space-y-6">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-cedar-950 border border-cedar-500/30 text-cedar-400 text-xs font-mono uppercase">
+              <i class="fa-solid fa-compass"></i>
+              <span>ARCHITECT'S MANIFESTO</span>
+            </div>
+
+            <h2 class="font-display text-3xl sm:text-4xl font-bold text-white leading-tight">
+              「當別人把雲當成伺服器在算，我們把雲與 AI 當成一座數位森林來經營。」
+            </h2>
+
+            <div class="space-y-4 text-slate-300 text-base leading-relaxed">
+              <p>
+                在資訊科技管理領域深耕近三十載，我看過無數技術潮流的起伏。許多企業在導入新架構時，往往迷失在單點工具的絢爛中，卻忽略了系統在十年維運下的承載力、成本複利與合規風險。
+              </p>
+              <p>
+                <strong>「雲杉長青 / CEDAR PARTNERED」</strong> 的初衷，就是扮演那一棵站得夠高、根扎得夠深的技術大樹。為多雲與 AI 基礎架構選擇合適的「樹種」、規劃整座「林相」，並做好「水土保持」（安全與治理）。
+              </p>
+              <p>
+                我們讓 Agentic AI 成為日常維運與優化的智慧助手，而不是失控的野藤；讓雲端帳單成為清晰可控的投資組合。這就是長青的本質——讓今日的技術選擇，成為明日創新的養分，而非明日的技術負債。
+              </p>
+            </div>
+
+            <div class="pt-4 flex items-center gap-6">
+              <a href="mailto:Liao.Howard@gmail.com" class="inline-flex items-center gap-2 text-sm font-semibold text-cedar-400 hover:text-cedar-300">
+                <i class="fa-solid fa-envelope"></i>
+                <span>Liao.Howard@gmail.com</span>
+              </a>
+              <a href="tel:+886975323161" class="inline-flex items-center gap-2 text-sm font-semibold text-slate-300 hover:text-white">
+                <i class="fa-solid fa-phone"></i>
+                <span>+886-975-323-161</span>
+              </a>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION: TRUSTED ECOSYSTEM & CITATIONS -->
+    <section id="governance" class="py-20 bg-obsidian-900/90 border-t border-slate-800">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="text-center max-w-2xl mx-auto mb-12">
+          <span class="text-xs font-mono text-slate-400 uppercase tracking-widest">ECOSYSTEM & INDUSTRY VALIDATIONS</span>
+          <h3 class="text-xl sm:text-2xl font-bold text-white mt-2">國際標準合規認證與權威產業引證</h3>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 text-center">
+          
+          <div class="p-5 rounded-2xl glass-card border border-slate-800 flex flex-col items-center justify-center space-y-2">
+            <i class="fa-solid fa-award text-cedar-400 text-2xl"></i>
+            <span class="font-bold text-white text-sm">ISO 42001 & 27001</span>
+            <span class="text-[11px] text-slate-400">國際 AI 與資安管理系統 Lead Auditor</span>
+          </div>
+
+          <div class="p-5 rounded-2xl glass-card border border-slate-800 flex flex-col items-center justify-center space-y-2">
+            <i class="fa-solid fa-book-journal-whills text-cyan-400 text-2xl"></i>
+            <span class="font-bold text-white text-sm">Springer SCI 期刊</span>
+            <span class="text-[11px] text-slate-400">DOI: 10.1007/s11042-012-1190-1</span>
+          </div>
+
+          <div class="p-5 rounded-2xl glass-card border border-slate-800 flex flex-col items-center justify-center space-y-2">
+            <i class="fa-solid fa-newspaper text-amber-400 text-2xl"></i>
+            <span class="font-bold text-white text-sm">CIO Taiwan / iThome</span>
+            <span class="text-[11px] text-slate-400">多雲治理與架構現代化專題報導</span>
+          </div>
+
+          <div class="p-5 rounded-2xl glass-card border border-slate-800 flex flex-col items-center justify-center space-y-2">
+            <i class="fa-solid fa-hand-holding-heart text-emerald-400 text-2xl"></i>
+            <span class="font-bold text-white text-sm">CSR 永續公益回饋</span>
+            <span class="text-[11px] text-slate-400">Cancer NoNo Foundation 數位賦能</span>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-obsidian-950 border-t border-slate-800/80 py-12">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+        
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-cedar-800/50 border border-cedar-500/40 flex items-center justify-center text-cedar-400">
+            <i class="fa-solid fa-tree text-sm"></i>
+          </div>
+          <div>
+            <span class="font-display font-bold text-white text-sm">雲杉長青 | CEDAR PARTNERED</span>
+            <span class="text-xs text-slate-500 block font-mono">Evergreen Cloud & AI Technology Partnership</span>
+          </div>
+        </div>
+
+        <div class="text-xs text-slate-500 font-mono text-center sm:text-right">
+          <div>© 2026 雲杉長青 (CEDAR PARTNERED). All rights reserved.</div>
+          <div class="mt-1">Architected by Howard Liao, Ph.D. • 資訊科技管理與多雲治理</div>
+        </div>
+
+      </div>
+    </footer>
+
+    <!-- MODAL: PROPOSAL GENERATOR -->
+    <div x-show="openModal === 'proposal'" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+      <div @click.away="openModal = null" class="glass-card max-w-2xl w-full p-8 rounded-3xl border border-slate-700 shadow-2xl relative space-y-6 max-h-[90vh] overflow-y-auto">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+          <div class="flex items-center gap-2.5">
+            <i class="fa-solid fa-file-signature text-cedar-400 text-xl"></i>
+            <h3 class="text-xl font-bold text-white">客製化企業技術架構建議書生成</h3>
+          </div>
+          <button @click="openModal = null" class="text-slate-400 hover:text-white p-2">
+            <i class="fa-solid fa-xmark text-lg"></i>
+          </button>
+        </div>
+
+        <div class="space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">企業名稱 (Company Name)</label>
+            <input type="text" x-model="proposalCompany" placeholder="例：跨國高科技製造集團 / 數位娛樂服務" 
+                   class="w-full px-4 py-2.5 rounded-xl bg-obsidian-900 border border-slate-700 text-sm text-white focus:border-cedar-500 outline-none">
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">主要評估領域 (Select Focus Areas)</label>
+            <div class="grid grid-cols-2 gap-2 text-xs">
+              <label class="flex items-center gap-2 p-2.5 rounded-lg bg-obsidian-900 border border-slate-800 cursor-pointer">
+                <input type="checkbox" checked class="accent-cedar-500">
+                <span>多雲分散式與 GKE 零停機</span>
+              </label>
+              <label class="flex items-center gap-2 p-2.5 rounded-lg bg-obsidian-900 border border-slate-800 cursor-pointer">
+                <input type="checkbox" checked class="accent-cedar-500">
+                <span>ISO 42001 可信任 AI 治理</span>
+              </label>
+              <label class="flex items-center gap-2 p-2.5 rounded-lg bg-obsidian-900 border border-slate-800 cursor-pointer">
+                <input type="checkbox" checked class="accent-cedar-500">
+                <span>FinOps 雲端成本精準降減 30%</span>
+              </label>
+              <label class="flex items-center gap-2 p-2.5 rounded-lg bg-obsidian-900 border border-slate-800 cursor-pointer">
+                <input type="checkbox" checked class="accent-cedar-500">
+                <span>智慧製造 AIoT 數據治理</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Live Proposal Preview Box -->
+          <div class="p-4 rounded-xl bg-obsidian-950 border border-slate-800 space-y-2 text-xs font-mono text-slate-300">
+            <div class="text-cedar-400 font-bold">📄 建議書草案預覽 (Executive Summary Draft)</div>
+            <p class="text-slate-400">
+              致 <span class="text-white font-bold" x-text="proposalCompany || '[貴企業團隊]'"></span>：<br>
+              針對貴單位在多雲規模化、AI 治理合規與雲端營運成本優化之需求，雲杉長青（CEDAR PARTNERED）提出長青架構藍圖：內嵌 DevSecOps 零信任防護，以 GKE 與 FinOps 實現兼具 100% 零停機與 -30% 支出之營運底座，並遵循 ISO 42001 標準建立可審計 AI 治理體系。
+            </p>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-800">
+          <button @click="openModal = null" class="px-5 py-2.5 rounded-xl border border-slate-700 text-slate-300 hover:text-white text-xs font-semibold">取消</button>
+          <button @click="downloadProposalMock()" class="px-6 py-2.5 rounded-xl bg-cedar-600 hover:bg-cedar-500 text-obsidian-950 font-bold text-xs shadow-glow-cedar flex items-center gap-2">
+            <i class="fa-solid fa-download"></i>
+            <span>下載完整建議書規格 (Word / PDF)</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL: CONTACT & CONSULTATION -->
+    <div x-show="openModal === 'contact'" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+      <div @click.away="openModal = null" class="glass-card max-w-lg w-full p-8 rounded-3xl border border-slate-700 shadow-2xl relative space-y-6">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+          <div class="flex items-center gap-2.5">
+            <i class="fa-solid fa-paper-plane text-cedar-400 text-xl"></i>
+            <h3 class="text-xl font-bold text-white">預約總架構師深度諮詢</h3>
+          </div>
+          <button @click="openModal = null" class="text-slate-400 hover:text-white p-2">
+            <i class="fa-solid fa-xmark text-lg"></i>
+          </button>
+        </div>
+
+        <div class="space-y-4">
+          <div class="p-4 rounded-xl bg-obsidian-900/90 border border-cedar-500/30 space-y-3">
+            <div class="text-xs font-mono text-cedar-400 font-semibold uppercase">DIRECT CONTACT INFORMATION</div>
+            <div class="space-y-2 text-sm text-slate-200">
+              <div class="flex items-center gap-3">
+                <i class="fa-solid fa-user-tie text-cedar-400 w-5"></i>
+                <span>廖倫豪 博士 (Howard Liao, Ph.D.)</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <i class="fa-solid fa-envelope text-cedar-400 w-5"></i>
+                <a href="mailto:Liao.Howard@gmail.com" class="hover:underline text-cedar-300">Liao.Howard@gmail.com</a>
+              </div>
+              <div class="flex items-center gap-3">
+                <i class="fa-solid fa-phone text-cedar-400 w-5"></i>
+                <a href="tel:+886975323161" class="hover:underline text-cedar-300">+886-975-323-161</a>
+              </div>
+              <div class="flex items-center gap-3">
+                <i class="fa-solid fa-location-dot text-cedar-400 w-5"></i>
+                <span class="text-slate-400 text-xs">台灣・台中 / 台北 (全球跨國多雲諮詢支援)</span>
+              </div>
+            </div>
+          </div>
+
+          <p class="text-xs text-slate-400 leading-relaxed">
+            無論是企業正在經歷多雲成本膨脹、AI 合規落地瓶頸，或智慧製造數據孤島，歡迎直接來信或來電，我們將在 24 小時內與您安排 C-Level 架構評估會議。
+          </p>
+        </div>
+
+        <div class="pt-4 border-t border-slate-800 flex justify-end">
+          <a href="mailto:Liao.Howard@gmail.com?subject=諮詢雲杉長青企業架構規劃" class="w-full py-3 rounded-xl bg-cedar-600 hover:bg-cedar-500 text-obsidian-950 font-bold text-sm text-center shadow-glow-cedar transition-all">
+            <i class="fa-solid fa-envelope-open mr-2"></i>即刻寄信聯絡
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- JAVASCRIPT: Alpine.js + Canvas Particle + Chart.js Logic -->
+  <script>
+    function cedarApp() {
+      return {
+        lang: 'zh',
+        activeSection: 'hero',
+        mobileMenuOpen: false,
+        activeStage: 2,
+        openModal: null,
+        isPlayingPitch: false,
+        copiedMessage: '',
+
+        // Simulator State
+        monthlySpend: 60,
+        instanceCount: 180,
+        simFocus: 'finops',
+        simAnnualSavings: 230,
+        simGovernanceScore: 94,
+        proposalCompany: '',
+
+        // Trilingual Dictionary
+        dict: {
+          zh: {
+            nav_story: '長青故事',
+            nav_pillars: '四大支柱',
+            nav_simulator: '效益試算',
+            nav_governance: '合規引證',
+            nav_founder: '創辦人視角',
+            cta_consult: '預約架構諮詢',
+            hero_badge: '以雪松之姿・鑄長青之基｜跨國多雲架構與可信任 AI 治理',
+            hero_title_1: '在多雲與 AI 的高地上種樹',
+            hero_title_2: '陪企業一同長青的技術夥伴',
+            hero_desc: '雲杉長青（CEDAR PARTNERED），象徵一棵從台中出發、深植製造業實戰與遊戲多雲戰場的技術大樹。不只追求技術的炫目，更在零停機架構、DevSecOps、FinOps 成本紀律與 ISO 42001 可信任 AI 治理中，成為企業長期並肩前行的技術主樑。',
+            hero_btn_simulator: '進入架構與 FinOps 模擬器',
+            hero_btn_proposal: '生成專案建議書',
+            pitch_listen: '聆聽 30秒 品牌簡報',
+            pitch_playing: '播放中 (語音朗讀)...',
+            kpi_desc_1: '六朵雲跨國分散式架構，容災切換與毫秒負載均衡。',
+            kpi_desc_2: '雲端成本透明化與單位經濟模型，投資與效能同步達標。',
+            kpi_desc_3: 'Agentic AI 自動化基礎架構管理與 AISDLC 合規治理流程。',
+            kpi_desc_4: '橫跨製造業 ERP/AIoT、遊戲多雲服務與 ISO 27001/42001。',
+            story_subtitle: '二十多年前，從一行行程式碼與單一系統起步；歷經智慧工廠數據治理、遊戲產業全球六朵雲高壓戰場，最終淬鍊為守護企業長青的數位生態總架構師。',
+            stage1_title: '根系扎深：製造業數據治理與 AIoT',
+            stage1_summary: '導入 ERP、BPM 與跨廠區數據治理，串聯各廠資訊扎入土地。感測器與 AIoT 實現自主監控與良率預測，讓機台理解自己正在做什麼。',
+            stage2_title: '樹幹挺拔：遊戲與跨六朵雲高壓戰場',
+            stage2_summary: '面對爆炸性用戶成長與零停機挑戰，主導 GKE 容器化跨六朵雲布署，以 FinOps 財務紀律調度成本與效能，速度超越其他平台 2 倍以上。',
+            stage3_title: '樹冠長青：ISO 42001 可信任 AI 與永續治理',
+            stage3_summary: '在多雲與 AI 浪潮下，內嵌 DevSecOps 與零信任安全，導入 Agentic AI 智慧維運，建構能穩定運行 10 年以上的可持續數位森林。',
+            pillars_subtitle: '如同雪松作為殿堂主樑，我們不只解決單點技術故障，而是為企業構築經得起十年檢驗的數位營運架構。',
+            pillar1_title: '雲原生與多雲分散式架構 (Cloud-Native HA)',
+            pillar1_desc: '基於 Kubernetes (GKE / EKS)、服務網格 (Service Mesh) 與全局負載均衡，打造具備自動修復、毫秒容災與彈性伸縮的零停機架構。',
+            pillar2_title: '可信任 AI 治理與 ISO 42001 (Trustworthy AI)',
+            pillar2_desc: '拒絕失控黑箱，從資料血統、模型審計、偏差偵測到 AISDLC 流程內嵌安全標準，協助企業取得國際認證與客戶信任。',
+            pillar3_title: '企業級 FinOps 與雲端財務優化 (FinOps Mastery)',
+            pillar3_desc: '打破雲端成本黑箱，將混亂的月結帳單轉化為可量化、可追溯的投資組合，實現單位經濟效益最大化。',
+            pillar4_title: '智慧製造與 AIoT 數據治理 (Smart Factory)',
+            pillar4_desc: '融合 27 年資訊工程與製造業實戰經驗，以 Clean Core 概念整合 ERP/BPM 與現場感測器數據，實現機台自主診斷。',
+            sim_subtitle: '調整您的企業月度雲端支出與架構需求，即時模擬雲杉長青架構下的成本節省、可用性提升與治理成熟度。'
+          },
+          en: {
+            nav_story: 'Our Story',
+            nav_pillars: 'Pillars',
+            nav_simulator: 'ROI Simulator',
+            nav_governance: 'Governance',
+            nav_founder: 'Founder',
+            cta_consult: 'Book Consultation',
+            hero_badge: 'Rooted like Cedar, Built for Longevity | Multi-Cloud & Trustworthy AI',
+            hero_title_1: 'Planting Trees on Multi-Cloud & AI High Altitude',
+            hero_title_2: 'Your Evergreen Technology Partner',
+            hero_desc: 'CEDAR PARTNERED stands for a long-term, evergreen technology alliance. With 27+ years across manufacturing ERP/AIoT and gaming multi-cloud platforms, we turn complex infrastructure into zero-outage, compliant and financially disciplined foundations.',
+            hero_btn_simulator: 'Launch Architecture & FinOps Simulator',
+            hero_btn_proposal: 'Generate Proposal',
+            pitch_listen: 'Play 30s Pitch',
+            pitch_playing: 'Playing Audio...',
+            kpi_desc_1: '6-cloud distributed setup, automated failover & sub-second latency.',
+            kpi_desc_2: 'Transparent unit economics & automated rightsizing reducing cloud TCO.',
+            kpi_desc_3: 'Agentic AI for infrastructure ops and AISDLC compliance pipelines.',
+            kpi_desc_4: 'Cross-industry expertise spanning ERP/AIoT to ISO 27001/42001.',
+            story_subtitle: 'From writing code 27 years ago to engineering intelligent factories and global multi-cloud ecosystems that compound value over decades.',
+            stage1_title: 'Roots: Industrial Data Governance & AIoT',
+            stage1_summary: 'Seamlessly integrating ERP, BPM, and shop-floor sensors for autonomous machine monitoring and predictive yield optimization.',
+            stage2_title: 'Trunk: 6-Cloud Distributed Gaming Battlefield',
+            stage2_summary: 'Orchestrating GKE across six clouds with Cloud Load Balancing and FinOps discipline, achieving zero-outage under explosive demand.',
+            stage3_title: 'Canopy: ISO 42001 Trustworthy AI & Governance',
+            stage3_summary: 'Embedding Zero Trust, DevSecOps, and Agentic AI into sustainable architectures designed to run reliably for decades.',
+            pillars_subtitle: 'Like structural cedar beams, we engineer durable digital backbones that withstand technological shifts and audit scrutiny.',
+            pillar1_title: 'Cloud-Native & Multi-Cloud HA',
+            pillar1_desc: 'Zero-outage infrastructure powered by Kubernetes (GKE/EKS), Service Mesh, and active-active multi-cloud failover.',
+            pillar2_title: 'Trustworthy AI & ISO 42001 Governance',
+            pillar2_desc: 'Full-lifecycle AI safety, model explainability, privacy boundaries, and accredited ISO 42001 readiness.',
+            pillar3_title: 'Enterprise FinOps & Cost Discipline',
+            pillar3_desc: 'Turning opaque cloud invoices into high-yield, transparent investment portfolios with 30%+ structural savings.',
+            pillar4_title: 'Smart Manufacturing & AIoT Data Clean Core',
+            pillar4_desc: 'Bridging OT and IT data silos with edge AI diagnostics and unified ERP/BPM architectural governance.',
+            sim_subtitle: 'Simulate your cloud cost savings, SLA uptime gains, and AI governance maturity in real time.'
+          },
+          jp: {
+            nav_story: 'ブランドストーリー',
+            nav_pillars: '4つの柱',
+            nav_simulator: '効果試算',
+            nav_governance: 'ガバナンス',
+            nav_founder: '創業者紹介',
+            cta_consult: '個別相談を予約',
+            hero_badge: 'ヒマラヤスギの如く堅固に｜マルチクラウド＆信頼できるAIガバナンス',
+            hero_title_1: 'マルチクラウドとAIの高嶺に大樹を植える',
+            hero_title_2: '企業の長青を共創する技術パートナー',
+            hero_desc: '雲杉長青（CEDAR PARTNERED）は、27年以上の製造業ERP/AIoTおよびグローバルゲーム配信の実績を結集し、ゼロダウンタイム、FinOpsコスト最適化、ISO 42001 AIガバナンスを実現する長期技術パートナーです。',
+            hero_btn_simulator: '効果シミュレーターを起動',
+            hero_btn_proposal: '提案書ドラフト作成',
+            pitch_listen: '30秒紹介を再生',
+            pitch_playing: '再生中...',
+            kpi_desc_1: '6つのクラウドにまたがる分散構成でゼロ停止とミリ秒ルーティングを実現。',
+            kpi_desc_2: 'FinOpsによる透明なコスト管理で年間クラウド費用を30%削減。',
+            kpi_desc_3: 'Agentic AIによるインフラ運用自動化とAISDLCコンプライアンス。',
+            kpi_desc_4: '製造業・ゲーム業界からISO 27001/42001リードオーディターまで。',
+            story_subtitle: '27年前のエンジニア時代から、スマート工場のデータ統合、グローバル6大クラウドの激戦を経て、企業の持続的成長を支えるチーフアーキテクトへ。',
+            stage1_title: '根：スマート製造とAIoTデータ基盤',
+            stage1_summary: 'ERP/BPMと工場センサーをシームレスに統合し、自律監視と歩留まり予測を実現。',
+            stage2_title: '幹：グローバル6クラウドのゼロ停止戦場',
+            stage2_summary: 'GKEコンテナとFinOps手法で急増するトラフィックを高可用・低コストで処理。',
+            stage3_title: '樹冠：ISO 42001 信頼できるAIと永続ガバナンス',
+            stage3_summary: 'ゼロトラストとAgentic AIを統合し、10年先も揺るぎないデジタルエコシステムを構築。',
+            pillars_subtitle: '建物の大黒柱となるヒマラヤスギのように、強固で永続的な技術基盤を提供します。',
+            pillar1_title: 'クラウドネイティブ＆マルチクラウドHA',
+            pillar1_desc: 'Kubernetesとグローバル負荷分散によるミリ秒障害復旧と完全な可用性。',
+            pillar2_title: '信頼できるAIとISO 42001ガバナンス',
+            pillar2_desc: 'ブラックボックスを排除し、監査可能なAIライフサイクルと国際基準を確立。',
+            pillar3_title: 'エンタープライズFinOpsとコスト適正化',
+            pillar3_desc: 'クラウド支出を構造的に30%以上削減し、投資対効果を最大化。',
+            pillar4_title: 'スマート製造とAIoTクリーンコア',
+            pillar4_desc: '現場センサーと基幹ERPを連携させ、エッジAIによる異常予兆検知を実現。',
+            sim_subtitle: '貴社の月間クラウド予算に応じて、削減効果とガバナンス向上度を即座に試算します。'
+          }
+        },
+
+        initApp() {
+          this.initCanvas();
+          this.initChart();
+          this.recalcSimulator();
+
+          window.addEventListener('scroll', () => {
+            const sections = ['hero', 'story', 'pillars', 'simulator', 'founder', 'governance'];
+            const scrollY = window.scrollY + 200;
+            for (let s of sections) {
+              const el = document.getElementById(s);
+              if (el && el.offsetTop <= scrollY && (el.offsetTop + el.offsetHeight) > scrollY) {
+                this.activeSection = s;
+                break;
+              }
+            }
+          });
+        },
+
+        t(key) {
+          return (this.dict[this.lang] && this.dict[this.lang][key]) ? this.dict[this.lang][key] : (this.dict.zh[key] || '');
+        },
+
+        setLang(l) {
+          this.lang = l;
+        },
+
+        recalcSimulator() {
+          const spend = parseFloat(this.monthlySpend);
+          const nodes = parseInt(this.instanceCount);
+          
+          let rate = 0.32; // 32% savings on average
+          if (this.simFocus === 'finops') rate = 0.36;
+          if (this.simFocus === 'ha') rate = 0.28;
+          if (this.simFocus === 'ai') rate = 0.30;
+          if (this.simFocus === 'iot') rate = 0.34;
+
+          this.simAnnualSavings = Math.round(spend * 12 * rate);
+          this.simGovernanceScore = Math.min(99, Math.round(85 + (nodes / 100) * 1.5));
+
+          this.updateChart(spend, rate);
+        },
+
+        updateChart(spend, rate) {
+          if (!window.simChart) return;
+          const years = ['Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5'];
+          const annual = spend * 12;
+          
+          let traditional = [];
+          let cedarOptimized = [];
+          let cumTrad = 0;
+          let cumCedar = 0;
+
+          for (let i = 1; i <= 5; i++) {
+            // Traditional growth with 12% inflation/sprawl
+            const tradYear = annual * Math.pow(1.12, i - 1);
+            cumTrad += tradYear;
+            traditional.push(Math.round(cumTrad));
+
+            // Cedar optimized with FinOps compounding savings
+            const cedarYear = (annual * (1 - rate)) * Math.pow(1.04, i - 1);
+            cumCedar += cedarYear;
+            cedarOptimized.push(Math.round(cumCedar));
+          }
+
+          window.simChart.data.labels = years;
+          window.simChart.data.datasets[0].data = traditional;
+          window.simChart.data.datasets[1].data = cedarOptimized;
+          window.simChart.update();
+        },
+
+        initChart() {
+          const ctx = document.getElementById('simulatorChart');
+          if (!ctx) return;
+          
+          window.simChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels: ['Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5'],
+              datasets: [
+                {
+                  label: '現行傳統架構累計支出 (USD $K)',
+                  data: [720, 1526, 2429, 3441, 4574],
+                  borderColor: '#ef4444',
+                  backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                  borderWidth: 2,
+                  borderDash: [5, 5],
+                  fill: false,
+                  tension: 0.3
+                },
+                {
+                  label: '雲杉長青架構累計支出 (USD $K)',
+                  data: [490, 1000, 1530, 2081, 2654],
+                  borderColor: '#10b981',
+                  backgroundColor: 'rgba(16, 185, 129, 0.15)',
+                  borderWidth: 3,
+                  fill: true,
+                  tension: 0.3
+                }
+              ]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  labels: { color: '#94a3b8', font: { family: 'JetBrains Mono', size: 11 } }
+                },
+                tooltip: {
+                  callbacks: {
+                    label: function(context) {
+                      return context.dataset.label + ': $' + context.raw.toLocaleString() + 'K';
+                    }
+                  }
+                }
+              },
+              scales: {
+                x: {
+                  grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                  ticks: { color: '#64748b', font: { family: 'JetBrains Mono', size: 10 } }
+                },
+                y: {
+                  grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                  ticks: { 
+                    color: '#64748b', 
+                    font: { family: 'JetBrains Mono', size: 10 },
+                    callback: function(val) { return '$' + val + 'K'; }
+                  }
+                }
+              }
+            }
+          });
+        },
+
+        playElevatorPitch() {
+          if (this.isPlayingPitch) {
+            window.speechSynthesis.cancel();
+            this.isPlayingPitch = false;
+            return;
+          }
+
+          if (!('speechSynthesis' in window)) {
+            alert('您的瀏覽器不支援語音合成功能。');
+            return;
+          }
+
+          const pitchText = this.lang === 'en' 
+            ? "Hi, I'm Howard Liao, founder of CEDAR PARTNERED. With 27+ years of experience across manufacturing and cloud platforms, we help organizations build trustworthy, zero-outage and cost-efficient AI and multi-cloud foundations. Let's build your evergreen digital future together."
+            : "你好，我是廖倫豪博士，是雲杉長青 CEDAR PARTNERED 的創辦人。我有超過 27 年資工與產業實戰經驗，從智慧工廠 AIoT 到六朵雲零停機架構，專注協助企業在 AI 浪潮下建構兼具安全合規、FinOps 成本效率與長青生命力的數位底座。";
+
+          const utter = new SpeechSynthesisUtterance(pitchText);
+          utter.lang = this.lang === 'en' ? 'en-US' : 'zh-TW';
+          utter.rate = 1.0;
+
+          utter.onend = () => {
+            this.isPlayingPitch = false;
+          };
+          utter.onerror = () => {
+            this.isPlayingPitch = false;
+          };
+
+          this.isPlayingPitch = true;
+          window.speechSynthesis.cancel();
+          window.speechSynthesis.speak(utter);
+        },
+
+        copyText(type) {
+          let str = '';
+          if (type === 'headline') {
+            str = 'CTO｜Multi-Cloud & AI Infrastructure Architect｜DevSecOps & FinOps｜AIoT Smart Manufacturing｜Trustworthy AI & ISO 42001｜Founder, 雲杉長青 / CEDAR PARTNERED';
+          } else if (type === 'bio') {
+            str = '身為「雲杉長青 / CEDAR PARTNERED」創辦人，我致力成為企業在多雲與 AI 基礎架構上的長期技術夥伴。累積超過 27 年產業經驗，橫跨製造業 ERP/BPM、AIoT 智慧工廠與遊戲產業跨六朵雲 GKE 零停機分散式架構。目前專注於雲原生架構、DevSecOps、FinOps 成本優化，以及 ISO 42001 可信任 AI 治理。';
+          }
+
+          navigator.clipboard.writeText(str).then(() => {
+            this.copiedMessage = '✅ 已成功複製到剪貼簿！';
+            setTimeout(() => { this.copiedMessage = ''; }, 3000);
+          });
+        },
+
+        downloadProposalMock() {
+          const comp = this.proposalCompany || '企業夥伴';
+          const content = `=====================================================
+雲杉長青 (CEDAR PARTNERED) 企業技術架構建議書
+ARCHITECTURAL BLUEPRINT & GOVERNANCE PROPOSAL
+=====================================================
+受文單位: ${comp}
+首席架構師: 廖倫豪 博士 (Howard Liao, Ph.D.)
+聯絡信箱: Liao.Howard@gmail.com
+官方電話: +886-975-323-161
+
+【執行摘要 (Executive Summary)】
+雲杉長青（CEDAR PARTNERED）致力於將前瞻多雲與 AI 技術轉化為可量化、可治理、可長青的商業成果。
+針對貴公司之規模與目標，提出四大維度落地路徑：
+
+1. 雲原生與多雲分散式架構 (Cloud-Native HA):
+   - 導入 GKE 容器化與 Cloud Load Balancing，達成 100% 零停機營運標準。
+   - 毫秒級自動容災切換機制，優化全域連線延遲。
+
+2. 可信任 AI 治理與 ISO 42001 (Trustworthy AI):
+   - 導入 AISDLC 安全開發流程與資料血統追蹤。
+   - 建立 Agentic AI 智慧維運安全邊界，杜絕失控黑箱。
+
+3. 企業級 FinOps 與雲端財務優化:
+   - 建立單位經濟指標 (Unit Economics) 與透明化帳單歸因。
+   - 透過自動化 Spot/RI 調度與架構優化，預期實現 30%+ 雲端費用結構性節省。
+
+4. 智慧製造與 AIoT 數據治理:
+   - 跨廠區 ERP/BPM Clean Core 整合，消除資訊孤島。
+   - 部署邊緣 AI 感測即時推論，提升產線預測性維護與良率。
+
+=====================================================
+版權所有 © 2026 雲杉長青 CEDAR PARTNERED. All rights reserved.`;
+
+          const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `CEDAR_PARTNERED_Proposal_${comp.replace(/\s+/g, '_')}.txt`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+          this.openModal = null;
+        },
+
+        initCanvas() {
+          const canvas = document.getElementById('treeCanvas');
+          if (!canvas) return;
+          const ctx = canvas.getContext('2d');
+          let width = canvas.width = window.innerWidth;
+          let height = canvas.height = window.innerHeight;
+
+          window.addEventListener('resize', () => {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+          });
+
+          // Generate Node Network (representing Evergreen Cedar roots & branches + cloud nodes)
+          const nodeCount = 45;
+          const nodes = [];
+          for (let i = 0; i < nodeCount; i++) {
+            nodes.push({
+              x: Math.random() * width,
+              y: Math.random() * height,
+              vx: (Math.random() - 0.5) * 0.4,
+              vy: (Math.random() - 0.5) * 0.4,
+              radius: Math.random() * 2 + 1,
+              isGreen: Math.random() > 0.4
+            });
+          }
+
+          function draw() {
+            ctx.clearRect(0, 0, width, height);
+
+            // Draw connecting branches/edges
+            for (let i = 0; i < nodes.length; i++) {
+              for (let j = i + 1; j < nodes.length; j++) {
+                const dx = nodes[i].x - nodes[j].x;
+                const dy = nodes[i].y - nodes[j].y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < 140) {
+                  const alpha = (1 - dist / 140) * 0.25;
+                  ctx.strokeStyle = nodes[i].isGreen 
+                    ? `rgba(16, 185, 129, ${alpha})` 
+                    : `rgba(6, 182, 212, ${alpha})`;
+                  ctx.lineWidth = 1;
+                  ctx.beginPath();
+                  ctx.moveTo(nodes[i].x, nodes[i].y);
+                  ctx.lineTo(nodes[j].x, nodes[j].y);
+                  ctx.stroke();
+                }
+              }
+            }
+
+            // Draw and update nodes
+            for (let i = 0; i < nodes.length; i++) {
+              const node = nodes[i];
+              node.x += node.vx;
+              node.y += node.vy;
+
+              if (node.x < 0 || node.x > width) node.vx *= -1;
+              if (node.y < 0 || node.y > height) node.vy *= -1;
+
+              ctx.fillStyle = node.isGreen ? '#10b981' : '#06b6d4';
+              ctx.beginPath();
+              ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+              ctx.fill();
+            }
+
+            requestAnimationFrame(draw);
+          }
+
+          draw();
+        }
+      }
+    }
+  </script>
+</body>
+</html>
