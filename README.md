@@ -38,17 +38,33 @@
 
 ---
 
-## 💻 網站特色功能 (Interactive Features)
+## 💻 網站特色功能與多元互動動態 (Interactive Features & Dynamic Modalities)
 
 1. **🌲 互動式雪松年輪生長解構 (Interactive Cedar Anatomy)**：
    - 深入探索「扎根（製造實戰）」、「樹幹（遊戲多雲）」與「樹冠（AI 永續治理）」三大歷程。
-2. **📈 互動式架構與 FinOps 效益模擬器 (ROI & FinOps Simulator)**：
+2. **📡 跨六朵雲即時遙測與混沌容災動態演練 (Live 6-Cloud Telemetry & Resilience Radar)**：
+   - 實時動態監控 AWS、GCP、Azure、OCI、AliCloud 及自建 IDC 的延遲抖動、負載率與封包狀態。
+   - 支援「⚡ 模擬突發斷線 (Chaos Failover)」與「一鍵無縫容災重平衡」，親眼見證 86ms 內流量無痛轉移。
+   - 整合 DevSecOps & AISDLC 實時滾動終端機日誌（支援暫停、清空與注入安全警報）。
+3. **🧩 四大實戰業務型態與架構矩陣 (Enterprise Modality & Topology Matrix)**：
+   - 互動切換「🎮 跨國遊戲億級並發態」、「🏭 半導體封測 AIoT 製造態」、「🛡️ 金融級 AI 治理 ISO 42001態」與「💰 巨額雲端支出 FinOps 減重態」。
+   - 動態呈現拓撲數據流向、量化指標、關鍵組件與架構藍圖。
+4. **⚖️ 架構典範轉移對比態 (Paradigm Shift: Legacy vs Evergreen)**：
+   - 全方位深度對照傳統煙囪式架構與雲杉長青永續架構的 6 大關鍵維度。
+5. **📈 互動式架構與 FinOps 效益模擬器 (ROI & FinOps Simulator)**：
    - 即時調整月度雲端支出與節點規模，動態產生 5 年累計成本節省折線圖 (Chart.js)。
-3. **🌐 即時三語系支援 (Trilingual Toggle)**：
+6. **🏛️ 四大長青支柱技術深潛抽屜 (Deep-Dive Technical Drawers)**：
+   - 展開各支柱底層架構堆疊、SLO 指標與 AIMS 規範標準。
+7. **❓ 企業總架構師常見諮詢手風琴 (Executive Architecture FAQ)**：
+   - 5 大核心架構痛點專業解答平滑展開。
+8. **🔊 觸覺音效反饋開關 (Web Audio Haptic Feedback)**：
+   - 純原生 Web Audio API 合成俐落科技音效，支援即時開啟/靜音。
+9. **🌐 即時三語系支援 (Trilingual Toggle)**：
    - 繁體中文 (ZH)、English (EN)、日本語 (JP) 一鍵切換。
-4. **🎙️ 30 秒電梯簡報即時語音朗讀 (Web Speech API)**。
-5. **📄 專案架構建議書生成器 (Proposal Generator)**。
-6. **📋 LinkedIn Headline & Bio 一鍵複製器**。
+10. **🎙️ 30 秒電梯簡報即時語音朗讀 (Web Speech API)**。
+11. **📄 智慧自動化預約直達機制 (Direct Consultation Dispatch)**：
+    - 一鍵呼叫系統郵件直寄創辦人信箱、自動複製剪貼簿並下載文字確認單。
+12. **📋 LinkedIn Headline & Bio 一鍵複製器**。
 
 ---
 

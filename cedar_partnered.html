@@ -66,17 +66,23 @@
             'glow-cedar': '0 0 35px -5px rgba(16, 185, 129, 0.35)',
             'glow-cyan': '0 0 35px -5px rgba(6, 182, 212, 0.35)',
             'glow-amber': '0 0 35px -5px rgba(245, 158, 11, 0.35)',
+            'glow-red': '0 0 35px -5px rgba(239, 68, 68, 0.45)',
             'inner-card': 'inset 0 1px 1px 0 rgba(255, 255, 255, 0.08)',
           },
           animation: {
             'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
             'float': 'float 6s ease-in-out infinite',
             'spin-slow': 'spin 20s linear infinite',
+            'scanline': 'scanline 8s linear infinite',
           },
           keyframes: {
             float: {
               '0%, 100%': { transform: 'translateY(0px)' },
               '50%': { transform: 'translateY(-10px)' },
+            },
+            scanline: {
+              '0%': { transform: 'translateY(-100%)' },
+              '100%': { transform: 'translateY(1000%)' }
             }
           }
         }
@@ -128,6 +134,11 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
+    .cyan-gradient-text {
+      background: linear-gradient(135deg, #ffffff 10%, #67e8f9 60%, #06b6d4 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
 
     /* Background Grid */
     .bg-grid-pattern {
@@ -140,6 +151,8 @@
       background-image: radial-gradient(rgba(16, 185, 129, 0.15) 1px, transparent 1px);
       background-size: 24px 24px;
     }
+
+    [x-cloak] { display: none !important; }
   </style>
 </head>
 
@@ -147,7 +160,7 @@
       x-data="cedarApp()" x-init="initApp()">
 
   <!-- Background Particle & Neural Tree Canvas -->
-  <canvas id="treeCanvas" class="fixed inset-0 pointer-events-none z-0 opacity-40"></canvas>
+  <canvas id="treeCanvas" class="fixed inset-0 pointer-events-none z-0 opacity-35"></canvas>
   
   <!-- Subtle Ambient Glows -->
   <div class="fixed top-0 left-1/4 w-[600px] h-[600px] bg-cedar-600/10 rounded-full blur-[140px] pointer-events-none z-0"></div>
@@ -156,7 +169,7 @@
 
   <!-- Global Toast Notification -->
   <div x-show="toastMessage" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform translate-y-4" x-transition:enter-end="opacity-100 transform translate-y-0" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
-       class="fixed bottom-6 right-6 z-50 glass-card px-5 py-3.5 rounded-2xl border border-cedar-500/50 shadow-glow-cedar flex items-center gap-3 text-sm text-white font-mono">
+       class="fixed bottom-6 right-6 z-50 glass-card px-5 py-3.5 rounded-2xl border border-cedar-500/50 shadow-glow-cedar flex items-center gap-3 text-sm text-white font-mono" x-cloak>
     <i class="fa-solid fa-circle-check text-cedar-400 text-base animate-bounce"></i>
     <span x-text="toastMessage"></span>
   </div>
@@ -169,7 +182,7 @@
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
         
         <!-- Brand Logo with official assets -->
-        <a href="#hero" class="flex items-center gap-3.5 group">
+        <a href="#hero" @click="playAudio('click')" class="flex items-center gap-3.5 group">
           <div class="relative w-12 h-12 rounded-xl bg-gradient-to-br from-obsidian-900 to-obsidian-950 border border-cedar-500/40 p-1 flex items-center justify-center shadow-glow-cedar group-hover:scale-105 transition-transform duration-300 overflow-hidden">
             <img src="assets/logo_cyber_tree.png" alt="CEDAR PARTNERED Logo" class="w-full h-full object-contain filter drop-shadow">
             <div class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-cedar-400 rounded-full animate-ping opacity-75"></div>
@@ -185,32 +198,51 @@
         </a>
 
         <!-- Desktop Nav Links -->
-        <nav class="hidden md:flex items-center gap-8 text-sm font-medium">
-          <a href="#story" class="text-slate-300 hover:text-cedar-400 transition-colors flex items-center gap-1.5" :class="activeSection === 'story' ? 'text-cedar-400' : ''">
+        <nav class="hidden xl:flex items-center gap-6 text-xs lg:text-sm font-medium">
+          <a href="#story" @click="playAudio('click')" class="text-slate-300 hover:text-cedar-400 transition-colors flex items-center gap-1.5" :class="activeSection === 'story' ? 'text-cedar-400 font-bold' : ''">
             <i class="fa-solid fa-seedling text-xs text-cedar-500"></i>
-            <span x-text="t('nav_story')"></span>
+            <span x-text="t('nav_story')">長青故事</span>
           </a>
-          <a href="#pillars" class="text-slate-300 hover:text-cedar-400 transition-colors flex items-center gap-1.5" :class="activeSection === 'pillars' ? 'text-cedar-400' : ''">
+          <a href="#telemetry" @click="playAudio('click')" class="text-slate-300 hover:text-cedar-400 transition-colors flex items-center gap-1.5" :class="activeSection === 'telemetry' ? 'text-cedar-400 font-bold' : ''">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+            <span x-text="t('nav_telemetry')">即時遙測</span>
+          </a>
+          <a href="#pillars" @click="playAudio('click')" class="text-slate-300 hover:text-cedar-400 transition-colors flex items-center gap-1.5" :class="activeSection === 'pillars' ? 'text-cedar-400 font-bold' : ''">
             <i class="fa-solid fa-layer-group text-xs text-cedar-500"></i>
-            <span x-text="t('nav_pillars')"></span>
+            <span x-text="t('nav_pillars')">四大支柱</span>
           </a>
-          <a href="#simulator" class="text-slate-300 hover:text-cedar-400 transition-colors flex items-center gap-1.5" :class="activeSection === 'simulator' ? 'text-cedar-400' : ''">
+          <a href="#scenarios" @click="playAudio('click')" class="text-slate-300 hover:text-cedar-400 transition-colors flex items-center gap-1.5" :class="activeSection === 'scenarios' ? 'text-cedar-400 font-bold' : ''">
+            <i class="fa-solid fa-cubes-stacked text-xs text-cedar-500"></i>
+            <span x-text="t('nav_scenarios')">業務型態</span>
+          </a>
+          <a href="#comparison" @click="playAudio('click')" class="text-slate-300 hover:text-cedar-400 transition-colors flex items-center gap-1.5" :class="activeSection === 'comparison' ? 'text-cedar-400 font-bold' : ''">
+            <i class="fa-solid fa-code-compare text-xs text-cedar-500"></i>
+            <span x-text="t('nav_comparison')">架構對比</span>
+          </a>
+          <a href="#simulator" @click="playAudio('click')" class="text-slate-300 hover:text-cedar-400 transition-colors flex items-center gap-1.5" :class="activeSection === 'simulator' ? 'text-cedar-400 font-bold' : ''">
             <i class="fa-solid fa-calculator text-xs text-cedar-500"></i>
-            <span x-text="t('nav_simulator')"></span>
+            <span x-text="t('nav_simulator')">效益試算</span>
           </a>
-          <a href="#brand-identity" class="text-slate-300 hover:text-cedar-400 transition-colors flex items-center gap-1.5" :class="activeSection === 'brand-identity' ? 'text-cedar-400' : ''">
-            <i class="fa-solid fa-palette text-xs text-cedar-500"></i>
-            <span x-text="t('nav_identity')">視覺識別</span>
+          <a href="#faq" @click="playAudio('click')" class="text-slate-300 hover:text-cedar-400 transition-colors flex items-center gap-1.5" :class="activeSection === 'faq' ? 'text-cedar-400 font-bold' : ''">
+            <i class="fa-solid fa-circle-question text-xs text-cedar-500"></i>
+            <span x-text="t('nav_faq')">常見問答</span>
           </a>
-          <a href="#founder" class="text-slate-300 hover:text-cedar-400 transition-colors flex items-center gap-1.5" :class="activeSection === 'founder' ? 'text-cedar-400' : ''">
+          <a href="#founder" @click="playAudio('click')" class="text-slate-300 hover:text-cedar-400 transition-colors flex items-center gap-1.5" :class="activeSection === 'founder' ? 'text-cedar-400 font-bold' : ''">
             <i class="fa-solid fa-user-tie text-xs text-cedar-500"></i>
-            <span x-text="t('nav_founder')"></span>
+            <span x-text="t('nav_founder')">創辦人</span>
           </a>
         </nav>
 
-        <!-- Action Area (Language Selector + Contact Button) -->
-        <div class="flex items-center gap-3">
+        <!-- Action Area (Sound Switch + Language Selector + Contact Button) -->
+        <div class="flex items-center gap-2 sm:gap-3">
           
+          <!-- Haptic / Web Audio Sound Toggle -->
+          <button @click="toggleSound()" :title="soundEnabled ? '點擊關閉音效回饋' : '點擊開啟音效回饋'"
+                  class="p-2 rounded-lg bg-obsidian-900 border border-slate-700/70 text-xs text-slate-300 hover:text-cedar-400 transition-colors flex items-center gap-1.5">
+            <i :class="soundEnabled ? 'fa-solid fa-volume-high text-cedar-400' : 'fa-solid fa-volume-xmark text-slate-500'"></i>
+            <span class="hidden sm:inline font-mono text-[11px]" x-text="soundEnabled ? 'SOUND' : 'MUTE'"></span>
+          </button>
+
           <!-- Trilingual Toggle -->
           <div class="flex items-center bg-obsidian-900/90 p-1 rounded-lg border border-slate-700/70 text-xs font-mono">
             <button @click="setLang('zh')" :class="lang === 'zh' ? 'bg-cedar-600 text-white font-bold shadow' : 'text-slate-400 hover:text-slate-200'" class="px-2.5 py-1 rounded transition-all">繁中</button>
@@ -219,13 +251,13 @@
           </div>
 
           <!-- Proposal / Consultation CTA Button -->
-          <button @click="openConsultationModal()" class="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-cedar-600 to-emerald-500 hover:from-cedar-500 hover:to-emerald-400 text-obsidian-950 font-bold text-sm shadow-glow-cedar transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]">
+          <button @click="openConsultationModal()" class="hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-cedar-600 to-emerald-500 hover:from-cedar-500 hover:to-emerald-400 text-obsidian-950 font-bold text-xs sm:text-sm shadow-glow-cedar transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]">
             <i class="fa-solid fa-paper-plane text-xs"></i>
             <span x-text="t('cta_consult')">預約架構師諮詢</span>
           </button>
 
           <!-- Mobile Menu Button -->
-          <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden p-2.5 rounded-lg bg-obsidian-900 border border-slate-700 text-slate-300 hover:text-white">
+          <button @click="mobileMenuOpen = !mobileMenuOpen" class="xl:hidden p-2.5 rounded-lg bg-obsidian-900 border border-slate-700 text-slate-300 hover:text-white">
             <i :class="mobileMenuOpen ? 'fa-solid fa-xmark' : 'fa-solid fa-bars'" class="text-base"></i>
           </button>
         </div>
@@ -233,13 +265,20 @@
       </div>
 
       <!-- Mobile Dropdown Menu -->
-      <div x-show="mobileMenuOpen" x-transition class="md:hidden glass-card border-b border-slate-800 px-6 py-5 space-y-3">
+      <div x-show="mobileMenuOpen" x-transition class="xl:hidden glass-card border-b border-slate-800 px-6 py-5 space-y-3" x-cloak>
         <a @click="mobileMenuOpen = false" href="#story" class="block py-2 text-slate-300 hover:text-cedar-400 font-medium" x-text="t('nav_story')"></a>
+        <a @click="mobileMenuOpen = false" href="#telemetry" class="block py-2 text-slate-300 hover:text-cedar-400 font-medium flex items-center justify-between">
+          <span x-text="t('nav_telemetry')"></span>
+          <span class="text-[10px] px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-500/40">LIVE RADAR</span>
+        </a>
         <a @click="mobileMenuOpen = false" href="#pillars" class="block py-2 text-slate-300 hover:text-cedar-400 font-medium" x-text="t('nav_pillars')"></a>
+        <a @click="mobileMenuOpen = false" href="#scenarios" class="block py-2 text-slate-300 hover:text-cedar-400 font-medium" x-text="t('nav_scenarios')"></a>
+        <a @click="mobileMenuOpen = false" href="#comparison" class="block py-2 text-slate-300 hover:text-cedar-400 font-medium" x-text="t('nav_comparison')"></a>
         <a @click="mobileMenuOpen = false" href="#simulator" class="block py-2 text-slate-300 hover:text-cedar-400 font-medium" x-text="t('nav_simulator')"></a>
         <a @click="mobileMenuOpen = false" href="#brand-identity" class="block py-2 text-slate-300 hover:text-cedar-400 font-medium" x-text="t('nav_identity')"></a>
+        <a @click="mobileMenuOpen = false" href="#faq" class="block py-2 text-slate-300 hover:text-cedar-400 font-medium" x-text="t('nav_faq')"></a>
         <a @click="mobileMenuOpen = false" href="#founder" class="block py-2 text-slate-300 hover:text-cedar-400 font-medium" x-text="t('nav_founder')"></a>
-        <div class="pt-3 border-t border-slate-800">
+        <div class="pt-3 border-t border-slate-800 flex flex-col gap-2">
           <button @click="mobileMenuOpen = false; openConsultationModal()" class="w-full py-2.5 rounded-xl bg-cedar-600 text-obsidian-950 font-bold text-sm text-center">
             <i class="fa-solid fa-paper-plane mr-2"></i><span x-text="t('cta_consult')"></span>
           </button>
@@ -248,7 +287,7 @@
     </header>
 
     <!-- HERO SECTION WITH OFFICIAL LOGO SHOWCASE -->
-    <section id="hero" class="relative pt-12 pb-24 md:pt-20 md:pb-32 overflow-hidden bg-grid-pattern">
+    <section id="hero" class="relative pt-12 pb-20 md:pt-20 md:pb-28 overflow-hidden bg-grid-pattern">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <!-- Top Badge -->
@@ -276,15 +315,15 @@
 
             <!-- Interactive Action Buttons -->
             <div class="pt-4 flex flex-wrap items-center gap-3 sm:gap-4">
-              <a href="#simulator" class="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-xl bg-gradient-to-r from-cedar-500 to-emerald-400 text-obsidian-950 font-extrabold text-sm sm:text-base shadow-glow-cedar hover:scale-105 active:scale-95 transition-all">
-                <i class="fa-solid fa-chart-line text-sm"></i>
-                <span x-text="t('hero_btn_simulator')">進入架構與 FinOps 模擬器</span>
+              <a href="#telemetry" @click="playAudio('click')" class="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-xl bg-gradient-to-r from-cedar-500 to-emerald-400 text-obsidian-950 font-extrabold text-sm sm:text-base shadow-glow-cedar hover:scale-105 active:scale-95 transition-all">
+                <span class="w-2 h-2 rounded-full bg-obsidian-950 animate-ping"></span>
+                <span x-text="t('hero_btn_telemetry')">觀看六雲即時遙測雷達</span>
               </a>
-              
-              <button @click="openConsultationModal()" class="inline-flex items-center gap-2 px-5 py-3.5 rounded-xl glass-card border border-slate-700 hover:border-cedar-500/50 text-white font-semibold text-sm sm:text-base hover:bg-slate-800/80 transition-all">
-                <i class="fa-solid fa-paper-plane text-cedar-400"></i>
-                <span>預約總架構師諮詢</span>
-              </button>
+
+              <a href="#simulator" @click="playAudio('click')" class="inline-flex items-center gap-2.5 px-5 py-3.5 rounded-xl glass-card border border-slate-700 hover:border-cedar-500/50 text-white font-semibold text-sm sm:text-base hover:bg-slate-800/80 transition-all">
+                <i class="fa-solid fa-chart-line text-cedar-400"></i>
+                <span x-text="t('hero_btn_simulator')">架構與 FinOps 模擬器</span>
+              </a>
 
               <button @click="playElevatorPitch()" class="inline-flex items-center gap-2 px-4 py-3.5 rounded-xl bg-obsidian-900 border border-slate-700 text-slate-300 hover:text-white hover:border-cedar-400 text-xs sm:text-sm font-medium transition-all">
                 <i :class="isPlayingPitch ? 'fa-solid fa-circle-stop text-red-400 animate-pulse' : 'fa-solid fa-circle-play text-cedar-400'" class="text-sm"></i>
@@ -295,34 +334,32 @@
 
           <!-- Right Column: Official Dual Logo Presentation Card -->
           <div class="lg:col-span-5 relative">
-            
-            <!-- Logo Switcher & Frame -->
             <div class="glass-card p-6 sm:p-7 rounded-3xl border border-slate-700/80 shadow-2xl relative overflow-hidden group">
               <div class="absolute -right-12 -top-12 w-40 h-40 bg-cedar-500/15 rounded-full blur-2xl group-hover:bg-cedar-500/25 transition-all"></div>
               
               <!-- Tab Switcher for Dual Logos -->
               <div class="flex items-center justify-between mb-4 border-b border-slate-800 pb-3">
                 <div class="flex items-center gap-2">
-                  <button @click="heroLogoMode = 'tech'" 
+                  <button @click="heroLogoMode = 'tech'; playAudio('toggle')" 
                           :class="heroLogoMode === 'tech' ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500 font-bold' : 'text-slate-400 border-transparent hover:text-slate-200'"
                           class="px-3 py-1 rounded-lg border text-xs font-mono transition-all flex items-center gap-1.5">
                     <i class="fa-solid fa-microchip text-[10px]"></i>
                     <span>未來數位樹 (Cyber Tree)</span>
                   </button>
-                  <button @click="heroLogoMode = 'plaque'" 
+                  <button @click="heroLogoMode = 'plaque'; playAudio('toggle')" 
                           :class="heroLogoMode === 'plaque' ? 'bg-amber-500/20 text-amber-300 border-amber-500 font-bold' : 'text-slate-400 border-transparent hover:text-slate-200'"
                           class="px-3 py-1 rounded-lg border text-xs font-mono transition-all flex items-center gap-1.5">
                     <i class="fa-solid fa-award text-[10px]"></i>
                     <span>書法金匾 (Heritage Plaque)</span>
                   </button>
                 </div>
-                <span class="text-[10px] font-mono text-slate-500">OFFICIAL IDENTITY</span>
+                <span class="text-[10px] font-mono text-slate-500">IDENTITY</span>
               </div>
 
               <!-- Visual Viewport 1: Tech Cyber Tree Logo -->
               <div x-show="heroLogoMode === 'tech'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" class="flex flex-col items-center justify-center p-2 text-center space-y-4">
                 <div class="relative w-full max-w-[280px] aspect-square rounded-2xl bg-obsidian-950/90 border border-cyan-500/30 p-3 flex items-center justify-center shadow-glow-cyan overflow-hidden group/img cursor-pointer"
-                     @click="openModal = 'logo_tech'">
+                     @click="openModal = 'logo_tech'; playAudio('click')">
                   <img src="assets/logo_cyber_tree.png" alt="CEDAR PARTNERED Cyber Tree Logo" class="w-full h-full object-contain filter drop-shadow-lg group-hover/img:scale-105 transition-transform duration-500">
                   <div class="absolute inset-0 bg-gradient-to-t from-obsidian-950/80 via-transparent to-transparent opacity-0 group-hover/img:opacity-100 transition-opacity flex items-end justify-center pb-2">
                     <span class="text-[10px] font-mono text-cyan-300 flex items-center gap-1">
@@ -341,9 +378,9 @@
               </div>
 
               <!-- Visual Viewport 2: Calligraphy Halo-lit Plaque Logo -->
-              <div x-show="heroLogoMode === 'plaque'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" class="flex flex-col items-center justify-center p-2 text-center space-y-4">
+              <div x-show="heroLogoMode === 'plaque'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" class="flex flex-col items-center justify-center p-2 text-center space-y-4" x-cloak>
                 <div class="relative w-full max-w-[280px] aspect-[4/5] rounded-2xl bg-obsidian-950/90 border border-amber-500/30 p-3 flex items-center justify-center shadow-glow-amber overflow-hidden group/img cursor-pointer"
-                     @click="openModal = 'logo_plaque'">
+                     @click="openModal = 'logo_plaque'; playAudio('click')">
                   <img src="assets/logo_calligraphy_plaque.png" alt="云杉長青 Calligraphy Heritage Plaque Logo" class="w-full h-full object-contain filter drop-shadow-lg group-hover/img:scale-105 transition-transform duration-500">
                   <div class="absolute inset-0 bg-gradient-to-t from-obsidian-950/80 via-transparent to-transparent opacity-0 group-hover/img:opacity-100 transition-opacity flex items-end justify-center pb-2">
                     <span class="text-[10px] font-mono text-amber-300 flex items-center gap-1">
@@ -362,24 +399,26 @@
               </div>
 
             </div>
-
           </div>
 
         </div>
 
-        <!-- BENTO GRID EXECUTIVE KPIS -->
-        <div class="mt-20 grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+        <!-- BENTO GRID EXECUTIVE KPIS WITH LIVE PULSE -->
+        <div class="mt-16 grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           
           <!-- KPI 1: Zero Outage -->
           <div class="glass-card glass-card-hover p-6 rounded-2xl border border-slate-800 relative overflow-hidden group">
             <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-cedar-500/5 rounded-full blur-xl group-hover:bg-cedar-500/15 transition-all"></div>
             <div class="flex items-center justify-between mb-3">
               <span class="text-xs font-mono uppercase tracking-wider text-slate-400">High Availability</span>
-              <div class="w-8 h-8 rounded-lg bg-cedar-950/80 border border-cedar-500/30 flex items-center justify-center text-cedar-400">
-                <i class="fa-solid fa-server text-xs"></i>
+              <div class="flex items-center gap-1 px-2 py-0.5 rounded bg-emerald-950/80 border border-emerald-500/40 text-[10px] font-mono text-emerald-400">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+                <span>LIVE</span>
               </div>
             </div>
-            <div class="font-mono text-3xl sm:text-4xl font-extrabold text-white group-hover:text-cedar-300 transition-colors">100%</div>
+            <div class="font-mono text-3xl sm:text-4xl font-extrabold text-white group-hover:text-cedar-300 transition-colors">
+              <span x-text="kpis.outage">100</span>%
+            </div>
             <div class="text-sm font-semibold text-cedar-400 mt-1">Zero Outage</div>
             <div class="text-xs text-slate-400 mt-1 leading-relaxed" x-text="t('kpi_desc_1')">六朵雲跨國分散式架構，容災切換與毫秒負載均衡。</div>
           </div>
@@ -388,17 +427,19 @@
           <div class="glass-card glass-card-hover p-6 rounded-2xl border border-slate-800 relative overflow-hidden group">
             <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-amber-500/5 rounded-full blur-xl group-hover:bg-amber-500/15 transition-all"></div>
             <div class="flex items-center justify-between mb-3">
-              <span class="text-xs font-mono uppercase tracking-wider text-slate-400">FinOps Efficiency</span>
+              <span class="text-xs font-mono uppercase tracking-wider text-slate-400">FinOps Discipline</span>
               <div class="w-8 h-8 rounded-lg bg-amber-950/80 border border-amber-500/30 flex items-center justify-center text-amber-400">
                 <i class="fa-solid fa-coins text-xs"></i>
               </div>
             </div>
-            <div class="font-mono text-3xl sm:text-4xl font-extrabold text-white group-hover:text-amber-300 transition-colors">-30%</div>
+            <div class="font-mono text-3xl sm:text-4xl font-extrabold text-white group-hover:text-amber-300 transition-colors">
+              -<span x-text="kpis.cost">30</span>%
+            </div>
             <div class="text-sm font-semibold text-amber-400 mt-1">Cloud TCO Reduction</div>
             <div class="text-xs text-slate-400 mt-1 leading-relaxed" x-text="t('kpi_desc_2')">雲端成本透明化與單位經濟模型，投資與效能同步達標。</div>
           </div>
 
-          <!-- KPI 3: AI Engineering Efficiency -->
+          <!-- KPI 3: AI Engineering Velocity -->
           <div class="glass-card glass-card-hover p-6 rounded-2xl border border-slate-800 relative overflow-hidden group">
             <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-neonCyan/5 rounded-full blur-xl group-hover:bg-neonCyan/15 transition-all"></div>
             <div class="flex items-center justify-between mb-3">
@@ -407,12 +448,14 @@
                 <i class="fa-solid fa-brain text-xs"></i>
               </div>
             </div>
-            <div class="font-mono text-3xl sm:text-4xl font-extrabold text-white group-hover:text-cyan-300 transition-colors">+55%</div>
+            <div class="font-mono text-3xl sm:text-4xl font-extrabold text-white group-hover:text-cyan-300 transition-colors">
+              +<span x-text="kpis.velocity">55</span>%
+            </div>
             <div class="text-sm font-semibold text-cyan-400 mt-1">AI Engineering Velocity</div>
             <div class="text-xs text-slate-400 mt-1 leading-relaxed" x-text="t('kpi_desc_3')">Agentic AI 自動化基礎架構管理與 AISDLC 合規治理流程。</div>
           </div>
 
-          <!-- KPI 4: Experience & Leadership -->
+          <!-- KPI 4: Proven Practice -->
           <div class="glass-card glass-card-hover p-6 rounded-2xl border border-slate-800 relative overflow-hidden group">
             <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-emerald-500/5 rounded-full blur-xl group-hover:bg-emerald-500/15 transition-all"></div>
             <div class="flex items-center justify-between mb-3">
@@ -421,7 +464,9 @@
                 <i class="fa-solid fa-award text-xs"></i>
               </div>
             </div>
-            <div class="font-mono text-3xl sm:text-4xl font-extrabold text-white group-hover:text-emerald-300 transition-colors">27+ Yrs</div>
+            <div class="font-mono text-3xl sm:text-4xl font-extrabold text-white group-hover:text-emerald-300 transition-colors">
+              <span x-text="kpis.years">27</span>+ Yrs
+            </div>
             <div class="text-sm font-semibold text-emerald-400 mt-1">IT & C-Level Practice</div>
             <div class="text-xs text-slate-400 mt-1 leading-relaxed" x-text="t('kpi_desc_4')">橫跨製造業 ERP/AIoT、遊戲多雲服務與 ISO 27001/42001。</div>
           </div>
@@ -456,7 +501,7 @@
           <div class="lg:col-span-5 space-y-4">
             
             <!-- Stage 1: Roots -->
-            <div @click="activeStage = 1" 
+            <div @click="activeStage = 1; playAudio('toggle')" 
                  :class="activeStage === 1 ? 'border-cedar-500 bg-slate-800/90 shadow-glow-cedar' : 'border-slate-800 bg-obsidian-900/80 hover:border-slate-700'"
                  class="cursor-pointer p-6 rounded-2xl border transition-all duration-300 relative group">
               <div class="flex items-start gap-4">
@@ -477,7 +522,7 @@
             </div>
 
             <!-- Stage 2: Trunk -->
-            <div @click="activeStage = 2" 
+            <div @click="activeStage = 2; playAudio('toggle')" 
                  :class="activeStage === 2 ? 'border-cedar-500 bg-slate-800/90 shadow-glow-cedar' : 'border-slate-800 bg-obsidian-900/80 hover:border-slate-700'"
                  class="cursor-pointer p-6 rounded-2xl border transition-all duration-300 relative group">
               <div class="flex items-start gap-4">
@@ -498,7 +543,7 @@
             </div>
 
             <!-- Stage 3: Canopy -->
-            <div @click="activeStage = 3" 
+            <div @click="activeStage = 3; playAudio('toggle')" 
                  :class="activeStage === 3 ? 'border-cedar-500 bg-slate-800/90 shadow-glow-cedar' : 'border-slate-800 bg-obsidian-900/80 hover:border-slate-700'"
                  class="cursor-pointer p-6 rounded-2xl border transition-all duration-300 relative group">
               <div class="flex items-start gap-4">
@@ -512,7 +557,7 @@
                     <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">CANOPY</span>
                   </div>
                   <p class="text-xs text-slate-400 mt-2 leading-relaxed" x-text="t('stage3_summary')">
-                    在多雲與 AI 浪潮下，內嵌 DevSecOps 與零信任安全，導入 Agentic AI 智慧維運，建構能穩定運行 10 年以上的可持續數位森林。
+                    在 AI 改變規則的時代，將零信任架構、Agentic AI 智慧維運與國際 ISO 42001 治理結合，打造能經受十年考驗的可持續數位生態。
                   </p>
                 </div>
               </div>
@@ -520,156 +565,85 @@
 
           </div>
 
-          <!-- Right: Deep Interactive Stage Visualizer & Technical Breakdown -->
-          <div class="lg:col-span-7 glass-card p-8 rounded-3xl border border-slate-700/80 shadow-2xl relative overflow-hidden min-h-[460px]">
+          <!-- Right: Interactive Dynamic Detail Window -->
+          <div class="lg:col-span-7 glass-card p-8 rounded-3xl border border-slate-700 relative overflow-hidden min-h-[380px] flex flex-col justify-between">
+            <div class="absolute -right-20 -bottom-20 w-60 h-60 bg-cedar-500/10 rounded-full blur-3xl pointer-events-none"></div>
             
-            <!-- Stage 1 Details -->
-            <div x-show="activeStage === 1" x-transition.opacity.duration.400ms class="space-y-6">
-              <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+            <div>
+              <div class="flex items-center justify-between border-b border-slate-800 pb-4 mb-6">
                 <div class="flex items-center gap-3">
-                  <div class="p-2.5 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/30">
-                    <i class="fa-solid fa-industry text-lg"></i>
-                  </div>
-                  <div>
-                    <h4 class="text-xl font-bold text-white">智慧製造與底層數據根系</h4>
-                    <span class="text-xs font-mono text-slate-400">ERP / BPM Clean Core • AIoT Sensor Integration • Anomaly Detection</span>
-                  </div>
+                  <span class="font-mono text-sm px-3 py-1 rounded bg-cedar-950 border border-cedar-500/40 text-cedar-400 font-bold" x-text="activeStage === 1 ? 'ROOTS // 扎根' : (activeStage === 2 ? 'TRUNK // 樹幹' : 'CANOPY // 樹冠')"></span>
+                  <span class="text-xs text-slate-400 font-mono tracking-wider">ANNUAL RING LAYER 0<span x-text="activeStage"></span></span>
                 </div>
-                <span class="text-xs font-mono px-2.5 py-1 rounded-full bg-amber-950/80 text-amber-300 border border-amber-500/30">+15% 良率提升</span>
-              </div>
-
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div class="p-4 rounded-xl bg-obsidian-900/80 border border-slate-800 space-y-2">
-                  <div class="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
-                    <i class="fa-solid fa-circle-check text-cedar-400 text-[10px]"></i>
-                    <span>跨廠區 ERP/BPM 數據整合</span>
-                  </div>
-                  <p class="text-xs text-slate-400 leading-relaxed">
-                    如同龐大雪松根系深扎土地，打通生產、採購、庫存與營運資料孤島，建立統一資料標準。
-                  </p>
-                </div>
-
-                <div class="p-4 rounded-xl bg-obsidian-900/80 border border-slate-800 space-y-2">
-                  <div class="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
-                    <i class="fa-solid fa-circle-check text-cedar-400 text-[10px]"></i>
-                    <span>AIoT 機台邊緣邊緣智慧</span>
-                  </div>
-                  <p class="text-xs text-slate-400 leading-relaxed">
-                    將邊緣運算與深度學習置於生產線第一線，即時振動、溫度與視覺檢測，機台異常自動預警。
-                  </p>
+                <div class="flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full" :class="activeStage === 1 ? 'bg-amber-400' : (activeStage === 2 ? 'bg-cyan-400' : 'bg-emerald-400')"></span>
+                  <span class="text-xs font-mono text-slate-400" x-text="activeStage === 1 ? '製造工控' : (activeStage === 2 ? '多雲高可用' : '可信任 AI')"></span>
                 </div>
               </div>
 
-              <!-- Terminal Snippet -->
-              <div class="rounded-xl bg-obsidian-950 p-4 border border-slate-800 font-mono text-xs text-slate-300 space-y-1">
-                <div class="flex items-center justify-between text-[11px] text-slate-500 border-b border-slate-800/80 pb-2 mb-2">
-                  <span>ROOT_ARCHITECTURE // DATA_GOVERNANCE.sh</span>
-                  <span class="text-cedar-400">ACTIVE: 100% HEALTHY</span>
+              <!-- Stage 1 Details -->
+              <div x-show="activeStage === 1" class="space-y-4">
+                <h4 class="text-2xl font-bold text-white">實體世界的深層根系：工廠現場的數據真實</h4>
+                <p class="text-sm text-slate-300 leading-relaxed">
+                  真正的技術不是浮於雲端的幻象，而是能承受廠區高溫、粉塵與機台震動的堅韌根基。在台中與跨國廠區，我們將 ERP、BPM 與產線機台感測器徹底打通，消除孤島，落實「Clean Core」架構原則。
+                </p>
+                <div class="grid grid-cols-2 gap-3 pt-3">
+                  <div class="p-3.5 rounded-xl bg-obsidian-950/80 border border-slate-800">
+                    <span class="text-xs text-slate-400 block">關鍵成就</span>
+                    <span class="text-sm font-bold text-cedar-300 mt-1 block">產線異常即時通報 4hr → 3s</span>
+                  </div>
+                  <div class="p-3.5 rounded-xl bg-obsidian-950/80 border border-slate-800">
+                    <span class="text-xs text-slate-400 block">治理架構</span>
+                    <span class="text-sm font-bold text-cedar-300 mt-1 block">ERP Clean Core + AIoT Edge</span>
+                  </div>
                 </div>
-                <div class="text-slate-400">> ingest_stream: <span class="text-amber-300">kafka.factory_telemetry</span> [Rate: 120,000 msg/sec]</div>
-                <div class="text-slate-400">> edge_inference: <span class="text-cedar-300">yield_anomaly_detector_v4</span> -> LATENCY: 2.1ms</div>
-                <div class="text-slate-400">> erp_bridge: <span class="text-cyan-300">Clean_Core_OData_Sync</span> [Transactions: Verified]</div>
+              </div>
+
+              <!-- Stage 2 Details -->
+              <div x-show="activeStage === 2" class="space-y-4">
+                <h4 class="text-2xl font-bold text-white">跨六朵雲的狂暴風暴：頂住百萬並發的主幹</h4>
+                <p class="text-sm text-slate-300 leading-relaxed">
+                  遊戲產業是網路架構最嚴苛的試金石。百萬玩家瞬間湧入、跨國網路抖動與巨額雲端帳單如影隨形。我們主導跨 AWS、GCP、Azure、Oracle Cloud、阿里雲與自建 IDC 的分散式多雲架構，以 FinOps 財務紀律調度資源，達成「零停機、降成本、倍速營運」的三重平衡。
+                </p>
+                <div class="grid grid-cols-2 gap-3 pt-3">
+                  <div class="p-3.5 rounded-xl bg-obsidian-950/80 border border-slate-800">
+                    <span class="text-xs text-slate-400 block">高可用紀律</span>
+                    <span class="text-sm font-bold text-cyan-300 mt-1 block">100% Zero Outage 容災調度</span>
+                  </div>
+                  <div class="p-3.5 rounded-xl bg-obsidian-950/80 border border-slate-800">
+                    <span class="text-xs text-slate-400 block">財務優化</span>
+                    <span class="text-sm font-bold text-amber-300 mt-1 block">-30% 結構性雲端費用削減</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Stage 3 Details -->
+              <div x-show="activeStage === 3" class="space-y-4">
+                <h4 class="text-2xl font-bold text-white">遮風避雨的長青樹冠：國際標準與可信任 AI</h4>
+                <p class="text-sm text-slate-300 leading-relaxed">
+                  當 AI 從實驗室走向企業核心業務，最大的風險不是算力不足，而是黑箱決策、資料洩漏與合規暴雷。我們結合 ISO/IEC 42001 (AIMS) 與 ISO 27001 雙重主導稽核員實務，將 DevSecOps、零信任與 Agentic AI 全面交織，為企業築造百年長青的科技防護罩。
+                </p>
+                <div class="grid grid-cols-2 gap-3 pt-3">
+                  <div class="p-3.5 rounded-xl bg-obsidian-950/80 border border-slate-800">
+                    <span class="text-xs text-slate-400 block">國際標準合規</span>
+                    <span class="text-sm font-bold text-emerald-300 mt-1 block">ISO 42001 & ISO 27001 Lead Auditor</span>
+                  </div>
+                  <div class="p-3.5 rounded-xl bg-obsidian-950/80 border border-slate-800">
+                    <span class="text-xs text-slate-400 block">AI 治理</span>
+                    <span class="text-sm font-bold text-emerald-300 mt-1 block">AISDLC 全生命週期審計機制</span>
+                  </div>
+                </div>
               </div>
             </div>
 
-            <!-- Stage 2 Details -->
-            <div x-show="activeStage === 2" x-transition.opacity.duration.400ms class="space-y-6">
-              <div class="flex items-center justify-between border-b border-slate-800 pb-4">
-                <div class="flex items-center gap-3">
-                  <div class="p-2.5 rounded-xl bg-cedar-500/10 text-cedar-400 border border-cedar-500/30">
-                    <i class="fa-solid fa-cloud text-lg"></i>
-                  </div>
-                  <div>
-                    <h4 class="text-xl font-bold text-white">全球多雲分散式與零停機架構</h4>
-                    <span class="text-xs font-mono text-slate-400">GKE Kubernetes • 6-Cloud Orchestration • FinOps Discipline</span>
-                  </div>
-                </div>
-                <span class="text-xs font-mono px-2.5 py-1 rounded-full bg-cedar-950/80 text-cedar-300 border border-cedar-500/30">100% 零停機</span>
-              </div>
-
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div class="p-4 rounded-xl bg-obsidian-900/80 border border-slate-800 space-y-2">
-                  <div class="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
-                    <i class="fa-solid fa-circle-check text-cedar-400 text-[10px]"></i>
-                    <span>跨 6 朵雲動態負載調度</span>
-                  </div>
-                  <p class="text-xs text-slate-400 leading-relaxed">
-                    在海量玩家高併發下，透過 Cloud Load Balancing 與 Anycast CDN，內容分發速度超越一般單雲 2 倍以上。
-                  </p>
-                </div>
-
-                <div class="p-4 rounded-xl bg-obsidian-900/80 border border-slate-800 space-y-2">
-                  <div class="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
-                    <i class="fa-solid fa-circle-check text-cedar-400 text-[10px]"></i>
-                    <span>FinOps 雲端財務投資矩陣</span>
-                  </div>
-                  <p class="text-xs text-slate-400 leading-relaxed">
-                    拒絕看不懂的雲端黑箱帳單，建立自動化 Spot 實例調度與權限治理，直接省下 30% 基礎設施費用。
-                  </p>
-                </div>
-              </div>
-
-              <!-- Terminal Snippet -->
-              <div class="rounded-xl bg-obsidian-950 p-4 border border-slate-800 font-mono text-xs text-slate-300 space-y-1">
-                <div class="flex items-center justify-between text-[11px] text-slate-500 border-b border-slate-800/80 pb-2 mb-2">
-                  <span>MULTI_CLOUD_STATUS // GLOBAL_LB.yaml</span>
-                  <span class="text-emerald-400">STATUS: 0 OUTAGE</span>
-                </div>
-                <div class="text-slate-400">> clusters: [GKE_Primary, AWS_EKS_Failover, Azure_Edge]</div>
-                <div class="text-slate-400">> finops_governor: <span class="text-amber-300">Spot_AutoScaler</span> -> Cost Saving: -31.4%</div>
-                <div class="text-slate-400">> health_probe: <span class="text-cedar-300">Global Anycast Latency &lt; 18ms</span></div>
-              </div>
+            <!-- Footer indicator inside card -->
+            <div class="pt-6 mt-6 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400 font-mono">
+              <span class="flex items-center gap-2">
+                <i class="fa-solid fa-code-commit text-cedar-400"></i>
+                <span>Proven Evolution 1999 - 2026</span>
+              </span>
+              <span class="text-cedar-400 font-bold cursor-pointer hover:underline" @click="openConsultationModal()">預約架構評估 →</span>
             </div>
-
-            <!-- Stage 3 Details -->
-            <div x-show="activeStage === 3" x-transition.opacity.duration.400ms class="space-y-6">
-              <div class="flex items-center justify-between border-b border-slate-800 pb-4">
-                <div class="flex items-center gap-3">
-                  <div class="p-2.5 rounded-xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">
-                    <i class="fa-solid fa-shield-halved text-lg"></i>
-                  </div>
-                  <div>
-                    <h4 class="text-xl font-bold text-white">可信任 AI (ISO 42001) 與 Agentic 治理</h4>
-                    <span class="text-xs font-mono text-slate-400">Trustworthy AI • Zero Trust Architecture • Autonomous SRE Agents</span>
-                  </div>
-                </div>
-                <span class="text-xs font-mono px-2.5 py-1 rounded-full bg-cyan-950/80 text-cyan-300 border border-cyan-500/30">ISO 42001 / 27001</span>
-              </div>
-
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div class="p-4 rounded-xl bg-obsidian-900/80 border border-slate-800 space-y-2">
-                  <div class="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
-                    <i class="fa-solid fa-circle-check text-cyan-400 text-[10px]"></i>
-                    <span>ISO 42001 可信任 AI 框架</span>
-                  </div>
-                  <p class="text-xs text-slate-400 leading-relaxed">
-                    涵蓋資料來源審計、模型可解釋性、倫理邊界與隱私保護，確保 AI 成為推動業務的合規護城河。
-                  </p>
-                </div>
-
-                <div class="p-4 rounded-xl bg-obsidian-900/80 border border-slate-800 space-y-2">
-                  <div class="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
-                    <i class="fa-solid fa-circle-check text-cyan-400 text-[10px]"></i>
-                    <span>Agentic AI 智慧基礎架構管家</span>
-                  </div>
-                  <p class="text-xs text-slate-400 leading-relaxed">
-                    AI 代理不是失控的野藤，而是受到嚴格零信任權限約束的架構維護助手，實現自動化修復與審計。
-                  </p>
-                </div>
-              </div>
-
-              <!-- Terminal Snippet -->
-              <div class="rounded-xl bg-obsidian-950 p-4 border border-slate-800 font-mono text-xs text-slate-300 space-y-1">
-                <div class="flex items-center justify-between text-[11px] text-slate-500 border-b border-slate-800/80 pb-2 mb-2">
-                  <span>TRUSTWORTHY_AI // ISO42001_AUDIT.json</span>
-                  <span class="text-cyan-400">GOVERNANCE: COMPLIANT</span>
-                </div>
-                <div class="text-slate-400">> zero_trust_policy: <span class="text-cyan-300">Strict_RBAC_Enforced</span></div>
-                <div class="text-slate-400">> agentic_monitor: <span class="text-cedar-300">Infra_Autonomous_Agent</span> (Boundaries Checked)</div>
-                <div class="text-slate-400">> privacy_vault: <span class="text-amber-300">Differential_Privacy_Enabled</span></div>
-              </div>
-            </div>
-
           </div>
 
         </div>
@@ -677,131 +651,398 @@
       </div>
     </section>
 
-    <!-- SECTION: FOUR CORE EVERGREEN PILLARS (四大長青核心支柱) -->
-    <section id="pillars" class="py-24 bg-obsidian-950 relative">
+    <!-- NEW SECTION: LIVE 6-CLOUD TELEMETRY & CHAOS RESILIENCE RADAR (即時跨六朵雲遙測與容災動態演練態) -->
+    <section id="telemetry" class="py-24 bg-obsidian-950 relative border-t border-slate-800/80">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        <div class="text-center max-w-3xl mx-auto mb-20">
+        <!-- Section Header -->
+        <div class="flex flex-col lg:flex-row lg:items-end justify-between mb-12 gap-6">
+          <div>
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-emerald-950 border border-emerald-500/40 text-emerald-400 text-xs font-mono uppercase mb-3">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+              <span x-text="t('telemetry_badge')">LIVE 6-CLOUD RESILIENCE & TELEMETRY</span>
+            </div>
+            <h2 class="font-display text-3xl sm:text-5xl font-bold text-white tracking-tight" x-text="t('telemetry_title')">
+              跨六朵雲即時遙測與容災演練態
+            </h2>
+            <p class="mt-4 text-slate-300 text-base max-w-2xl leading-relaxed" x-text="t('telemetry_subtitle')">
+              即時追蹤跨全球 6 大雲端基礎設施的延遲動態與健康度。點擊演練按鈕即可模擬真實節點斷線，親眼見證 Anycast 毫秒級自動無縫容災，維持 100% 零停機。
+            </p>
+          </div>
+
+          <!-- Controls: Chaos Simulator & Reset -->
+          <div class="flex flex-wrap items-center gap-3">
+            <button @click="triggerFailoverDemo(); playAudio('alert')" :disabled="isFailoverSimulating"
+                    class="px-4 py-2.5 rounded-xl border border-red-500/50 bg-red-950/50 hover:bg-red-900/60 text-red-300 font-mono text-xs flex items-center gap-2 transition-all shadow-glow-red disabled:opacity-50">
+              <i class="fa-solid fa-triangle-exclamation animate-bounce"></i>
+              <span x-text="isFailoverSimulating ? '容災演練進行中...' : '⚡ 模擬突發斷線 (Chaos Failover)'"></span>
+            </button>
+            <button @click="restoreAllNodes(); playAudio('success')"
+                    class="px-4 py-2.5 rounded-xl border border-emerald-500/50 bg-emerald-950/50 hover:bg-emerald-900/60 text-emerald-300 font-mono text-xs flex items-center gap-2 transition-all shadow-glow-cedar">
+              <i class="fa-solid fa-rotate"></i>
+              <span>一鍵恢復全雲正常</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Global Telemetry Metrics Summary Bar -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+          <div class="p-4 rounded-2xl glass-card border border-slate-800">
+            <span class="text-xs font-mono text-slate-400 block">全球加權平均延遲</span>
+            <div class="font-mono text-2xl font-bold text-white mt-1 flex items-baseline gap-1">
+              <span x-text="telemetrySummary.avgLatency">18.4</span>
+              <span class="text-xs text-cedar-400">ms</span>
+            </div>
+            <div class="text-[10px] text-emerald-400 font-mono mt-1">● 毫秒級 Anycast 智能就近路由</div>
+          </div>
+
+          <div class="p-4 rounded-2xl glass-card border border-slate-800">
+            <span class="text-xs font-mono text-slate-400 block">跨雲總請求吞吐量</span>
+            <div class="font-mono text-2xl font-bold text-white mt-1 flex items-baseline gap-1">
+              <span x-text="telemetrySummary.throughput.toLocaleString()">184,520</span>
+              <span class="text-xs text-cyan-400">req/s</span>
+            </div>
+            <div class="text-[10px] text-cyan-400 font-mono mt-1">● 6-Cloud Active-Active 負載</div>
+          </div>
+
+          <div class="p-4 rounded-2xl glass-card border border-slate-800">
+            <span class="text-xs font-mono text-slate-400 block">即時可用率 (SLA)</span>
+            <div class="font-mono text-2xl font-bold text-white mt-1 flex items-baseline gap-1">
+              <span class="text-emerald-400">100.000%</span>
+            </div>
+            <div class="text-[10px] text-slate-400 font-mono mt-1">● 過去 3,650 天零非計畫停機</div>
+          </div>
+
+          <div class="p-4 rounded-2xl glass-card border border-slate-800">
+            <span class="text-xs font-mono text-slate-400 block">AISDLC 治理簽章校驗</span>
+            <div class="font-mono text-2xl font-bold text-white mt-1 flex items-baseline gap-1">
+              <span class="text-amber-400">VERIFIED</span>
+            </div>
+            <div class="text-[10px] text-amber-300 font-mono mt-1">● ISO 42001 審計日誌全鏈加密</div>
+          </div>
+        </div>
+
+        <!-- 6 Cloud Provider Real-Time Node Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+          <template x-for="(node, idx) in cloudNodes" :key="node.id">
+            <div class="p-5 rounded-2xl glass-card border transition-all duration-300 relative overflow-hidden"
+                 :class="node.status === 'down' ? 'border-red-500/80 bg-red-950/30 shadow-glow-red' : (node.status === 'recovering' ? 'border-amber-500/80 bg-amber-950/30' : 'border-slate-800 hover:border-cedar-500/40')">
+              
+              <!-- Top bar of node card -->
+              <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs"
+                       :class="node.providerClass">
+                    <i :class="node.icon"></i>
+                  </div>
+                  <div>
+                    <h4 class="font-mono font-bold text-sm text-white" x-text="node.name"></h4>
+                    <span class="text-[10px] text-slate-400 font-mono" x-text="node.region"></span>
+                  </div>
+                </div>
+
+                <!-- Status Indicator -->
+                <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-mono font-bold"
+                     :class="node.status === 'down' ? 'bg-red-950 text-red-400 border border-red-500/50 animate-pulse' : (node.status === 'recovering' ? 'bg-amber-950 text-amber-300 border border-amber-500/40' : 'bg-emerald-950 text-emerald-400 border border-emerald-500/30')">
+                  <span class="w-1.5 h-1.5 rounded-full" :class="node.status === 'down' ? 'bg-red-400 animate-ping' : (node.status === 'recovering' ? 'bg-amber-400' : 'bg-emerald-400')"></span>
+                  <span x-text="node.status === 'down' ? 'FAULT' : (node.status === 'recovering' ? 'REROUTING' : 'HEALTHY')"></span>
+                </div>
+              </div>
+
+              <!-- Metrics -->
+              <div class="grid grid-cols-3 gap-2 py-3 my-2 border-y border-slate-800/80 font-mono text-center">
+                <div>
+                  <span class="text-[10px] text-slate-400 block">延遲</span>
+                  <span class="text-xs font-bold" :class="node.status === 'down' ? 'text-red-400' : 'text-slate-200'">
+                    <span x-text="node.latency"></span> ms
+                  </span>
+                </div>
+                <div>
+                  <span class="text-[10px] text-slate-400 block">負載率</span>
+                  <span class="text-xs font-bold" :class="node.status === 'down' ? 'text-red-400' : 'text-slate-200'">
+                    <span x-text="node.load"></span>%
+                  </span>
+                </div>
+                <div>
+                  <span class="text-[10px] text-slate-400 block">流量權重</span>
+                  <span class="text-xs font-bold text-cedar-400">
+                    <span x-text="node.weight"></span>%
+                  </span>
+                </div>
+              </div>
+
+              <!-- Node Action / Technology Tag -->
+              <div class="flex items-center justify-between text-[11px] pt-1">
+                <span class="text-slate-400 font-mono" x-text="node.role"></span>
+                <button @click="toggleSingleNodeFault(node.id); playAudio('alert')"
+                        class="text-[10px] font-mono px-2 py-0.5 rounded border border-slate-700 hover:border-slate-500 text-slate-400 hover:text-white transition-colors">
+                  <span x-text="node.status === 'down' ? '重啟節點' : '模擬單點故障'"></span>
+                </button>
+              </div>
+
+            </div>
+          </template>
+        </div>
+
+        <!-- DevSecOps & AISDLC Rolling Terminal Live Log Console -->
+        <div class="rounded-3xl glass-card border border-slate-800 overflow-hidden shadow-2xl">
+          <!-- Terminal Header -->
+          <div class="bg-obsidian-900/90 px-6 py-3.5 border-b border-slate-800 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="flex items-center gap-1.5">
+                <span class="w-3 h-3 rounded-full bg-red-500/80"></span>
+                <span class="w-3 h-3 rounded-full bg-amber-500/80"></span>
+                <span class="w-3 h-3 rounded-full bg-emerald-500/80"></span>
+              </div>
+              <span class="font-mono text-xs text-slate-300 font-bold flex items-center gap-2">
+                <i class="fa-solid fa-terminal text-cedar-400"></i>
+                <span>CEDAR TELEMETRY & AISDLC AUDIT STREAM (LIVE EVENT FEED)</span>
+              </span>
+            </div>
+
+            <!-- Terminal Actions -->
+            <div class="flex items-center gap-2 text-xs font-mono">
+              <button @click="terminalPaused = !terminalPaused; playAudio('toggle')" 
+                      :class="terminalPaused ? 'text-amber-400 bg-amber-950/60' : 'text-slate-400 hover:text-white'"
+                      class="px-2.5 py-1 rounded border border-slate-700 transition-all flex items-center gap-1">
+                <i :class="terminalPaused ? 'fa-solid fa-play' : 'fa-solid fa-pause'"></i>
+                <span x-text="terminalPaused ? 'RESUME' : 'PAUSE'"></span>
+              </button>
+              <button @click="injectSecurityAlert(); playAudio('alert')"
+                      class="px-2.5 py-1 rounded border border-amber-500/50 bg-amber-950/40 text-amber-300 hover:bg-amber-900/50 transition-all">
+                <i class="fa-solid fa-shield-virus mr-1"></i>注入審計警報
+              </button>
+              <button @click="clearTerminalLogs(); playAudio('click')"
+                      class="px-2.5 py-1 rounded border border-slate-700 text-slate-400 hover:text-white transition-all">
+                清空
+              </button>
+            </div>
+          </div>
+
+          <!-- Terminal Output Body -->
+          <div class="p-6 bg-obsidian-950/95 font-mono text-xs space-y-2 h-64 overflow-y-auto" id="terminalConsole">
+            <template x-for="(log, i) in terminalLogs" :key="i">
+              <div class="flex items-start gap-2.5 leading-relaxed transition-all">
+                <span class="text-slate-500 flex-shrink-0" x-text="log.timestamp"></span>
+                <span class="px-1.5 py-0.2 rounded text-[10px] font-bold uppercase flex-shrink-0" :class="log.tagClass" x-text="log.tag"></span>
+                <span :class="log.textClass" x-text="log.message"></span>
+              </div>
+            </template>
+          </div>
+
+          <!-- Terminal Footer -->
+          <div class="bg-obsidian-900/70 px-6 py-2.5 border-t border-slate-800/80 flex items-center justify-between text-[11px] font-mono text-slate-500">
+            <span class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>All 6 clusters cryptographically verified under ISO 27001 / ISO 42001</span>
+            </span>
+            <span>AUTO-SYNC EVERY 2.5s</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION: FOUR EVERGREEN PILLARS + TECHNICAL DEEP DIVE (四大長青核心支柱) -->
+    <section id="pillars" class="py-24 bg-obsidian-900/40 relative border-t border-slate-800/80">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Section Header -->
+        <div class="text-center max-w-3xl mx-auto mb-16">
           <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-cedar-950 border border-cedar-500/30 text-cedar-400 text-xs font-mono uppercase mb-3">
-            <i class="fa-solid fa-shapes"></i>
-            <span>EVERGREEN ARCHITECTURE PILLARS</span>
+            <i class="fa-solid fa-layer-group"></i>
+            <span>CORE PILLARS & ARCHITECTURE</span>
           </div>
           <h2 class="font-display text-3xl sm:text-5xl font-bold text-white tracking-tight">
             四大長青支柱：支撐企業穩健運行的主樑
           </h2>
           <p class="mt-4 text-slate-300 text-base sm:text-lg leading-relaxed" x-text="t('pillars_subtitle')">
-            如同雪松作為殿堂主樑，我們不只解決單點技術故障，而是為企業構築經得起十年檢驗的數位營運架構。
+            如同頂級雪松作為百年建築之樑木，我們以四大核心支柱，協助企業在雲端與 AI 浪潮中構築堅實不拔的長期優勢。
           </p>
         </div>
 
+        <!-- 4 Pillars Grid with Deep Dive Drawers -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
           
-          <!-- Pillar 1 -->
-          <div class="glass-card glass-card-hover p-8 rounded-3xl border border-slate-800 relative group">
-            <div class="w-14 h-14 rounded-2xl bg-cedar-950/80 border border-cedar-500/40 flex items-center justify-center text-cedar-400 text-2xl mb-6 shadow-glow-cedar group-hover:scale-110 transition-transform">
-              <i class="fa-solid fa-cloud-bolt"></i>
+          <!-- Pillar 1: Cloud-Native HA -->
+          <div class="glass-card rounded-3xl p-8 border border-slate-800 flex flex-col justify-between relative group hover:border-cedar-500/50 transition-all">
+            <div class="space-y-4">
+              <div class="w-14 h-14 rounded-2xl bg-cedar-950/80 border border-cedar-500/40 flex items-center justify-center text-cedar-400 text-2xl shadow-glow-cedar">
+                <i class="fa-solid fa-cloud"></i>
+              </div>
+              <div>
+                <span class="text-xs font-mono text-cedar-400 uppercase tracking-widest font-bold">PILLAR 01 // 高可用性</span>
+                <h3 class="text-xl sm:text-2xl font-bold text-white mt-1" x-text="t('pillar1_title')">雲原生與多雲分散式架構</h3>
+              </div>
+              <p class="text-sm text-slate-300 leading-relaxed" x-text="t('pillar1_desc')">
+                Kubernetes (GKE/EKS) 跨多雲同盟、服務網格 (Service Mesh) 與全局負載平衡。實現 active-active 跨六朵雲容災調度，達成真正的 100% 零停機。
+              </p>
+
+              <!-- Deep Tech Specs Button -->
+              <button @click="togglePillarDrawer(1); playAudio('click')"
+                      class="text-xs font-mono text-cedar-400 hover:text-cedar-300 flex items-center gap-1.5 pt-2">
+                <span x-text="pillarDrawer === 1 ? '▼ 收起技術細節與規範' : '▶ 展開底層技術棧與 SLO 規範'"></span>
+              </button>
+
+              <!-- Deep Tech Drawer Content -->
+              <div x-show="pillarDrawer === 1" x-transition class="pt-4 border-t border-slate-800 space-y-3 font-mono text-xs" x-cloak>
+                <div class="bg-obsidian-950 p-4 rounded-xl space-y-2">
+                  <div class="text-slate-300 font-bold text-emerald-400">核心架構棧 (Core Stack):</div>
+                  <div class="text-slate-400 leading-relaxed">
+                    • GKE / EKS Multi-Cluster Federation<br>
+                    • Cilium eBPF CNI & Istio Service Mesh<br>
+                    • Cloudflare Magic Transit & Anycast GeoDNS<br>
+                    • Cross-Cloud PostgreSQL / Redis Active Sync
+                  </div>
+                  <div class="text-slate-300 font-bold text-emerald-400 pt-2">SLO 承諾指標:</div>
+                  <div class="text-slate-400 leading-relaxed">
+                    • RTO (復原時間): < 120 秒 (全自動無人介入)<br>
+                    • RPO (資料遺失量): 0 (雙向同步機制)<br>
+                    • 跨區 P99 延遲: < 45ms (全球就近接取)
+                  </div>
+                </div>
+              </div>
             </div>
-            <h3 class="font-display text-2xl font-bold text-white mb-3" x-text="t('pillar1_title')">
-              雲原生與多雲分散式架構 (Cloud-Native HA)
-            </h3>
-            <p class="text-slate-300 text-sm leading-relaxed mb-6" x-text="t('pillar1_desc')">
-              基於 Kubernetes (GKE / EKS)、服務網格 (Service Mesh) 與全局負載均衡，打造具備自動修復、毫秒容災與彈性伸縮的零停機架構。
-            </p>
-            <ul class="space-y-2.5 text-xs text-slate-300 border-t border-slate-800/80 pt-4 font-mono">
-              <li class="flex items-center gap-2">
-                <i class="fa-solid fa-check text-cedar-400"></i>
-                <span>跨雲災備與動態流量調度 (Active-Active Multi-Cloud)</span>
-              </li>
-              <li class="flex items-center gap-2">
-                <i class="fa-solid fa-check text-cedar-400"></i>
-                <span>無狀態微服務與分散式資料庫快取加速</span>
-              </li>
-              <li class="flex items-center gap-2">
-                <i class="fa-solid fa-check text-cedar-400"></i>
-                <span>2x 內容載入提速與全鏈路可觀測性 (Observability)</span>
-              </li>
-            </ul>
+
+            <div class="mt-6 pt-4 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400 font-mono">
+              <span>效益指標</span>
+              <span class="text-cedar-300 font-bold">100% Zero Outage</span>
+            </div>
           </div>
 
-          <!-- Pillar 2 -->
-          <div class="glass-card glass-card-hover p-8 rounded-3xl border border-slate-800 relative group">
-            <div class="w-14 h-14 rounded-2xl bg-cyan-950/80 border border-cyan-500/40 flex items-center justify-center text-cyan-400 text-2xl mb-6 shadow-glow-cyan group-hover:scale-110 transition-transform">
-              <i class="fa-solid fa-shield-virus"></i>
+          <!-- Pillar 2: Trustworthy AI & ISO 42001 -->
+          <div class="glass-card rounded-3xl p-8 border border-slate-800 flex flex-col justify-between relative group hover:border-cyan-500/50 transition-all">
+            <div class="space-y-4">
+              <div class="w-14 h-14 rounded-2xl bg-cyan-950/80 border border-cyan-500/40 flex items-center justify-center text-cyan-400 text-2xl shadow-glow-cyan">
+                <i class="fa-solid fa-shield-halved"></i>
+              </div>
+              <div>
+                <span class="text-xs font-mono text-cyan-400 uppercase tracking-widest font-bold">PILLAR 02 // 可信任治理</span>
+                <h3 class="text-xl sm:text-2xl font-bold text-white mt-1" x-text="t('pillar2_title')">可信任 AI 治理與 ISO 42001</h3>
+              </div>
+              <p class="text-sm text-slate-300 leading-relaxed" x-text="t('pillar2_desc')">
+                全生命週期 AI 治理框架。落實 ISO/IEC 42001 國際人工智慧管理系統規範，包含資料血統追溯、模型防漂移、零信任存取與隱私防護，杜絕黑箱與法律風險。
+              </p>
+
+              <!-- Deep Tech Specs Button -->
+              <button @click="togglePillarDrawer(2); playAudio('click')"
+                      class="text-xs font-mono text-cyan-400 hover:text-cyan-300 flex items-center gap-1.5 pt-2">
+                <span x-text="pillarDrawer === 2 ? '▼ 收起技術細節與規範' : '▶ 展開底層技術棧與 AIMS 規範'"></span>
+              </button>
+
+              <!-- Deep Tech Drawer Content -->
+              <div x-show="pillarDrawer === 2" x-transition class="pt-4 border-t border-slate-800 space-y-3 font-mono text-xs" x-cloak>
+                <div class="bg-obsidian-950 p-4 rounded-xl space-y-2">
+                  <div class="text-slate-300 font-bold text-cyan-400">AIMS 治理實作 (Implementation):</div>
+                  <div class="text-slate-400 leading-relaxed">
+                    • AISDLC 自動化檢查管線 (CI/CD Quality Gate)<br>
+                    • Great Expectations & Evidently AI 模型漂移監控<br>
+                    • Prompt Injection / PII 敏感資料遮罩安全網關<br>
+                    • ISO 42001:2023 稽核證據鏈不可竄改保存
+                  </div>
+                  <div class="text-slate-300 font-bold text-cyan-400 pt-2">合規與防護價值:</div>
+                  <div class="text-slate-400 leading-relaxed">
+                    • 通過第三方國際稽核 Lead Auditor 驗證<br>
+                    • 100% 規避歐盟 AI Act / 台灣金管會合規紅線
+                  </div>
+                </div>
+              </div>
             </div>
-            <h3 class="font-display text-2xl font-bold text-white mb-3" x-text="t('pillar2_title')">
-              可信任 AI 治理與 ISO 42001 (Trustworthy AI)
-            </h3>
-            <p class="text-slate-300 text-sm leading-relaxed mb-6" x-text="t('pillar2_desc')">
-              拒絕失控黑箱，從資料血統、模型審計、偏差偵測到 AISDLC 流程內嵌安全標準，協助企業取得國際認證與客戶信任。
-            </p>
-            <ul class="space-y-2.5 text-xs text-slate-300 border-t border-slate-800/80 pt-4 font-mono">
-              <li class="flex items-center gap-2">
-                <i class="fa-solid fa-check text-cyan-400"></i>
-                <span>ISO 42001 人工智慧管理系統 (AIMS) 導入顧問</span>
-              </li>
-              <li class="flex items-center gap-2">
-                <i class="fa-solid fa-check text-cyan-400"></i>
-                <span>零信任架構 (Zero Trust) 整合與身分邊界控管</span>
-              </li>
-              <li class="flex items-center gap-2">
-                <i class="fa-solid fa-check text-cyan-400"></i>
-                <span>Agentic AI 基礎設施自主運維防護與防漂移機制</span>
-              </li>
-            </ul>
+
+            <div class="mt-6 pt-4 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400 font-mono">
+              <span>效益指標</span>
+              <span class="text-cyan-300 font-bold">可審計・抗漂移・零黑箱</span>
+            </div>
           </div>
 
-          <!-- Pillar 3 -->
-          <div class="glass-card glass-card-hover p-8 rounded-3xl border border-slate-800 relative group">
-            <div class="w-14 h-14 rounded-2xl bg-amber-950/80 border border-amber-500/40 flex items-center justify-center text-amber-400 text-2xl mb-6 group-hover:scale-110 transition-transform">
-              <i class="fa-solid fa-chart-pie"></i>
+          <!-- Pillar 3: FinOps & Cost Optimization -->
+          <div class="glass-card rounded-3xl p-8 border border-slate-800 flex flex-col justify-between relative group hover:border-amber-500/50 transition-all">
+            <div class="space-y-4">
+              <div class="w-14 h-14 rounded-2xl bg-amber-950/80 border border-amber-500/40 flex items-center justify-center text-amber-400 text-2xl shadow-glow-amber">
+                <i class="fa-solid fa-coins"></i>
+              </div>
+              <div>
+                <span class="text-xs font-mono text-amber-400 uppercase tracking-widest font-bold">PILLAR 03 // 財務紀律</span>
+                <h3 class="text-xl sm:text-2xl font-bold text-white mt-1" x-text="t('pillar3_title')">企業級 FinOps 與雲端財務優化</h3>
+              </div>
+              <p class="text-sm text-slate-300 leading-relaxed" x-text="t('pillar3_desc')">
+                將無序的雲端帳單轉化為透明的高報酬投資組合。建構單位經濟模型 (Unit Economics)、Spot/RI 動態調度與儲存層階梯歸檔，達成結構性成本優化。
+              </p>
+
+              <!-- Deep Tech Specs Button -->
+              <button @click="togglePillarDrawer(3); playAudio('click')"
+                      class="text-xs font-mono text-amber-400 hover:text-amber-300 flex items-center gap-1.5 pt-2">
+                <span x-text="pillarDrawer === 3 ? '▼ 收起技術細節與規範' : '▶ 展開底層技術棧與 FinOps 模型'"></span>
+              </button>
+
+              <!-- Deep Tech Drawer Content -->
+              <div x-show="pillarDrawer === 3" x-transition class="pt-4 border-t border-slate-800 space-y-3 font-mono text-xs" x-cloak>
+                <div class="bg-obsidian-950 p-4 rounded-xl space-y-2">
+                  <div class="text-slate-300 font-bold text-amber-400">FinOps 實作機制:</div>
+                  <div class="text-slate-400 leading-relaxed">
+                    • FOCUS 1.0 統一多雲帳單標準資料湖<br>
+                    • Karpenter / Spot.io 智慧中斷預測與動態退避<br>
+                    • 單位經濟指標：Cost per 1K MAU / Cost per Transaction<br>
+                    • 跨團隊雲端預算 Showback / Chargeback 看板
+                  </div>
+                  <div class="text-slate-300 font-bold text-amber-400 pt-2">財務回報成果:</div>
+                  <div class="text-slate-400 leading-relaxed">
+                    • 平均月度雲端開支結構性節省 28% ~ 35%<br>
+                    • 避免 100% 閒置殭屍資產持續計費
+                  </div>
+                </div>
+              </div>
             </div>
-            <h3 class="font-display text-2xl font-bold text-white mb-3" x-text="t('pillar3_title')">
-              企業級 FinOps 與雲端財務優化 (FinOps Mastery)
-            </h3>
-            <p class="text-slate-300 text-sm leading-relaxed mb-6" x-text="t('pillar3_desc')">
-              打破雲端成本黑箱，將混亂的月結帳單轉化為可量化、可追溯的投資組合，實現單位經濟效益最大化。
-            </p>
-            <ul class="space-y-2.5 text-xs text-slate-300 border-t border-slate-800/80 pt-4 font-mono">
-              <li class="flex items-center gap-2">
-                <i class="fa-solid fa-check text-amber-400"></i>
-                <span>30%+ 雲端成本精準降減與 Spot/RI 智能調度</span>
-              </li>
-              <li class="flex items-center gap-2">
-                <i class="fa-solid fa-check text-amber-400"></i>
-                <span>各業務部門雲端成本分攤與單位利潤歸因</span>
-              </li>
-              <li class="flex items-center gap-2">
-                <i class="fa-solid fa-check text-amber-400"></i>
-                <span>持續性 FinOps 治理看板與自動化預算警報</span>
-              </li>
-            </ul>
+
+            <div class="mt-6 pt-4 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400 font-mono">
+              <span>效益指標</span>
+              <span class="text-amber-300 font-bold">-30% 雲端結構性節省</span>
+            </div>
           </div>
 
-          <!-- Pillar 4 -->
-          <div class="glass-card glass-card-hover p-8 rounded-3xl border border-slate-800 relative group">
-            <div class="w-14 h-14 rounded-2xl bg-emerald-950/80 border border-emerald-500/40 flex items-center justify-center text-emerald-400 text-2xl mb-6 group-hover:scale-110 transition-transform">
-              <i class="fa-solid fa-microchip"></i>
+          <!-- Pillar 4: Smart Factory & AIoT Data Governance -->
+          <div class="glass-card rounded-3xl p-8 border border-slate-800 flex flex-col justify-between relative group hover:border-emerald-500/50 transition-all">
+            <div class="space-y-4">
+              <div class="w-14 h-14 rounded-2xl bg-emerald-950/80 border border-emerald-500/40 flex items-center justify-center text-emerald-400 text-2xl shadow-glow-cedar">
+                <i class="fa-solid fa-industry"></i>
+              </div>
+              <div>
+                <span class="text-xs font-mono text-emerald-400 uppercase tracking-widest font-bold">PILLAR 04 // 實體智造</span>
+                <h3 class="text-xl sm:text-2xl font-bold text-white mt-1" x-text="t('pillar4_title')">智慧製造與 AIoT 數據治理</h3>
+              </div>
+              <p class="text-sm text-slate-300 leading-relaxed" x-text="t('pillar4_desc')">
+                打破 OT 與 IT 數據藩籬。以 Clean Core 治理跨廠區 ERP 與 BPM，串聯感測器進行邊緣 AI 瑕疵檢測與設備預測性維護，提升實體產線實質良率。
+              </p>
+
+              <!-- Deep Tech Specs Button -->
+              <button @click="togglePillarDrawer(4); playAudio('click')"
+                      class="text-xs font-mono text-emerald-400 hover:text-emerald-300 flex items-center gap-1.5 pt-2">
+                <span x-text="pillarDrawer === 4 ? '▼ 收起技術細節與規範' : '▶ 展開底層技術棧與 Clean Core 架構'"></span>
+              </button>
+
+              <!-- Deep Tech Drawer Content -->
+              <div x-show="pillarDrawer === 4" x-transition class="pt-4 border-t border-slate-800 space-y-3 font-mono text-xs" x-cloak>
+                <div class="bg-obsidian-950 p-4 rounded-xl space-y-2">
+                  <div class="text-slate-300 font-bold text-emerald-400">工控與製造數據架構:</div>
+                  <div class="text-slate-400 leading-relaxed">
+                    • SAP S/4HANA Clean Core 擴充架構 (Side-by-Side BTP)<br>
+                    • MQTT / OPC-UA 工控標準雙向網關<br>
+                    • 邊緣推理 Edge TPU 外觀良率視覺檢測<br>
+                    • 機台振動與熱能頻譜預測性維護演算法
+                  </div>
+                  <div class="text-slate-300 font-bold text-emerald-400 pt-2">實質產線效益:</div>
+                  <div class="text-slate-400 leading-relaxed">
+                    • 產線綜合良率提升 +15%<br>
+                    • 無預警非計畫停機次數減少 75%
+                  </div>
+                </div>
+              </div>
             </div>
-            <h3 class="font-display text-2xl font-bold text-white mb-3" x-text="t('pillar4_title')">
-              智慧製造與 AIoT 數據治理 (Smart Factory)
-            </h3>
-            <p class="text-slate-300 text-sm leading-relaxed mb-6" x-text="t('pillar4_desc')">
-              融合 27 年資訊工程與製造業實戰經驗，以 Clean Core 概念整合 ERP/BPM 與現場感測器數據，實現機台自主診斷。
-            </p>
-            <ul class="space-y-2.5 text-xs text-slate-300 border-t border-slate-800/80 pt-4 font-mono">
-              <li class="flex items-center gap-2">
-                <i class="fa-solid fa-check text-emerald-400"></i>
-                <span>跨廠區製造執行系統 (MES) 與 ERP 核心資料整合</span>
-              </li>
-              <li class="flex items-center gap-2">
-                <i class="fa-solid fa-check text-emerald-400"></i>
-                <span>邊緣 AI 機台異常偵測與良率自動預測</span>
-              </li>
-              <li class="flex items-center gap-2">
-                <i class="fa-solid fa-check text-emerald-400"></i>
-                <span>工業物聯網數據治理與數位雙生 (Digital Twin) 基礎</span>
-              </li>
-            </ul>
+
+            <div class="mt-6 pt-4 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400 font-mono">
+              <span>效益指標</span>
+              <span class="text-emerald-300 font-bold">+15% 綜合產線良率</span>
+            </div>
           </div>
 
         </div>
@@ -809,29 +1050,446 @@
       </div>
     </section>
 
-    <!-- SECTION: INTERACTIVE ARCHITECTURE & FINOPS SIMULATOR -->
-    <section id="simulator" class="py-24 bg-obsidian-900/80 border-t border-slate-800/80 relative">
+    <!-- NEW SECTION: ENTERPRISE TOPOLOGY & MODALITIES MATRIX (四大實戰業務型態與架構矩陣) -->
+    <section id="scenarios" class="py-24 bg-obsidian-950 relative border-t border-slate-800/80">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Section Header -->
+        <div class="text-center max-w-3xl mx-auto mb-16">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-cyan-950 border border-cyan-500/40 text-cyan-400 text-xs font-mono uppercase mb-3">
+            <i class="fa-solid fa-cubes-stacked"></i>
+            <span>DEPLOYED ARCHITECTURE BLUEPRINTS</span>
+          </div>
+          <h2 class="font-display text-3xl sm:text-5xl font-bold text-white tracking-tight" x-text="t('scenarios_title')">
+            四大實戰業務型態與架構矩陣
+          </h2>
+          <p class="mt-4 text-slate-300 text-base sm:text-lg leading-relaxed" x-text="t('scenarios_subtitle')">
+            不同行業有截然不同的極限挑戰。點選下方業務型態，探索雲杉長青為各領域量身定做的實戰架構藍圖與效益指標。
+          </p>
+        </div>
+
+        <!-- Scenario Mode Switcher Tabs -->
+        <div class="flex flex-wrap items-center justify-center gap-2 sm:gap-4 mb-10">
+          <button @click="activeScenario = 'gaming'; playAudio('toggle')"
+                  :class="activeScenario === 'gaming' ? 'bg-cyan-500/20 border-cyan-500 text-cyan-300 shadow-glow-cyan font-bold' : 'bg-obsidian-900 border-slate-800 text-slate-400 hover:text-white'"
+                  class="px-5 py-3 rounded-2xl border text-xs sm:text-sm font-mono transition-all flex items-center gap-2.5">
+            <i class="fa-solid fa-gamepad"></i>
+            <span>🎮 跨國遊戲億級並發態</span>
+          </button>
+          
+          <button @click="activeScenario = 'semiconductor'; playAudio('toggle')"
+                  :class="activeScenario === 'semiconductor' ? 'bg-emerald-500/20 border-emerald-500 text-emerald-300 shadow-glow-cedar font-bold' : 'bg-obsidian-900 border-slate-800 text-slate-400 hover:text-white'"
+                  class="px-5 py-3 rounded-2xl border text-xs sm:text-sm font-mono transition-all flex items-center gap-2.5">
+            <i class="fa-solid fa-microchip"></i>
+            <span>🏭 半導體封測 AIoT 製造態</span>
+          </button>
+
+          <button @click="activeScenario = 'ai_gov'; playAudio('toggle')"
+                  :class="activeScenario === 'ai_gov' ? 'bg-amber-500/20 border-amber-500 text-amber-300 shadow-glow-amber font-bold' : 'bg-obsidian-900 border-slate-800 text-slate-400 hover:text-white'"
+                  class="px-5 py-3 rounded-2xl border text-xs sm:text-sm font-mono transition-all flex items-center gap-2.5">
+            <i class="fa-solid fa-scale-balanced"></i>
+            <span>🛡️ 金融級 AI 治理 ISO 42001態</span>
+          </button>
+
+          <button @click="activeScenario = 'finops_rescue'; playAudio('toggle')"
+                  :class="activeScenario === 'finops_rescue' ? 'bg-emerald-600/30 border-emerald-400 text-emerald-200 shadow-glow-cedar font-bold' : 'bg-obsidian-900 border-slate-800 text-slate-400 hover:text-white'"
+                  class="px-5 py-3 rounded-2xl border text-xs sm:text-sm font-mono transition-all flex items-center gap-2.5">
+            <i class="fa-solid fa-hand-holding-dollar"></i>
+            <span>💰 巨額雲端支出 FinOps 減重態</span>
+          </button>
+        </div>
+
+        <!-- Dynamic Scenario Display Panel -->
+        <div class="glass-card rounded-3xl p-8 lg:p-10 border border-slate-700/80 shadow-2xl relative overflow-hidden">
+          
+          <!-- Scenario 1: Gaming Concurrency -->
+          <div x-show="activeScenario === 'gaming'" x-transition class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            <div class="lg:col-span-7 space-y-5">
+              <div class="flex items-center gap-2">
+                <span class="px-3 py-1 rounded bg-cyan-950 border border-cyan-500/40 text-cyan-400 font-mono text-xs font-bold">SCENARIO: HIGH-CONCURRENCY GAMING</span>
+                <span class="text-xs text-slate-400 font-mono">1,000,000+ CCU</span>
+              </div>
+              <h3 class="text-2xl sm:text-3xl font-bold text-white">全球跨國手遊：百萬並發與毫秒削峰</h3>
+              <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+                新版本全球同步發布瞬間，百萬玩家湧入伺服器，伴隨海外 DDoS 惡意流量。雲杉長青採用 6 朵雲 Active-Active Anycast 入口，配合 GKE 自動調度，8 秒內自適應擴展數百節點，維持全局 P99 延遲低於 35ms。
+              </p>
+              
+              <!-- Metrics Grid -->
+              <div class="grid grid-cols-3 gap-3 pt-2">
+                <div class="p-3.5 rounded-xl bg-obsidian-950 border border-slate-800">
+                  <span class="text-[10px] text-slate-400 font-mono block">非計畫中斷</span>
+                  <span class="text-lg font-bold text-emerald-400 font-mono">0 次 / 全年</span>
+                </div>
+                <div class="p-3.5 rounded-xl bg-obsidian-950 border border-slate-800">
+                  <span class="text-[10px] text-slate-400 font-mono block">擴容反應時間</span>
+                  <span class="text-lg font-bold text-cyan-400 font-mono">&lt; 8 秒</span>
+                </div>
+                <div class="p-3.5 rounded-xl bg-obsidian-950 border border-slate-800">
+                  <span class="text-[10px] text-slate-400 font-mono block">尖峰彈性費用節省</span>
+                  <span class="text-lg font-bold text-amber-400 font-mono">42%</span>
+                </div>
+              </div>
+
+              <!-- Tech Pills -->
+              <div class="flex flex-wrap gap-2 pt-2">
+                <span class="px-2.5 py-1 rounded-md bg-slate-800 text-[11px] font-mono text-slate-300">GKE Multi-Region</span>
+                <span class="px-2.5 py-1 rounded-md bg-slate-800 text-[11px] font-mono text-slate-300">Cloudflare Magic Transit</span>
+                <span class="px-2.5 py-1 rounded-md bg-slate-800 text-[11px] font-mono text-slate-300">Redis Global Mesh</span>
+                <span class="px-2.5 py-1 rounded-md bg-slate-800 text-[11px] font-mono text-slate-300">Kafka Streaming</span>
+              </div>
+            </div>
+
+            <!-- Topology Graphic -->
+            <div class="lg:col-span-5 p-6 rounded-2xl bg-obsidian-950 border border-cyan-500/30 font-mono text-xs space-y-4">
+              <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                <span class="text-cyan-400 font-bold">TOPOLOGY // ANYCAST ACTIVE MESH</span>
+                <span class="text-[10px] text-slate-500">6 CLOUDS SYNC</span>
+              </div>
+              <div class="space-y-2 text-slate-400 leading-relaxed text-[11px]">
+                <div class="p-2.5 rounded bg-slate-900/80 border border-slate-800 flex items-center justify-between">
+                  <span>[INGRESS] Anycast DNS + CDN Edge</span>
+                  <span class="text-emerald-400 font-bold">120+ PoPs</span>
+                </div>
+                <div class="text-center text-cyan-400">↓ (Anycast Routing in 12ms)</div>
+                <div class="p-2.5 rounded bg-slate-900/80 border border-cyan-500/40 flex items-center justify-between text-white">
+                  <span>[COMPUTE] Multi-Cloud GKE / EKS</span>
+                  <span class="text-cyan-300 font-bold">Autoscale 8s</span>
+                </div>
+                <div class="text-center text-cyan-400">↓ (Bi-directional Data Sync)</div>
+                <div class="p-2.5 rounded bg-slate-900/80 border border-slate-800 flex items-center justify-between">
+                  <span>[DATA] Global Active-Active Clusters</span>
+                  <span class="text-amber-400 font-bold">Zero Loss</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Scenario 2: Semiconductor Smart Factory -->
+          <div x-show="activeScenario === 'semiconductor'" x-transition class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center" x-cloak>
+            <div class="lg:col-span-7 space-y-5">
+              <div class="flex items-center gap-2">
+                <span class="px-3 py-1 rounded bg-emerald-950 border border-emerald-500/40 text-emerald-400 font-mono text-xs font-bold">SCENARIO: SEMICONDUCTOR & AIOT</span>
+                <span class="text-xs text-slate-400 font-mono">CLEAN CORE & EDGE AI</span>
+              </div>
+              <h3 class="text-2xl sm:text-3xl font-bold text-white">半導體封測：OT/IT 融合與邊緣良率推論</h3>
+              <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+                晶圓封裝機台 24 小時連續運作，跨廠區 ERP 資料雜亂且 OT 協定封閉。雲杉長青以 Clean Core 保持 ERP 乾淨，在廠區建置 MQTT/OPC-UA 工控標準網關與邊緣 AI 檢測模型，毫秒級剔除瑕疵，大幅降低報廢損失。
+              </p>
+              
+              <!-- Metrics Grid -->
+              <div class="grid grid-cols-3 gap-3 pt-2">
+                <div class="p-3.5 rounded-xl bg-obsidian-950 border border-slate-800">
+                  <span class="text-[10px] text-slate-400 font-mono block">產線良率提升</span>
+                  <span class="text-lg font-bold text-emerald-400 font-mono">+15.2%</span>
+                </div>
+                <div class="p-3.5 rounded-xl bg-obsidian-950 border border-slate-800">
+                  <span class="text-[10px] text-slate-400 font-mono block">異常反應延遲</span>
+                  <span class="text-lg font-bold text-cyan-400 font-mono">4hr → 3s</span>
+                </div>
+                <div class="p-3.5 rounded-xl bg-obsidian-950 border border-slate-800">
+                  <span class="text-[10px] text-slate-400 font-mono block">機台非預期停工</span>
+                  <span class="text-lg font-bold text-amber-400 font-mono">-75%</span>
+                </div>
+              </div>
+
+              <!-- Tech Pills -->
+              <div class="flex flex-wrap gap-2 pt-2">
+                <span class="px-2.5 py-1 rounded-md bg-slate-800 text-[11px] font-mono text-slate-300">Clean Core SAP ERP</span>
+                <span class="px-2.5 py-1 rounded-md bg-slate-800 text-[11px] font-mono text-slate-300">Edge TPU Vision AI</span>
+                <span class="px-2.5 py-1 rounded-md bg-slate-800 text-[11px] font-mono text-slate-300">OPC-UA / MQTT Gateway</span>
+                <span class="px-2.5 py-1 rounded-md bg-slate-800 text-[11px] font-mono text-slate-300">Vibration FFT Analysis</span>
+              </div>
+            </div>
+
+            <!-- Topology Graphic -->
+            <div class="lg:col-span-5 p-6 rounded-2xl bg-obsidian-950 border border-emerald-500/30 font-mono text-xs space-y-4">
+              <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                <span class="text-emerald-400 font-bold">TOPOLOGY // OT CLEAN CORE FABRIC</span>
+                <span class="text-[10px] text-slate-500">SMART FAB</span>
+              </div>
+              <div class="space-y-2 text-slate-400 leading-relaxed text-[11px]">
+                <div class="p-2.5 rounded bg-slate-900/80 border border-slate-800 flex items-center justify-between">
+                  <span>[OT SENSORS] 封裝/測試機台高速遙測</span>
+                  <span class="text-emerald-400 font-bold">OPC-UA 1ms</span>
+                </div>
+                <div class="text-center text-emerald-400">↓ (Edge Defect Filtering)</div>
+                <div class="p-2.5 rounded bg-slate-900/80 border border-emerald-500/40 flex items-center justify-between text-white">
+                  <span>[EDGE AI] 瑕疵識別與預測性維護</span>
+                  <span class="text-emerald-300 font-bold">99.8% Precision</span>
+                </div>
+                <div class="text-center text-emerald-400">↓ (Clean Core Synchronization)</div>
+                <div class="p-2.5 rounded bg-slate-900/80 border border-slate-800 flex items-center justify-between">
+                  <span>[CORE ERP] 企業資源計劃與良率看板</span>
+                  <span class="text-cyan-400 font-bold">No Custom Code</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Scenario 3: AI Governance ISO 42001 -->
+          <div x-show="activeScenario === 'ai_gov'" x-transition class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center" x-cloak>
+            <div class="lg:col-span-7 space-y-5">
+              <div class="flex items-center gap-2">
+                <span class="px-3 py-1 rounded bg-amber-950 border border-amber-500/40 text-amber-400 font-mono text-xs font-bold">SCENARIO: TRUSTWORTHY AI & ISO 42001</span>
+                <span class="text-xs text-slate-400 font-mono">FINTECH & HEALTHCARE</span>
+              </div>
+              <h3 class="text-2xl sm:text-3xl font-bold text-white">金融與高規行業：ISO 42001 可信任 AI 落地</h3>
+              <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+                面對金管會法規與歐盟 AI Act，企業 AI 專案最懼怕「模型黑箱」、「數據隱私外洩」與「模型輸出幻覺危害業務」。雲杉長青提供從資料血統、模型審計到不可竄改簽章的完整 AISDLC 體系，確保 100% 合規可審查。
+              </p>
+              
+              <!-- Metrics Grid -->
+              <div class="grid grid-cols-3 gap-3 pt-2">
+                <div class="p-3.5 rounded-xl bg-obsidian-950 border border-slate-800">
+                  <span class="text-[10px] text-slate-400 font-mono block">稽核合規通過率</span>
+                  <span class="text-lg font-bold text-emerald-400 font-mono">100%</span>
+                </div>
+                <div class="p-3.5 rounded-xl bg-obsidian-950 border border-slate-800">
+                  <span class="text-[10px] text-slate-400 font-mono block">模型漂移檢測率</span>
+                  <span class="text-lg font-bold text-cyan-400 font-mono">99.9%</span>
+                </div>
+                <div class="p-3.5 rounded-xl bg-obsidian-950 border border-slate-800">
+                  <span class="text-[10px] text-slate-400 font-mono block">機敏資料外洩事故</span>
+                  <span class="text-lg font-bold text-amber-400 font-mono">0 件</span>
+                </div>
+              </div>
+
+              <!-- Tech Pills -->
+              <div class="flex flex-wrap gap-2 pt-2">
+                <span class="px-2.5 py-1 rounded-md bg-slate-800 text-[11px] font-mono text-slate-300">ISO 42001:2023 AIMS</span>
+                <span class="px-2.5 py-1 rounded-md bg-slate-800 text-[11px] font-mono text-slate-300">Evidently Drift Sentinel</span>
+                <span class="px-2.5 py-1 rounded-md bg-slate-800 text-[11px] font-mono text-slate-300">PII Redaction Proxy</span>
+                <span class="px-2.5 py-1 rounded-md bg-slate-800 text-[11px] font-mono text-slate-300">Signed Audit Ledger</span>
+              </div>
+            </div>
+
+            <!-- Topology Graphic -->
+            <div class="lg:col-span-5 p-6 rounded-2xl bg-obsidian-950 border border-amber-500/30 font-mono text-xs space-y-4">
+              <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                <span class="text-amber-400 font-bold">TOPOLOGY // AISDLC TRUST CHAIN</span>
+                <span class="text-[10px] text-slate-500">ISO 42001 CERT</span>
+              </div>
+              <div class="space-y-2 text-slate-400 leading-relaxed text-[11px]">
+                <div class="p-2.5 rounded bg-slate-900/80 border border-slate-800 flex items-center justify-between">
+                  <span>[DATASET] 原始機敏數據過濾與去識別</span>
+                  <span class="text-amber-400 font-bold">PII Shield</span>
+                </div>
+                <div class="text-center text-amber-400">↓ (Cryptographic Lineage Tracking)</div>
+                <div class="p-2.5 rounded bg-slate-900/80 border border-amber-500/40 flex items-center justify-between text-white">
+                  <span>[MODEL INFERENCE] 防提示詞注入與幻覺偵測</span>
+                  <span class="text-amber-300 font-bold">Zero Trust</span>
+                </div>
+                <div class="text-center text-amber-400">↓ (Immutable Ledger Logging)</div>
+                <div class="p-2.5 rounded bg-slate-900/80 border border-slate-800 flex items-center justify-between">
+                  <span>[AUDIT REPORT] 國際稽核員可驗證報告</span>
+                  <span class="text-emerald-400 font-bold">ISO 42001 OK</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Scenario 4: FinOps Cost Rescue -->
+          <div x-show="activeScenario === 'finops_rescue'" x-transition class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center" x-cloak>
+            <div class="lg:col-span-7 space-y-5">
+              <div class="flex items-center gap-2">
+                <span class="px-3 py-1 rounded bg-emerald-950 border border-emerald-500/40 text-emerald-400 font-mono text-xs font-bold">SCENARIO: EMERGENCY FINOPS RESCUE</span>
+                <span class="text-xs text-slate-400 font-mono">COST AUDIT & ARBITRAGE</span>
+              </div>
+              <h3 class="text-2xl sm:text-3xl font-bold text-white">雲端巨額帳單急救：7天立減 30% 虛耗</h3>
+              <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+                每月雲端帳單高達數十萬美元，開發團隊過度配置、閒置資源無人敢關、未妥善利用 Spot/RI 套利。雲杉長青透過單位經濟指標導入，不需更動任何商業邏輯代碼，首月即可砍除 28%~35% 浪費。
+              </p>
+              
+              <!-- Metrics Grid -->
+              <div class="grid grid-cols-3 gap-3 pt-2">
+                <div class="p-3.5 rounded-xl bg-obsidian-950 border border-slate-800">
+                  <span class="text-[10px] text-slate-400 font-mono block">首月即時省費</span>
+                  <span class="text-lg font-bold text-emerald-400 font-mono">-$28,000+</span>
+                </div>
+                <div class="p-3.5 rounded-xl bg-obsidian-950 border border-slate-800">
+                  <span class="text-[10px] text-slate-400 font-mono block">5年預估節省</span>
+                  <span class="text-lg font-bold text-cyan-400 font-mono">$1,920,000</span>
+                </div>
+                <div class="p-3.5 rounded-xl bg-obsidian-950 border border-slate-800">
+                  <span class="text-[10px] text-slate-400 font-mono block">業務效能影響</span>
+                  <span class="text-lg font-bold text-emerald-400 font-mono">0% (零降速)</span>
+                </div>
+              </div>
+
+              <!-- Tech Pills -->
+              <div class="flex flex-wrap gap-2 pt-2">
+                <span class="px-2.5 py-1 rounded-md bg-slate-800 text-[11px] font-mono text-slate-300">Spot Instance Arbitrage</span>
+                <span class="px-2.5 py-1 rounded-md bg-slate-800 text-[11px] font-mono text-slate-300">Automated Right-sizing</span>
+                <span class="px-2.5 py-1 rounded-md bg-slate-800 text-[11px] font-mono text-slate-300">Storage Tier Compaction</span>
+                <span class="px-2.5 py-1 rounded-md bg-slate-800 text-[11px] font-mono text-slate-300">Unit Economics Telemetry</span>
+              </div>
+            </div>
+
+            <!-- Topology Graphic -->
+            <div class="lg:col-span-5 p-6 rounded-2xl bg-obsidian-950 border border-emerald-500/30 font-mono text-xs space-y-4">
+              <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                <span class="text-emerald-400 font-bold">TOPOLOGY // FINOPS REAL-TIME ARBITRAGE</span>
+                <span class="text-[10px] text-slate-500">FOCUS 1.0</span>
+              </div>
+              <div class="space-y-2 text-slate-400 leading-relaxed text-[11px]">
+                <div class="p-2.5 rounded bg-slate-900/80 border border-slate-800 flex items-center justify-between">
+                  <span>[BILLING INGEST] 跨 6 雲多幣別即時彙整</span>
+                  <span class="text-emerald-400 font-bold">Daily Ingest</span>
+                </div>
+                <div class="text-center text-emerald-400">↓ (AI Automated Waste Pruning)</div>
+                <div class="p-2.5 rounded bg-slate-900/80 border border-emerald-500/40 flex items-center justify-between text-white">
+                  <span>[ARBITRAGE ENGINE] Spot/RI 智慧動態轉換</span>
+                  <span class="text-emerald-300 font-bold">-32% TCO</span>
+                </div>
+                <div class="text-center text-emerald-400">↓ (Executive Unit Economics KPI)</div>
+                <div class="p-2.5 rounded bg-slate-900/80 border border-slate-800 flex items-center justify-between">
+                  <span>[DASHBOARD] 財務長與工程長即時透明看板</span>
+                  <span class="text-cyan-400 font-bold">Real-time ROI</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- NEW SECTION: INTERACTIVE ARCHITECTURE COMPARISON (傳統煙囪架構 vs 雲杉長青架構對比態) -->
+    <section id="comparison" class="py-24 bg-obsidian-900/70 relative border-t border-slate-800/80">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Section Header -->
+        <div class="text-center max-w-3xl mx-auto mb-16">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-amber-950 border border-amber-500/40 text-amber-400 text-xs font-mono uppercase mb-3">
+            <i class="fa-solid fa-code-compare"></i>
+            <span>PARADIGM SHIFT COMPARISON</span>
+          </div>
+          <h2 class="font-display text-3xl sm:text-5xl font-bold text-white tracking-tight" x-text="t('comparison_title')">
+            架構典範轉移：傳統煙囪式 vs 雲杉長青架構
+          </h2>
+          <p class="mt-4 text-slate-300 text-base sm:text-lg leading-relaxed" x-text="t('comparison_subtitle')">
+            透徹解析短視補丁架構與百年長青數位底座的決定性差異。
+          </p>
+        </div>
+
+        <!-- Side-by-Side Comparison Table -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          
+          <!-- Column 1: Traditional Legacy Architecture -->
+          <div class="glass-card rounded-3xl p-8 border border-red-500/30 bg-gradient-to-b from-red-950/10 to-obsidian-950 relative space-y-6">
+            <div class="flex items-center justify-between border-b border-red-500/20 pb-4">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-red-950/80 border border-red-500/40 flex items-center justify-center text-red-400">
+                  <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <div>
+                  <h3 class="text-xl font-bold text-red-300">傳統煙囪式脆弱架構</h3>
+                  <span class="text-xs text-slate-400 font-mono">Legacy Fragmented Stack</span>
+                </div>
+              </div>
+              <span class="text-xs font-mono px-2.5 py-1 rounded bg-red-950 text-red-400 border border-red-500/40">高技術債</span>
+            </div>
+
+            <div class="space-y-4 text-xs sm:text-sm">
+              <div class="p-4 rounded-xl bg-obsidian-900/80 border border-slate-800">
+                <span class="text-red-400 font-bold block mb-1">❌ 單一雲端綁定與單點失效 (SPOF)</span>
+                <span class="text-slate-400">依賴單一機房或單一供應商，機房跳電或海纜中斷即造成業務全線癱瘓。</span>
+              </div>
+
+              <div class="p-4 rounded-xl bg-obsidian-900/80 border border-slate-800">
+                <span class="text-red-400 font-bold block mb-1">❌ 雲端帳單黑箱與資源過度配置</span>
+                <span class="text-slate-400">工程師為了防止崩潰無限超額開立虛擬機，每月帳單成謎，缺乏單位成本衡量標準。</span>
+              </div>
+
+              <div class="p-4 rounded-xl bg-obsidian-900/80 border border-slate-800">
+                <span class="text-red-400 font-bold block mb-1">❌ AI 模型黑箱與合規法律風險</span>
+                <span class="text-slate-400">隨意呼叫外部 API，未去識別化、無法解釋預測邏輯，面臨稽核與隱私外洩重罰。</span>
+              </div>
+
+              <div class="p-4 rounded-xl bg-obsidian-900/80 border border-slate-800">
+                <span class="text-red-400 font-bold block mb-1">❌ 工廠 OT/IT 資料破碎孤島</span>
+                <span class="text-slate-400">不同廠區 ERP 版本不一、機台資料無法自動串接，仰賴人工登打與事後補救。</span>
+              </div>
+            </div>
+
+            <div class="pt-2 text-xs font-mono text-red-400 flex items-center justify-between border-t border-slate-800">
+              <span>長期維護總體擁有成本 (TCO)</span>
+              <span class="font-bold">高出 45% ~ 60%</span>
+            </div>
+          </div>
+
+          <!-- Column 2: Cedar Partnered Evergreen Architecture -->
+          <div class="glass-card rounded-3xl p-8 border border-cedar-500/50 bg-gradient-to-b from-cedar-950/20 to-obsidian-950 relative space-y-6 shadow-glow-cedar">
+            <div class="flex items-center justify-between border-b border-cedar-500/30 pb-4">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-cedar-950 border border-cedar-500/40 flex items-center justify-center text-cedar-400">
+                  <i class="fa-solid fa-shield-check"></i>
+                </div>
+                <div>
+                  <h3 class="text-xl font-bold text-white">雲杉長青 Evergreen 永續架構</h3>
+                  <span class="text-xs text-cedar-400 font-mono">CEDAR PARTNERED Standard</span>
+                </div>
+              </div>
+              <span class="text-xs font-mono px-2.5 py-1 rounded bg-cedar-950 text-cedar-300 border border-cedar-500/40">百年基業</span>
+            </div>
+
+            <div class="space-y-4 text-xs sm:text-sm">
+              <div class="p-4 rounded-xl bg-obsidian-900/80 border border-slate-800">
+                <span class="text-emerald-400 font-bold block mb-1">✔ 六朵雲跨多活高可用 (100% Zero Outage)</span>
+                <span class="text-slate-300">Kubernetes 容器化跨雲自動容災，任何單雲或節點中斷，系統 120ms 內無縫切換。</span>
+              </div>
+
+              <div class="p-4 rounded-xl bg-obsidian-900/80 border border-slate-800">
+                <span class="text-emerald-400 font-bold block mb-1">✔ FinOps 財務紀律結構性降減 30%</span>
+                <span class="text-slate-300">建立單位經濟模型 (Unit Economics) 與 Spot/RI 智慧動態調度，每一分雲端投資清晰可見。</span>
+              </div>
+
+              <div class="p-4 rounded-xl bg-obsidian-900/80 border border-slate-800">
+                <span class="text-emerald-400 font-bold block mb-1">✔ ISO 42001 可信任 AI 治理防禦鏈</span>
+                <span class="text-slate-300">全流程 AISDLC 審計、資料遮罩閘道、模型防漂移監視，無懼第三方審查與監管挑戰。</span>
+              </div>
+
+              <div class="p-4 rounded-xl bg-obsidian-900/80 border border-slate-800">
+                <span class="text-emerald-400 font-bold block mb-1">✔ Clean Core ERP 與邊緣 AI 良率躍升</span>
+                <span class="text-slate-300">核心乾淨標準化、邊緣毫秒即時推論，跨廠區即時打通，產線綜合良率提升 15%。</span>
+              </div>
+            </div>
+
+            <div class="pt-2 text-xs font-mono text-emerald-400 flex items-center justify-between border-t border-slate-800">
+              <span>長期維護總體擁有成本 (TCO)</span>
+              <span class="font-bold">每年節省 30%+ 且系統資產化</span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION: INTERACTIVE ARCHITECTURE EVALUATOR & FINOPS SIMULATOR (效益試算) -->
+    <section id="simulator" class="py-24 bg-obsidian-950 relative border-t border-slate-800/80">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <div class="text-center max-w-3xl mx-auto mb-16">
-          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-cedar-950 border border-cedar-500/30 text-cedar-400 text-xs font-mono uppercase mb-3">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-amber-950 border border-amber-500/30 text-amber-400 text-xs font-mono uppercase mb-3">
             <i class="fa-solid fa-calculator"></i>
-            <span>INTERACTIVE ARCHITECTURE & FINOPS SIMULATOR</span>
+            <span>ROI & FINOPS SIMULATOR</span>
           </div>
           <h2 class="font-display text-3xl sm:text-5xl font-bold text-white tracking-tight">
             互動式架構評估與 FinOps 效益試算
           </h2>
           <p class="mt-4 text-slate-300 text-base sm:text-lg leading-relaxed" x-text="t('sim_subtitle')">
-            調整您的企業月度雲端支出與架構需求，即時模擬雲杉長青架構下的成本節省、可用性提升與治理成熟度。
+            依據貴公司現有月度雲端開支與伺服器規模，即時推估架構改造後的年度節省金額、高可用 SLA 與 AI 治理成熟度。
           </p>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
           
-          <!-- Left: Sliders & Parameter Control -->
+          <!-- Left: Parameter Sliders & Controllers -->
           <div class="lg:col-span-5 glass-card p-8 rounded-3xl border border-slate-700/80 flex flex-col justify-between space-y-6">
             <div>
-              <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+              <h3 class="font-display text-xl font-bold text-white mb-4 flex items-center gap-2">
                 <i class="fa-solid fa-sliders text-cedar-400"></i>
                 <span>企業現狀參數設定</span>
               </h3>
@@ -840,13 +1498,12 @@
               <div class="space-y-2 mb-6">
                 <div class="flex justify-between text-xs">
                   <span class="text-slate-300">每月雲端支出 (Monthly Cloud Spend)</span>
-                  <span class="font-mono font-bold text-cedar-400 text-sm">$<span x-text="monthlySpend"></span>K USD</span>
+                  <span class="font-mono font-bold text-amber-400 text-sm">$<span x-text="monthlySpend"></span>,000 USD</span>
                 </div>
-                <input type="range" min="10" max="300" step="5" x-model="monthlySpend" @input="recalcSimulator()" 
-                       class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cedar-500">
+                <input type="range" min="10" max="300" step="5" x-model="monthlySpend" @input="recalcSimulator(); playAudio('click')" 
+                       class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-amber-500">
                 <div class="flex justify-between text-[10px] text-slate-500 font-mono">
                   <span>$10,000 / mo</span>
-                  <span>$150,000 / mo</span>
                   <span>$300,000 / mo</span>
                 </div>
               </div>
@@ -857,7 +1514,7 @@
                   <span class="text-slate-300">容器/實例規模 (Workload Instances)</span>
                   <span class="font-mono font-bold text-cyan-400 text-sm"><span x-text="instanceCount"></span> Nodes</span>
                 </div>
-                <input type="range" min="20" max="1000" step="20" x-model="instanceCount" @input="recalcSimulator()" 
+                <input type="range" min="20" max="1000" step="20" x-model="instanceCount" @input="recalcSimulator(); playAudio('click')" 
                        class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-500">
               </div>
 
@@ -865,22 +1522,22 @@
               <div class="space-y-2 mb-4">
                 <span class="text-xs text-slate-300">首要治理戰略重點 (Strategic Focus)</span>
                 <div class="grid grid-cols-2 gap-2 text-xs">
-                  <button @click="simFocus = 'finops'; recalcSimulator()" 
+                  <button @click="simFocus = 'finops'; recalcSimulator(); playAudio('toggle')" 
                           :class="simFocus === 'finops' ? 'bg-amber-500/20 border-amber-500 text-amber-300 font-bold' : 'bg-obsidian-900 border-slate-800 text-slate-400'"
                           class="p-2.5 rounded-xl border text-center transition-all">
                     💰 FinOps 成本優化
                   </button>
-                  <button @click="simFocus = 'ha'; recalcSimulator()" 
+                  <button @click="simFocus = 'ha'; recalcSimulator(); playAudio('toggle')" 
                           :class="simFocus === 'ha' ? 'bg-cedar-500/20 border-cedar-500 text-cedar-300 font-bold' : 'bg-obsidian-900 border-slate-800 text-slate-400'"
                           class="p-2.5 rounded-xl border text-center transition-all">
                     ⚡ 零停機多雲高可用
                   </button>
-                  <button @click="simFocus = 'ai'; recalcSimulator()" 
+                  <button @click="simFocus = 'ai'; recalcSimulator(); playAudio('toggle')" 
                           :class="simFocus === 'ai' ? 'bg-cyan-500/20 border-cyan-500 text-cyan-300 font-bold' : 'bg-obsidian-900 border-slate-800 text-slate-400'"
                           class="p-2.5 rounded-xl border text-center transition-all">
                     🧠 ISO 42001 AI 治理
                   </button>
-                  <button @click="simFocus = 'iot'; recalcSimulator()" 
+                  <button @click="simFocus = 'iot'; recalcSimulator(); playAudio('toggle')" 
                           :class="simFocus === 'iot' ? 'bg-emerald-500/20 border-emerald-500 text-emerald-300 font-bold' : 'bg-obsidian-900 border-slate-800 text-slate-400'"
                           class="p-2.5 rounded-xl border text-center transition-all">
                     🏭 智慧製造 AIoT
@@ -889,7 +1546,7 @@
               </div>
             </div>
 
-            <button @click="openConsultationModal()" class="w-full py-3 rounded-xl bg-cedar-600 hover:bg-cedar-500 text-obsidian-950 font-bold text-sm shadow-glow-cedar transition-all">
+            <button @click="openConsultationModal(); playAudio('click')" class="w-full py-3 rounded-xl bg-cedar-600 hover:bg-cedar-500 text-obsidian-950 font-bold text-sm shadow-glow-cedar transition-all">
               <i class="fa-solid fa-paper-plane mr-2"></i>依此試算預約總架構師諮詢
             </button>
           </div>
@@ -904,7 +1561,7 @@
                 <div class="font-mono text-2xl sm:text-3xl font-extrabold text-white mt-1">
                   $<span x-text="simAnnualSavings"></span>K
                 </div>
-                <span class="text-[10px] text-slate-400">平均可降減 28% ~ 35%</span>
+                <span class="text-[10px] text-slate-400">平均可降減 28% ~ 36%</span>
               </div>
 
               <div class="p-4 rounded-2xl bg-obsidian-900/90 border border-cedar-500/30">
@@ -941,7 +1598,7 @@
 
             <div class="text-xs text-slate-400 flex items-center justify-between border-t border-slate-800 pt-3">
               <span>* 試算結果依據 FinOps Foundation 標準與跨國六雲實務調度模型推估。</span>
-              <span class="font-mono text-cedar-400">CEDAR SIMULATOR v2.6</span>
+              <span class="font-mono text-cedar-400">CEDAR SIMULATOR v2.8</span>
             </div>
 
           </div>
@@ -968,59 +1625,59 @@
           </p>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
           
-          <!-- Identity Card 1: Cyber Tree -->
-          <div class="glass-card glass-card-hover p-8 rounded-3xl border border-slate-800 flex flex-col justify-between space-y-6 group">
-            <div class="space-y-4">
-              <div class="flex items-center justify-between">
-                <span class="px-3 py-1 rounded-full bg-cyan-950/80 border border-cyan-500/30 text-cyan-300 text-xs font-mono">
-                  DIGITAL TECH EMBLEM
-                </span>
-                <span class="text-xs font-mono text-slate-400">2.5D ISOMETRIC / NEON BLOOM</span>
+          <!-- Identity Card 1 -->
+          <div class="glass-card rounded-3xl p-8 border border-slate-800 group hover:border-cyan-500/50 transition-all flex flex-col justify-between space-y-6">
+            <div>
+              <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-6">
+                <span class="text-xs font-mono text-cyan-400 font-bold uppercase">DIGITAL NEURAL TREE IDENTITY</span>
+                <span class="text-[10px] font-mono text-slate-500">VECTOR GRAPHIC</span>
               </div>
-              <h3 class="text-2xl font-bold text-white">CEDAR PARTNERED 數位神經樹標識</h3>
-              <p class="text-xs text-slate-300 leading-relaxed">
-                以電路軌跡與智慧光節點勾勒雪松樹冠；底部為 3D 伺服器主機與晶片基座，左展雲端運算（Cloud），右銜人工智慧（AI）。象徵技術大樹扎根於堅實的算力底座，持續自我呼吸與繁衍。
+              <div class="rounded-2xl bg-obsidian-950/90 border border-cyan-500/20 p-6 flex items-center justify-center cursor-pointer overflow-hidden relative group/inner"
+                   @click="openModal = 'logo_tech'; playAudio('click')">
+                <img src="assets/logo_cyber_tree.png" alt="CEDAR PARTNERED Cyber Tree" class="max-h-64 object-contain filter drop-shadow group-hover/inner:scale-105 transition-transform duration-500">
+                <div class="absolute inset-0 bg-cyan-950/20 opacity-0 group-hover/inner:opacity-100 transition-opacity flex items-center justify-center">
+                  <span class="px-3 py-1.5 rounded-full bg-obsidian-900/90 border border-cyan-400 text-xs font-mono text-cyan-300">
+                    <i class="fa-solid fa-expand mr-1.5"></i>查看高解析細節
+                  </span>
+                </div>
+              </div>
+              <h3 class="text-xl font-bold text-white mt-6">CEDAR PARTNERED 數位神經樹標識</h3>
+              <p class="text-xs text-slate-400 mt-2 leading-relaxed font-mono">
+                雪松樹幹以深灰色 3D 伺服器硬體為底座，象徵扎實穩固的基礎設施；頂端枝繁葉茂，由霓虹綠與青色發光電路板節點交織成龐大的神經雪松樹冠。
               </p>
             </div>
-
-            <!-- Image Frame -->
-            <div class="rounded-2xl bg-obsidian-950 border border-slate-800 p-6 flex items-center justify-center cursor-pointer group-hover:border-cyan-500/50 transition-all"
-                 @click="openModal = 'logo_tech'">
-              <img src="assets/logo_cyber_tree.png" alt="CEDAR PARTNERED Cyber Tree Logo" class="max-h-64 object-contain filter drop-shadow-2xl group-hover:scale-105 transition-transform duration-500">
-            </div>
-
-            <div class="flex items-center justify-between text-xs text-slate-400 border-t border-slate-800 pt-3 font-mono">
-              <span>顏色：電光青藍 (#06B6D4) • 曜石黑 (#020617)</span>
-              <button @click="openModal = 'logo_tech'" class="text-cyan-400 hover:underline">檢視原圖</button>
+            <div class="text-[11px] font-mono text-cyan-400 flex items-center justify-between border-t border-slate-800 pt-3">
+              <span>Token: #10B981 / #06B6D4</span>
+              <span>Vector Scalable</span>
             </div>
           </div>
 
-          <!-- Identity Card 2: Calligraphy Plaque -->
-          <div class="glass-card glass-card-hover p-8 rounded-3xl border border-slate-800 flex flex-col justify-between space-y-6 group">
-            <div class="space-y-4">
-              <div class="flex items-center justify-between">
-                <span class="px-3 py-1 rounded-full bg-amber-950/80 border border-amber-500/30 text-amber-300 text-xs font-mono">
-                  HERITAGE CALLIGRAPHY PLAQUE
-                </span>
-                <span class="text-xs font-mono text-slate-400">HALO-LIT 3D RELIEF</span>
+          <!-- Identity Card 2 -->
+          <div class="glass-card rounded-3xl p-8 border border-slate-800 group hover:border-amber-500/50 transition-all flex flex-col justify-between space-y-6">
+            <div>
+              <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-6">
+                <span class="text-xs font-mono text-amber-400 font-bold uppercase">HERITAGE CALLIGRAPHY PLAQUE</span>
+                <span class="text-[10px] font-mono text-slate-500">CRAFT IDENTITY</span>
               </div>
-              <h3 class="text-2xl font-bold text-white">「云杉長青」新中式浮雕背光金匾</h3>
-              <p class="text-xs text-slate-300 leading-relaxed">
-                採用行草書法飛白金屬雷射切割，表面冷冽拉絲金屬與背光暖金相互輝映。錯落的「Z」字氣韻與破框筆畫，象徵打破技術邊界的宏偉格局，與企業共鑄長青基業。
+              <div class="rounded-2xl bg-obsidian-950/90 border border-amber-500/20 p-6 flex items-center justify-center cursor-pointer overflow-hidden relative group/inner"
+                   @click="openModal = 'logo_plaque'; playAudio('click')">
+                <img src="assets/logo_calligraphy_plaque.png" alt="云杉長青 Calligraphy Heritage Plaque" class="max-h-64 object-contain filter drop-shadow group-hover/inner:scale-105 transition-transform duration-500">
+                <div class="absolute inset-0 bg-amber-950/20 opacity-0 group-hover/inner:opacity-100 transition-opacity flex items-center justify-center">
+                  <span class="px-3 py-1.5 rounded-full bg-obsidian-900/90 border border-amber-400 text-xs font-mono text-amber-300">
+                    <i class="fa-solid fa-expand mr-1.5"></i>查看高解析細節
+                  </span>
+                </div>
+              </div>
+              <h3 class="text-xl font-bold text-white mt-6">「云杉長青」新中式浮雕背光金匾</h3>
+              <p class="text-xs text-slate-400 mt-2 leading-relaxed font-mono">
+                黑色玄武岩粗糙質感立體匾額，蒼勁行草題寫「云杉長青」。筆劃採用金箔皺紋與拉絲金屬，背光泛出 2700K 暖金光暈，筆意破框而出，象徵跨越時代的長青承諾。
               </p>
             </div>
-
-            <!-- Image Frame -->
-            <div class="rounded-2xl bg-obsidian-950 border border-slate-800 p-6 flex items-center justify-center cursor-pointer group-hover:border-amber-500/50 transition-all"
-                 @click="openModal = 'logo_plaque'">
-              <img src="assets/logo_calligraphy_plaque.png" alt="云杉長青 Calligraphy Plaque Logo" class="max-h-64 object-contain filter drop-shadow-2xl group-hover:scale-105 transition-transform duration-500">
-            </div>
-
-            <div class="flex items-center justify-between text-xs text-slate-400 border-t border-slate-800 pt-3 font-mono">
-              <span>材質：拉絲鋼金屬 • 琥珀暖金背光 • 金箔皺紋</span>
-              <button @click="openModal = 'logo_plaque'" class="text-amber-400 hover:underline">檢視原圖</button>
+            <div class="text-[11px] font-mono text-amber-400 flex items-center justify-between border-t border-slate-800 pt-3">
+              <span>Token: #F59E0B / #D97706</span>
+              <span>Heritage Craft</span>
             </div>
           </div>
 
@@ -1029,105 +1686,126 @@
       </div>
     </section>
 
-    <!-- SECTION: FOUNDER PERSPECTIVE & EXECUTIVE PROFILE -->
+    <!-- NEW SECTION: EXECUTIVE ARCHITECTURE FAQ (企業總架構師常見諮詢問答態) -->
+    <section id="faq" class="py-24 bg-obsidian-900/50 relative border-t border-slate-800/80">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="text-center max-w-3xl mx-auto mb-16">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-cedar-950 border border-cedar-500/30 text-cedar-400 text-xs font-mono uppercase mb-3">
+            <i class="fa-solid fa-circle-question"></i>
+            <span>FREQUENTLY ASKED QUESTIONS</span>
+          </div>
+          <h2 class="font-display text-3xl sm:text-5xl font-bold text-white tracking-tight" x-text="t('faq_title')">
+            企業架構師與高管常見諮詢
+          </h2>
+          <p class="mt-4 text-slate-300 text-base sm:text-lg leading-relaxed" x-text="t('faq_subtitle')">
+            解開多雲治理、FinOps 落地與 AI 合規的實戰疑問。
+          </p>
+        </div>
+
+        <div class="space-y-4">
+          <template x-for="(faq, fIndex) in faqs" :key="fIndex">
+            <div class="glass-card rounded-2xl border border-slate-800 overflow-hidden transition-all duration-300">
+              <button @click="toggleFaq(fIndex); playAudio('toggle')" 
+                      class="w-full px-6 py-5 text-left flex items-center justify-between gap-4 hover:bg-slate-800/50 transition-colors">
+                <span class="font-display font-bold text-base sm:text-lg text-white flex items-center gap-3">
+                  <span class="w-6 h-6 rounded-md bg-cedar-950 border border-cedar-500/40 text-cedar-400 text-xs font-mono flex items-center justify-center font-bold" x-text="'0' + (fIndex + 1)"></span>
+                  <span x-text="faq.q"></span>
+                </span>
+                <i class="fa-solid fa-chevron-down text-sm text-slate-400 transition-transform duration-300"
+                   :class="faqOpen === fIndex ? 'rotate-180 text-cedar-400' : ''"></i>
+              </button>
+              
+              <div x-show="faqOpen === fIndex" x-transition class="px-6 pb-6 text-sm text-slate-300 leading-relaxed border-t border-slate-800/60 pt-4" x-cloak>
+                <p x-html="faq.a"></p>
+              </div>
+            </div>
+          </template>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION: FOUNDER & CHIEF ARCHITECT (廖倫豪 博士) -->
     <section id="founder" class="py-24 bg-obsidian-900/60 border-t border-slate-800/80 relative">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           
-          <!-- Left: Profile & Credentials Card -->
-          <div class="lg:col-span-5 glass-card p-8 rounded-3xl border border-slate-700/80 shadow-2xl relative">
-            <div class="flex items-start justify-between mb-6">
-              <div class="space-y-1">
-                <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cedar-950 border border-cedar-500/40 text-cedar-300 text-xs font-mono">
-                  <i class="fa-solid fa-user-shield"></i>
-                  <span>FOUNDER & CHIEF ARCHITECT</span>
+          <div class="lg:col-span-5 space-y-6">
+            <div class="relative rounded-3xl p-1 bg-gradient-to-b from-cedar-500/30 to-slate-800/40 shadow-2xl">
+              <div class="glass-card rounded-[22px] p-8 space-y-6">
+                
+                <div class="flex items-center gap-4">
+                  <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-cedar-600 to-emerald-500 flex items-center justify-center text-obsidian-950 font-display font-extrabold text-2xl shadow-glow-cedar">
+                    HL
+                  </div>
+                  <div>
+                    <h3 class="font-display text-2xl font-extrabold text-white">廖倫豪 博士</h3>
+                    <span class="text-xs text-cedar-400 font-mono block">Howard Liao, Ph.D.</span>
+                  </div>
                 </div>
-                <h3 class="font-display text-3xl font-extrabold text-white mt-2">
-                  廖倫豪 博士
-                </h3>
-                <p class="text-slate-400 font-mono text-sm">Howard Liao, Ph.D.</p>
-              </div>
-              <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-cedar-700 to-obsidian-900 border border-cedar-500/50 flex items-center justify-center text-cedar-300 text-2xl shadow-glow-cedar">
-                <i class="fa-solid fa-graduation-cap"></i>
+
+                <div class="space-y-2 text-xs font-mono text-slate-300">
+                  <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-briefcase text-cedar-400 w-4"></i>
+                    <span>全球應用治理與交付負責人 / 首席架構師</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-graduation-cap text-cedar-400 w-4"></i>
+                    <span>資訊工程博士 (Ph.D. in Computer Science)</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-certificate text-cedar-400 w-4"></i>
+                    <span>ISO 27001 / ISO 42001 國際主導稽核員</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-envelope text-cedar-400 w-4"></i>
+                    <a href="mailto:Liao.Howard@gmail.com" class="hover:text-cedar-300 transition-colors">Liao.Howard@gmail.com</a>
+                  </div>
+                </div>
+
+                <div class="pt-4 border-t border-slate-800 flex gap-2">
+                  <button @click="copyText('headline'); playAudio('click')" class="flex-1 py-2 rounded-xl bg-obsidian-950 border border-slate-700 text-slate-300 hover:text-white hover:border-cedar-400 text-xs font-mono transition-all">
+                    <i class="fa-regular fa-copy mr-1.5 text-cedar-400"></i>複製專業頭銜
+                  </button>
+                  <button @click="copyText('bio'); playAudio('click')" class="flex-1 py-2 rounded-xl bg-obsidian-950 border border-slate-700 text-slate-300 hover:text-white hover:border-cedar-400 text-xs font-mono transition-all">
+                    <i class="fa-regular fa-file-lines mr-1.5 text-cedar-400"></i>複製簡歷摘要
+                  </button>
+                </div>
+
               </div>
             </div>
-
-            <div class="space-y-3 text-xs text-slate-300 leading-relaxed border-t border-slate-800 pt-4">
-              <div class="flex items-start gap-2.5">
-                <i class="fa-solid fa-briefcase text-cedar-400 mt-0.5"></i>
-                <div>
-                  <strong class="text-white">全球應用治理與交付負責人 / 首席架構師</strong>
-                  <div class="text-slate-400">27+ 年資訊工程、20+ 年 C-Level 資訊科技管理經驗</div>
-                </div>
-              </div>
-              <div class="flex items-start gap-2.5">
-                <i class="fa-solid fa-certificate text-cyan-400 mt-0.5"></i>
-                <div>
-                  <strong class="text-white">ISO 27001 / ISO 42001 主導稽核員 (Lead Auditor)</strong>
-                  <div class="text-slate-400">具備國際資安與人工智慧治理認證資格</div>
-                </div>
-              </div>
-              <div class="flex items-start gap-2.5">
-                <i class="fa-solid fa-book-bookmark text-amber-400 mt-0.5"></i>
-                <div>
-                  <strong class="text-white">Springer SCI 國際期刊作者 (DOI: 10.1007/s11042-012-1190-1)</strong>
-                  <div class="text-slate-400">橫跨 Google Cloud APAC、CIO Taiwan、iThome 專訪報導</div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Quick Action Links & Copier -->
-            <div class="mt-6 pt-6 border-t border-slate-800 flex flex-wrap gap-2">
-              <button @click="copyText('headline')" class="flex-1 py-2 px-3 rounded-lg bg-obsidian-900 hover:bg-slate-800 border border-slate-700 text-xs font-mono text-slate-300 hover:text-white transition-all flex items-center justify-center gap-1.5">
-                <i class="fa-regular fa-copy text-cedar-400"></i>
-                <span>複製 LinkedIn Headline</span>
-              </button>
-              <button @click="copyText('bio')" class="flex-1 py-2 px-3 rounded-lg bg-obsidian-900 hover:bg-slate-800 border border-slate-700 text-xs font-mono text-slate-300 hover:text-white transition-all flex items-center justify-center gap-1.5">
-                <i class="fa-regular fa-copy text-cedar-400"></i>
-                <span>複製 About 簡介</span>
-              </button>
-            </div>
-
           </div>
 
-          <!-- Right: Manifesto & Philosophy -->
           <div class="lg:col-span-7 space-y-6">
             <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-cedar-950 border border-cedar-500/30 text-cedar-400 text-xs font-mono uppercase">
               <i class="fa-solid fa-compass"></i>
-              <span>ARCHITECT'S MANIFESTO</span>
+              <span>FOUNDER PHILOSOPHY</span>
             </div>
-
-            <h2 class="font-display text-3xl sm:text-4xl font-bold text-white leading-tight">
-              「當別人把雲當成伺服器在算，我們把雲與 AI 當成一座數位森林來經營。」
+            
+            <h2 class="font-display text-3xl sm:text-4xl font-bold text-white tracking-tight">
+              「架構不是炫技，而是為企業在最嚴苛的環境中守住底線。」
             </h2>
 
-            <div class="space-y-4 text-slate-300 text-base leading-relaxed">
-              <p>
-                在資訊科技管理領域深耕近三十載，我看過無數技術潮流的起伏。許多企業在導入新架構時，往往迷失在單點工具的絢爛中，卻忽略了系統在十年維運下的承載力、成本複利與合規風險。
-              </p>
-              <p>
-                <strong>「雲杉長青 / CEDAR PARTNERED」</strong> 的初衷，就是扮演那一棵站得夠高、根扎得夠深的技術大樹。為多雲與 AI 基礎架構選擇合適的「樹種」、規劃整座「林相」，並做好「水土保持」（安全與治理）。
-              </p>
-              <p>
-                我們讓 Agentic AI 成為日常維運與優化的智慧助手，而不是失控的野藤；讓雲端帳單成為清晰可控的投資組合。這就是長青的本質——讓今日的技術選擇，成為明日創新的養分，而非明日的技術負債。
-              </p>
-            </div>
+            <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+              在過去 27 年的實務生涯中，我經歷過台中傳統製造廠區的泥土味，也帶領跨國技術團隊經歷過手遊千萬並發、跨六朵雲的生死考驗。技術浪潮更迭迅速，從早期單體伺服器、虛擬化、容器雲原生，到如今的生成式 AI 與 Agentic 智慧維運。
+            </p>
 
-            <div class="pt-4 flex flex-wrap items-center gap-6">
-              <a href="mailto:Liao.Howard@gmail.com" class="inline-flex items-center gap-2 text-sm font-semibold text-cedar-400 hover:text-cedar-300">
-                <i class="fa-solid fa-envelope"></i>
-                <span>Liao.Howard@gmail.com</span>
-              </a>
-              <a href="tel:+886975323161" class="inline-flex items-center gap-2 text-sm font-semibold text-slate-300 hover:text-white">
-                <i class="fa-solid fa-phone"></i>
-                <span>+886-975-323-161</span>
-              </a>
-              <button @click="openConsultationModal()" class="px-4 py-2 rounded-xl bg-cedar-600 text-obsidian-950 font-bold text-xs shadow-glow-cedar">
-                <i class="fa-solid fa-calendar-check mr-1.5"></i>即刻預約架構師
+            <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+              這份經歷讓我明白：真正能陪企業走遠的，絕非短期拼湊的炫目特效，而是如雪松般經得起風雪的架構基底——它要有極致的高可用性 (Zero Outage)、自律的財務紀律 (FinOps)，以及合規可信賴的 AI 治理機制 (ISO 42001)。這就是「雲杉長青」創立的初衷。
+            </p>
+
+            <div class="pt-4 flex flex-wrap items-center gap-4">
+              <button @click="openConsultationModal(); playAudio('click')" class="px-6 py-3 rounded-xl bg-cedar-600 hover:bg-cedar-500 text-obsidian-950 font-bold text-sm shadow-glow-cedar transition-all">
+                <i class="fa-solid fa-calendar-check mr-2"></i>預約總架構師深度諮詢
               </button>
+              <a href="https://howardliao.github.io/portfolio/" target="_blank" @click="playAudio('click')"
+                 class="px-5 py-3 rounded-xl glass-card border border-slate-700 hover:border-cedar-500/40 text-slate-300 hover:text-white text-sm font-semibold transition-all flex items-center gap-2">
+                <span>瀏覽個人官方作品集</span>
+                <i class="fa-solid fa-arrow-up-right-from-square text-xs text-cedar-400"></i>
+              </a>
             </div>
-
           </div>
 
         </div>
@@ -1135,7 +1813,7 @@
       </div>
     </section>
 
-    <!-- SECTION: TRUSTED ECOSYSTEM & CITATIONS -->
+    <!-- SECTION: GOVERNANCE & CERTIFICATIONS -->
     <section id="governance" class="py-20 bg-obsidian-900/90 border-t border-slate-800">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
@@ -1205,7 +1883,7 @@
             <i class="fa-solid fa-microchip text-cyan-400"></i>
             <span>CEDAR PARTNERED 數位科技雪松標識 (高清預覽)</span>
           </span>
-          <button @click="openModal = null" class="text-slate-400 hover:text-white p-1">
+          <button @click="openModal = null; playAudio('click')" class="text-slate-400 hover:text-white p-1">
             <i class="fa-solid fa-xmark text-lg"></i>
           </button>
         </div>
@@ -1226,7 +1904,7 @@
             <i class="fa-solid fa-award text-amber-400"></i>
             <span>「云杉長青」書法金屬浮雕金匾 (高清預覽)</span>
           </span>
-          <button @click="openModal = null" class="text-slate-400 hover:text-white p-1">
+          <button @click="openModal = null; playAudio('click')" class="text-slate-400 hover:text-white p-1">
             <i class="fa-solid fa-xmark text-lg"></i>
           </button>
         </div>
@@ -1254,168 +1932,141 @@
               <p class="text-xs text-slate-400 font-mono">直接寄件至 <span class="text-cedar-300 font-bold">Liao.Howard@gmail.com</span></p>
             </div>
           </div>
-          <button @click="openModal = null" class="text-slate-400 hover:text-white p-2">
+          <button @click="openModal = null; playAudio('click')" class="text-slate-400 hover:text-white p-2">
             <i class="fa-solid fa-xmark text-lg"></i>
           </button>
         </div>
 
-        <!-- Consultation Form Fields -->
-        <form @submit.prevent="submitConsultation()" class="space-y-4">
+        <form @submit.prevent="submitConsultation()" class="space-y-4 text-xs sm:text-sm">
           
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label class="block text-xs font-semibold text-slate-300 mb-1">
-                企業 / 組織名稱 <span class="text-red-400">*</span>
-              </label>
-              <input type="text" x-model="form.company" required placeholder="例：跨國科技製造 / 數位娛樂集團" 
-                     class="w-full px-3.5 py-2.5 rounded-xl bg-obsidian-900 border border-slate-700 text-sm text-white focus:border-cedar-500 focus:ring-1 focus:ring-cedar-500 outline-none transition-all">
+              <label class="block text-slate-300 mb-1 font-medium">企業名稱 <span class="text-cedar-400">*</span></label>
+              <input type="text" x-model="form.company" required placeholder="例如：某某科技股份有限公司"
+                     class="w-full px-3.5 py-2.5 rounded-xl bg-obsidian-950 border border-slate-700 text-white focus:border-cedar-500 focus:outline-none font-sans">
             </div>
-
             <div>
-              <label class="block text-xs font-semibold text-slate-300 mb-1">
-                聯絡人姓名與職稱 <span class="text-red-400">*</span>
-              </label>
-              <input type="text" x-model="form.contactName" required placeholder="例：張總經理 / 李技術副總" 
-                     class="w-full px-3.5 py-2.5 rounded-xl bg-obsidian-900 border border-slate-700 text-sm text-white focus:border-cedar-500 focus:ring-1 focus:ring-cedar-500 outline-none transition-all">
+              <label class="block text-slate-300 mb-1 font-medium">聯絡人姓名與稱謂 <span class="text-cedar-400">*</span></label>
+              <input type="text" x-model="form.contactName" required placeholder="例如：張處長 / 李技術長"
+                     class="w-full px-3.5 py-2.5 rounded-xl bg-obsidian-950 border border-slate-700 text-white focus:border-cedar-500 focus:outline-none font-sans">
             </div>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label class="block text-xs font-semibold text-slate-300 mb-1">
-                聯絡 Email (接收評估報告) <span class="text-red-400">*</span>
-              </label>
-              <input type="email" x-model="form.email" required placeholder="name@company.com" 
-                     class="w-full px-3.5 py-2.5 rounded-xl bg-obsidian-900 border border-slate-700 text-sm text-white focus:border-cedar-500 focus:ring-1 focus:ring-cedar-500 outline-none transition-all font-mono">
+              <label class="block text-slate-300 mb-1 font-medium">公務電子信箱 <span class="text-cedar-400">*</span></label>
+              <input type="email" x-model="form.email" required placeholder="corporate@example.com"
+                     class="w-full px-3.5 py-2.5 rounded-xl bg-obsidian-950 border border-slate-700 text-white focus:border-cedar-500 focus:outline-none font-mono">
             </div>
-
             <div>
-              <label class="block text-xs font-semibold text-slate-300 mb-1">
-                聯絡電話 / 手機 <span class="text-red-400">*</span>
-              </label>
-              <input type="tel" x-model="form.phone" required placeholder="例：0912-345-678 或 +886..." 
-                     class="w-full px-3.5 py-2.5 rounded-xl bg-obsidian-900 border border-slate-700 text-sm text-white focus:border-cedar-500 focus:ring-1 focus:ring-cedar-500 outline-none transition-all font-mono">
+              <label class="block text-slate-300 mb-1 font-medium">聯絡電話 / 手機</label>
+              <input type="tel" x-model="form.phone" placeholder="+886 9XX XXX XXX"
+                     class="w-full px-3.5 py-2.5 rounded-xl bg-obsidian-950 border border-slate-700 text-white focus:border-cedar-500 focus:outline-none font-mono">
             </div>
           </div>
 
-          <!-- Topics Checkboxes -->
-          <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1.5">主要諮詢領域與架構挑戰 (可複選)</label>
+          <!-- Multiple Consultation Topics -->
+          <div class="space-y-2">
+            <label class="block text-slate-300 font-medium">諮詢主題 (可複選)</label>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-              <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-obsidian-900 border border-slate-800 hover:border-slate-700 cursor-pointer">
-                <input type="checkbox" value="多雲分散式與 GKE 零停機架構" x-model="form.topics" class="accent-cedar-500">
-                <span class="text-slate-200">⚡ 多雲 GKE 零停機架構</span>
+              <label class="flex items-center gap-2 p-2.5 rounded-xl bg-obsidian-950 border border-slate-800 hover:border-slate-700 cursor-pointer">
+                <input type="checkbox" value="多雲分散式與 GKE 零停機架構" x-model="form.topics" class="accent-cedar-500 rounded">
+                <span class="text-slate-300">多雲分散式與 GKE 零停機架構</span>
               </label>
-              <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-obsidian-900 border border-slate-800 hover:border-slate-700 cursor-pointer">
-                <input type="checkbox" value="ISO 42001 可信任 AI 治理與零信任" x-model="form.topics" class="accent-cedar-500">
-                <span class="text-slate-200">🧠 ISO 42001 可信任 AI 治理</span>
+              <label class="flex items-center gap-2 p-2.5 rounded-xl bg-obsidian-950 border border-slate-800 hover:border-slate-700 cursor-pointer">
+                <input type="checkbox" value="FinOps 雲端成本精準降減 30%" x-model="form.topics" class="accent-cedar-500 rounded">
+                <span class="text-slate-300">FinOps 雲端成本精準降減 30%</span>
               </label>
-              <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-obsidian-900 border border-slate-800 hover:border-slate-700 cursor-pointer">
-                <input type="checkbox" value="FinOps 雲端成本精準降減 30%" x-model="form.topics" class="accent-cedar-500">
-                <span class="text-slate-200">💰 FinOps 雲端成本降減 30%</span>
+              <label class="flex items-center gap-2 p-2.5 rounded-xl bg-obsidian-950 border border-slate-800 hover:border-slate-700 cursor-pointer">
+                <input type="checkbox" value="ISO 42001 可信任 AI 治理與合規" x-model="form.topics" class="accent-cedar-500 rounded">
+                <span class="text-slate-300">ISO 42001 可信任 AI 治理與合規</span>
               </label>
-              <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-obsidian-900 border border-slate-800 hover:border-slate-700 cursor-pointer">
-                <input type="checkbox" value="智慧製造 AIoT 數據 Clean Core" x-model="form.topics" class="accent-cedar-500">
-                <span class="text-slate-200">🏭 智慧製造 AIoT 數據治理</span>
+              <label class="flex items-center gap-2 p-2.5 rounded-xl bg-obsidian-950 border border-slate-800 hover:border-slate-700 cursor-pointer">
+                <input type="checkbox" value="智慧製造 AIoT 與 Clean Core 治理" x-model="form.topics" class="accent-cedar-500 rounded">
+                <span class="text-slate-300">智慧製造 AIoT 與 Clean Core 治理</span>
               </label>
             </div>
           </div>
 
-          <!-- Spend Tier & Timeline -->
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label class="block text-xs font-semibold text-slate-300 mb-1">現有月度雲端支出規模</label>
-              <select x-model="form.budget" class="w-full px-3.5 py-2.5 rounded-xl bg-obsidian-900 border border-slate-700 text-xs text-white focus:border-cedar-500 outline-none">
-                <option value="每月 < $30,000 USD">每月 < $30,000 USD</option>
+              <label class="block text-slate-300 mb-1 font-medium">現有月度雲端支出規模</label>
+              <select x-model="form.budget" class="w-full px-3.5 py-2.5 rounded-xl bg-obsidian-950 border border-slate-700 text-white focus:border-cedar-500 focus:outline-none font-sans">
+                <option value="低於 $10,000 USD / 月">低於 $10,000 USD / 月</option>
+                <option value="每月 $10,000 ~ $30,000 USD">每月 $10,000 ~ $30,000 USD</option>
                 <option value="每月 $30,000 ~ $100,000 USD" selected>每月 $30,000 ~ $100,000 USD</option>
-                <option value="每月 $100,000 ~ $300,000 USD">每月 $100,000 ~ $300,000 USD</option>
-                <option value="每月 > $300,000 USD (跨國大規模部署)">每月 > $300,000 USD (跨國大規模)</option>
+                <option value="每月 $100,000 USD 以上">每月 $100,000 USD 以上 (大型企業/跨國遊戲)</option>
               </select>
             </div>
-
             <div>
-              <label class="block text-xs font-semibold text-slate-300 mb-1">預計落地時程</label>
-              <select x-model="form.timeline" class="w-full px-3.5 py-2.5 rounded-xl bg-obsidian-900 border border-slate-700 text-xs text-white focus:border-cedar-500 outline-none">
+              <label class="block text-slate-300 mb-1 font-medium">預計導入或改造時程</label>
+              <select x-model="form.timeline" class="w-full px-3.5 py-2.5 rounded-xl bg-obsidian-950 border border-slate-700 text-white focus:border-cedar-500 focus:outline-none font-sans">
                 <option value="即刻啟動 (1 個月內)" selected>即刻啟動 (1 個月內)</option>
-                <option value="近期規劃 (1 ~ 3 個月內)">近期規劃 (1 ~ 3 個月內)</option>
-                <option value="技術評估調研中 (3 ~ 6 個月內)">技術評估調研中 (3 ~ 6 個月內)</option>
+                <option value="本季內評估 (1 ~ 3 個月)">本季內評估 (1 ~ 3 個月)</option>
+                <option value="下半年度規劃 (3 ~ 6 個月)">下半年度規劃 (3 ~ 6 個月)</option>
+                <option value="年度技術預算儲備探索">年度技術預算儲備探索</option>
               </select>
             </div>
           </div>
 
-          <!-- Message -->
           <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1">具體痛點或架構需求說明</label>
-            <textarea x-model="form.message" rows="3" placeholder="請簡述貴企業目前遇到的架構瓶頸（如：多雲成本過高、AI合規認證需求、跨廠區數據孤島等）..." 
-                      class="w-full px-3.5 py-2.5 rounded-xl bg-obsidian-900 border border-slate-700 text-xs text-white focus:border-cedar-500 outline-none"></textarea>
+            <label class="block text-slate-300 mb-1 font-medium">具體痛點或架構挑戰描述</label>
+            <textarea x-model="form.message" rows="3" placeholder="請簡述目前面臨的架構瓶頸（如：突發流量中斷、雲端帳單失控、AI 模型缺乏審計機制、跨廠數據串聯困難等）..."
+                      class="w-full px-3.5 py-2.5 rounded-xl bg-obsidian-950 border border-slate-700 text-white focus:border-cedar-500 focus:outline-none font-sans"></textarea>
           </div>
 
-          <!-- Action Buttons Bar -->
-          <div class="pt-3 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3">
-            <div class="text-[11px] text-slate-400 font-mono flex items-center gap-1.5">
-              <i class="fa-solid fa-lock text-cedar-400"></i>
-              <span>資訊受嚴格 NDA 保護・24hr 內回覆</span>
+          <!-- Notification note -->
+          <div class="p-3.5 rounded-xl bg-cedar-950/60 border border-cedar-500/30 text-xs text-slate-300 flex items-start gap-2.5">
+            <i class="fa-solid fa-shield-check text-cedar-400 mt-0.5 text-sm"></i>
+            <div>
+              <span class="font-bold text-white">智慧自動化直達機制：</span>
+              <span>提交時系統將自動開啟您的電子郵件軟體直寄總架構師信箱，同時將預約明細複製到您的剪貼簿並下載文字確認單，確保資訊零漏失。</span>
             </div>
+          </div>
 
-            <div class="flex items-center gap-2 w-full sm:w-auto">
-              <button type="button" @click="copyConsultationSummary()" 
-                      class="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-obsidian-900 hover:bg-slate-800 border border-slate-700 text-xs text-slate-300 hover:text-white font-mono flex items-center justify-center gap-1.5">
-                <i class="fa-regular fa-copy text-cedar-400"></i>
-                <span>複製 LINE 格式</span>
-              </button>
-
-              <button type="submit" 
-                      class="flex-1 sm:flex-initial px-6 py-2.5 rounded-xl bg-gradient-to-r from-cedar-600 to-emerald-500 hover:from-cedar-500 hover:to-emerald-400 text-obsidian-950 font-bold text-xs shadow-glow-cedar flex items-center justify-center gap-2 transition-all">
-                <i class="fa-solid fa-paper-plane"></i>
-                <span>確認送出並寄信</span>
-              </button>
-            </div>
+          <div class="pt-2 flex items-center justify-end gap-3">
+            <button type="button" @click="openModal = null" class="px-5 py-2.5 rounded-xl border border-slate-700 text-slate-300 hover:text-white transition-colors">
+              取消
+            </button>
+            <button type="submit" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-cedar-600 to-emerald-500 text-obsidian-950 font-bold shadow-glow-cedar hover:scale-[1.02] active:scale-[0.98] transition-all">
+              <i class="fa-solid fa-paper-plane mr-2"></i>確認提交預約
+            </button>
           </div>
 
         </form>
-
       </div>
     </div>
 
-    <!-- MODAL: CONSULTATION SUCCESS CONFIRMATION -->
+    <!-- MODAL: 諮詢送出成功確認彈窗 -->
     <div x-show="openModal === 'consult_success'" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
-      <div @click.away="openModal = null" class="glass-card max-w-lg w-full p-8 rounded-3xl border border-cedar-500/50 shadow-2xl relative space-y-5 text-center">
+      <div @click.away="openModal = null" class="glass-card max-w-lg w-full p-6 sm:p-8 rounded-3xl border border-emerald-500/50 shadow-glow-cedar relative space-y-5 text-center">
         
-        <div class="w-16 h-16 rounded-2xl bg-cedar-950/90 border border-cedar-500/50 flex items-center justify-center text-cedar-400 text-3xl mx-auto shadow-glow-cedar">
-          <i class="fa-solid fa-check"></i>
+        <div class="w-16 h-16 rounded-2xl bg-emerald-950 border border-emerald-500/50 flex items-center justify-center text-emerald-400 text-3xl mx-auto shadow-glow-cedar">
+          <i class="fa-solid fa-circle-check animate-bounce"></i>
         </div>
 
-        <div class="space-y-1">
-          <h3 class="text-xl font-bold text-white">諮詢預約與郵件已成功建立！</h3>
-          <p class="text-xs text-slate-400 font-mono">預約單號：<span class="text-cedar-300 font-bold" x-text="consultationReceiptId"></span></p>
+        <div class="space-y-2">
+          <h3 class="text-2xl font-bold text-white">預約單已順利生成！</h3>
+          <p class="text-xs text-slate-400 font-mono">預約單號：<span class="text-emerald-400 font-bold" x-text="consultationReceiptId"></span></p>
         </div>
 
-        <div class="p-4 rounded-xl bg-obsidian-950 border border-slate-800 text-left space-y-2 text-xs font-mono text-slate-300">
-          <div class="text-cedar-400 font-bold flex items-center justify-between border-b border-slate-800 pb-1.5">
-            <span>📋 已同步執行以下動作：</span>
-            <span class="text-[10px] text-slate-500">COMPLETED</span>
-          </div>
-          <div class="flex items-center gap-2 text-slate-300">
-            <i class="fa-solid fa-check text-cedar-400 text-[10px]"></i>
-            <span>已開啟郵件客戶端發送至 <strong>Liao.Howard@gmail.com</strong></span>
-          </div>
-          <div class="flex items-center gap-2 text-slate-300">
-            <i class="fa-solid fa-check text-cedar-400 text-[10px]"></i>
-            <span>已自動將諮詢完整摘要複製到您的剪貼簿</span>
-          </div>
-          <div class="flex items-center gap-2 text-slate-300">
-            <i class="fa-solid fa-check text-cedar-400 text-[10px]"></i>
-            <span>已下載「企業架構諮詢需求確認單 (.txt)」</span>
-          </div>
+        <div class="text-xs text-slate-300 text-left bg-obsidian-950 p-4 rounded-xl border border-slate-800 space-y-2 font-mono">
+          <div class="text-emerald-400 font-bold">已完成以下動作：</div>
+          <div>✔ 呼叫系統郵件軟體直寄 <span class="text-white">Liao.Howard@gmail.com</span></div>
+          <div>✔ 完整預約單內容已自動複製至您的剪貼簿</div>
+          <div>✔ 本地已自動下載需求確認文字檔</div>
         </div>
 
-        <div class="pt-3 flex flex-col sm:flex-row gap-2.5">
-          <a href="tel:+886975323161" class="flex-1 py-2.5 rounded-xl bg-obsidian-900 border border-slate-700 text-slate-200 hover:text-white text-xs font-semibold flex items-center justify-center gap-2">
-            <i class="fa-solid fa-phone text-cedar-400"></i>
-            <span>致電總架構師專線</span>
-          </a>
-          <button @click="openModal = null" class="flex-1 py-2.5 rounded-xl bg-cedar-600 text-obsidian-950 font-bold text-xs shadow-glow-cedar">
-            完成關閉
+        <p class="text-xs text-slate-400 leading-relaxed">
+          若您的郵件用戶端未自動跳出，您也可以直接點擊下方按鈕複製內容，直接透過 LINE 或微信發送給總架構師。
+        </p>
+
+        <div class="flex items-center justify-center gap-3 pt-2">
+          <button @click="copyConsultationSummary(); playAudio('click')" class="px-4 py-2 rounded-xl bg-obsidian-900 border border-slate-700 hover:border-cedar-400 text-slate-300 text-xs font-mono">
+            <i class="fa-regular fa-copy mr-1.5 text-cedar-400"></i>再次複製明細
+          </button>
+          <button @click="openModal = null" class="px-5 py-2 rounded-xl bg-cedar-600 text-obsidian-950 font-bold text-xs">
+            關閉視窗
           </button>
         </div>
 
@@ -1424,7 +2075,7 @@
 
   </div>
 
-  <!-- JAVASCRIPT: Alpine.js + Canvas Particle + Chart.js Logic -->
+  <!-- ALPINE.JS LOGIC & INTEGRATIONS -->
   <script>
     function cedarApp() {
       return {
@@ -1437,6 +2088,19 @@
         isPlayingPitch: false,
         toastMessage: '',
         consultationReceiptId: '',
+        pillarDrawer: null,
+        faqOpen: 0,
+        activeScenario: 'gaming',
+        soundEnabled: true,
+        audioCtx: null,
+
+        // Animated KPIs
+        kpis: {
+          outage: 100,
+          cost: 30,
+          velocity: 55,
+          years: 27
+        },
 
         // Simulator State
         monthlySpend: 60,
@@ -1444,6 +2108,55 @@
         simFocus: 'finops',
         simAnnualSavings: 230,
         simGovernanceScore: 94,
+
+        // Live Telemetry Nodes State
+        isFailoverSimulating: false,
+        terminalPaused: false,
+        telemetrySummary: {
+          avgLatency: 18.4,
+          throughput: 184520
+        },
+
+        cloudNodes: [
+          { id: 'aws', name: 'AWS us-east-1', region: '美東 (維吉尼亞)', latency: 24, load: 38, weight: 26, status: 'healthy', role: 'Primary API Gateway', icon: 'fa-brands fa-aws', providerClass: 'bg-amber-950 text-amber-400 border border-amber-500/40' },
+          { id: 'gcp', name: 'GCP asia-east1', region: '台灣 (彰化)', latency: 11, load: 52, weight: 32, status: 'healthy', role: 'Anycast Core & GKE', icon: 'fa-brands fa-google', providerClass: 'bg-cyan-950 text-cyan-400 border border-cyan-500/40' },
+          { id: 'azure', name: 'Azure eastasia', region: '香港 (亞太)', latency: 18, load: 28, weight: 18, status: 'healthy', role: 'Security Mesh & AIMS', icon: 'fa-brands fa-microsoft', providerClass: 'bg-blue-950 text-blue-400 border border-blue-500/40' },
+          { id: 'oci', name: 'OCI ap-tokyo', region: '日本 (東京)', latency: 31, load: 22, weight: 10, status: 'healthy', role: 'Autonomous DB', icon: 'fa-solid fa-database', providerClass: 'bg-red-950 text-red-400 border border-red-500/40' },
+          { id: 'alicloud', name: 'AliCloud ap-southeast-1', region: '新加坡 (東南亞)', latency: 22, load: 26, weight: 14, status: 'healthy', role: 'Edge CDN Cache', icon: 'fa-solid fa-bolt', providerClass: 'bg-orange-950 text-orange-400 border border-orange-500/40' },
+          { id: 'idc', name: 'Taichung Private Cloud', region: '台灣 (台中現場)', latency: 3, load: 64, weight: 0, status: 'healthy', role: 'OT Clean Core & ERP', icon: 'fa-solid fa-server', providerClass: 'bg-emerald-950 text-emerald-400 border border-emerald-500/40' },
+        ],
+
+        // DevSecOps Rolling Terminal Logs
+        terminalLogs: [
+          { timestamp: '15:20:01', tag: 'AIMS', tagClass: 'bg-cyan-950 text-cyan-300 border border-cyan-500/30', textClass: 'text-slate-300', message: 'ISO 42001 cryptographic evidence verified. Model drift: 0.002 < threshold 0.05.' },
+          { timestamp: '15:20:04', tag: 'FINOPS', tagClass: 'bg-amber-950 text-amber-300 border border-amber-500/30', textClass: 'text-amber-300', message: 'Karpenter spot rotation completed across 48 pods. Saved $184/hr.' },
+          { timestamp: '15:20:06', tag: 'ROUTING', tagClass: 'bg-emerald-950 text-emerald-300 border border-emerald-500/30', textClass: 'text-emerald-300', message: 'Anycast GeoDNS health checks green. Global latency P95 at 21.2ms.' },
+          { timestamp: '15:20:09', tag: 'CLEAN-CORE', tagClass: 'bg-blue-950 text-blue-300 border border-blue-500/30', textClass: 'text-slate-300', message: 'Shopfloor MQTT stream synced: 1,420 sensor telemetry records ingested.' }
+        ],
+
+        // FAQs
+        faqs: [
+          {
+            q: '導入跨六朵雲多雲架構，會不會大幅增加內部團隊的維護複雜度與人力負擔？',
+            a: '不會。我們透過 <strong>Kubernetes (GKE/EKS) 統一抽象層</strong> 與 <strong>Infrastructure as Code (Terraform)</strong> 進行標準化管線封裝，將多雲底層差異在平台工程層（Platform Engineering）抹平。企業工程團隊日常只需面對一致的 API 與 GitOps 流程，不需逐一掌握六朵雲的個別控制台，維護負擔反而因自動化而大幅減輕。'
+          },
+          {
+            q: 'FinOps 成本優化通常需要多久才能看見實質的雲端帳單金額下降？',
+            a: '<strong>最快 7 天內即可見效。</strong> 在導入第一週，我們透過自動化掃描偵測並清除閒置 Zombie 資源、過期快照與未釋放的 IP/磁碟；第二至第四週導入 Spot/RI 智慧動態調度與儲存層生命週期階層化，通常第一個月即可實現 <strong>25% ~ 35%</strong> 的直接結構性支出降減。'
+          },
+          {
+            q: '企業現有的 AI 專案該如何符合 ISO 42001 (AIMS) 國際標準？',
+            a: 'ISO 42001 的核心在於「全生命週期可審計與風險可控 (AISDLC)」。我們協助企業建立包含<strong>資料來源追溯 (Data Provenance)</strong>、<strong>敏感資料脫敏閘道 (PII Shield)</strong>、<strong>模型抗漂移即時監控 (Model Drift Watcher)</strong> 與不可竄改稽核日誌。我們具備 ISO 42001 國際主導稽核員資格，能輔導企業一次性通過國際權威驗證機構審查。'
+          },
+          {
+            q: '傳統製造業既有的舊版 ERP 與機台 OT 數據，最快幾週可以打通第一條示範產線？',
+            a: '採用 <strong>Clean Core 與 Side-by-Side 擴充架構</strong>，完全不需大動干戈修改既有 ERP 核心代碼。透過標準 MQTT / OPC-UA 工控雙向閘道與邊緣微推論模組，通常在 <strong>3 至 4 週內</strong> 即可完成第一條產線的數據採集、異常即時通報與良率看板示範。'
+          },
+          {
+            q: '雲杉長青如何與企業現有的內部 IT 與 SRE 團隊協同合作？',
+            a: '我們是「與企業並肩同盟的總架構師」，而非取代內部團隊。我們採取 <strong>Co-architecting（架構共創）</strong> 模式，透過架構審查、自動化工具導入、Hands-on 演練與知識轉移（KT），手把手帶領現有工程師升級多雲與 AI 治理思維，最終讓企業內部具備自我演進的長青能力。'
+          }
+        ],
 
         // Consultation Form State
         form: {
@@ -1461,20 +2174,25 @@
         dict: {
           zh: {
             nav_story: '長青故事',
+            nav_telemetry: '即時遙測',
             nav_pillars: '四大支柱',
+            nav_scenarios: '業務型態',
+            nav_comparison: '架構對比',
             nav_simulator: '效益試算',
             nav_identity: '視覺識別',
+            nav_faq: '常見問答',
             nav_governance: '合規引證',
             nav_founder: '創辦人視角',
-            cta_consult: '預約架構諮詢',
+            cta_consult: '預約架構師諮詢',
             hero_badge: '以雪松之姿・鑄長青之基｜跨國多雲架構與可信任 AI 治理',
             hero_title_1: '在多雲與 AI 的高地上種樹',
             hero_title_2: '陪企業一同長青的技術夥伴',
             hero_desc: '雲杉長青（CEDAR PARTNERED），象徵一棵從台中出發、深植製造業實戰與遊戲多雲戰場的技術大樹。不只追求技術的炫目，更在零停機架構、DevSecOps、FinOps 成本紀律與 ISO 42001 可信任 AI 治理中，成為企業長期並肩前行的技術主樑。',
+            hero_btn_telemetry: '觀看六雲即時遙測雷達',
             hero_btn_simulator: '進入架構與 FinOps 模擬器',
-            hero_btn_proposal: '生成專案建議書',
-            pitch_listen: '聆聽 30秒 品牌簡報',
-            pitch_playing: '播放中 (語音朗讀)...',
+            hero_btn_proposal: '生成架構建議書',
+            pitch_listen: '聆聽 30秒 簡報',
+            pitch_playing: '語音播放中...',
             kpi_desc_1: '六朵雲跨國分散式架構，容災切換與毫秒負載均衡。',
             kpi_desc_2: '雲端成本透明化與單位經濟模型，投資與效能同步達標。',
             kpi_desc_3: 'Agentic AI 自動化基礎架構管理與 AISDLC 合規治理流程。',
@@ -1485,23 +2203,36 @@
             stage2_title: '樹幹挺拔：遊戲與跨六朵雲高壓戰場',
             stage2_summary: '面對爆炸性用戶成長與零停機挑戰，主導 GKE 容器化跨六朵雲布署，以 FinOps 財務紀律調度成本與效能，速度超越其他平台 2 倍以上。',
             stage3_title: '樹冠長青：ISO 42001 可信任 AI 與永續治理',
-            stage3_summary: '在多雲與 AI 浪潮下，內嵌 DevSecOps 與零信任安全，導入 Agentic AI 智慧維運，建構能穩定運行 10 年以上的可持續數位森林。',
-            pillars_subtitle: '如同雪松作為殿堂主樑，我們不只解決單點技術故障，而是為企業構築經得起十年檢驗的數位營運架構。',
-            pillar1_title: '雲原生與多雲分散式架構 (Cloud-Native HA)',
-            pillar1_desc: '基於 Kubernetes (GKE / EKS)、服務網格 (Service Mesh) 與全局負載均衡，打造具備自動修復、毫秒容災與彈性伸縮的零停機架構。',
-            pillar2_title: '可信任 AI 治理與 ISO 42001 (Trustworthy AI)',
-            pillar2_desc: '拒絕失控黑箱，從資料血統、模型審計、偏差偵測到 AISDLC 流程內嵌安全標準，協助企業取得國際認證與客戶信任。',
-            pillar3_title: '企業級 FinOps 與雲端財務優化 (FinOps Mastery)',
-            pillar3_desc: '打破雲端成本黑箱，將混亂的月結帳單轉化為可量化、可追溯的投資組合，實現單位經濟效益最大化。',
-            pillar4_title: '智慧製造與 AIoT 數據治理 (Smart Factory)',
-            pillar4_desc: '融合 27 年資訊工程與製造業實戰經驗，以 Clean Core 概念整合 ERP/BPM 與現場感測器數據，實現機台自主診斷。',
-            sim_subtitle: '調整您的企業月度雲端支出與架構需求，即時模擬雲杉長青架構下的成本節省、可用性提升與治理成熟度。'
+            stage3_summary: '在 AI 改變規則的時代，將零信任架構、Agentic AI 智慧維運與國際 ISO 42001 治理結合，打造能經受十年考驗的可持續數位生態。',
+            telemetry_badge: 'LIVE 6-CLOUD RESILIENCE & TELEMETRY',
+            telemetry_title: '跨六朵雲即時遙測與容災演練態',
+            telemetry_subtitle: '即時追蹤跨全球 6 大雲端基礎設施的延遲動態與健康度。點擊演練按鈕即可模擬真實節點斷線，親眼見證 Anycast 毫秒級自動無縫容災，維持 100% 零停機。',
+            pillars_subtitle: '如同頂級雪松作為百年建築之樑木，我們以四大核心支柱，協助企業在雲端與 AI 浪潮中構築堅實不拔的長期優勢。',
+            pillar1_title: '雲原生與多雲分散式架構',
+            pillar1_desc: 'Kubernetes (GKE/EKS) 跨多雲同盟、服務網格 (Service Mesh) 與全局負載平衡。實現 active-active 跨六朵雲容災調度，達成真正的 100% 零停機。',
+            pillar2_title: '可信任 AI 治理與 ISO 42001',
+            pillar2_desc: '全生命週期 AI 治理框架。落實 ISO/IEC 42001 國際人工智慧管理系統規範，包含資料血統追溯、模型防漂移、零信任存取與隱私防護，杜絕黑箱與法律風險。',
+            pillar3_title: '企業級 FinOps 與雲端財務優化',
+            pillar3_desc: '將無序的雲端帳單轉化為透明的高報酬投資組合。建構單位經濟模型 (Unit Economics)、Spot/RI 動態調度與儲存層階梯歸檔，達成結構性成本優化。',
+            pillar4_title: '智慧製造與 AIoT 數據治理',
+            pillar4_desc: '打破 OT 與 IT 數據藩籬。以 Clean Core 治理跨廠區 ERP 與 BPM，串聯感測器進行邊緣 AI 瑕疵檢測與設備預測性維護，提升實體產線實質良率。',
+            scenarios_title: '四大實戰業務型態與架構矩陣',
+            scenarios_subtitle: '不同行業有截然不同的極限挑戰。點選下方業務型態，探索雲杉長青為各領域量身定做的實戰架構藍圖與效益指標。',
+            comparison_title: '架構典範轉移：傳統煙囪式 vs 雲杉長青架構',
+            comparison_subtitle: '透徹解析短視補丁架構與百年長青數位底座的決定性差異。',
+            sim_subtitle: '依據貴公司現有月度雲端開支與伺服器規模，即時推估架構改造後的年度節省金額、高可用 SLA 與 AI 治理成熟度。',
+            faq_title: '企業架構師與高管常見諮詢',
+            faq_subtitle: '解開多雲治理、FinOps 落地與 AI 合規的實戰疑問。'
           },
           en: {
             nav_story: 'Our Story',
+            nav_telemetry: 'Telemetry',
             nav_pillars: 'Pillars',
+            nav_scenarios: 'Scenarios',
+            nav_comparison: 'Comparison',
             nav_simulator: 'ROI Simulator',
             nav_identity: 'Identity',
+            nav_faq: 'FAQ',
             nav_governance: 'Governance',
             nav_founder: 'Founder',
             cta_consult: 'Book Consultation',
@@ -1509,7 +2240,8 @@
             hero_title_1: 'Planting Trees on Multi-Cloud & AI High Altitude',
             hero_title_2: 'Your Evergreen Technology Partner',
             hero_desc: 'CEDAR PARTNERED stands for a long-term, evergreen technology alliance. With 27+ years across manufacturing ERP/AIoT and gaming multi-cloud platforms, we turn complex infrastructure into zero-outage, compliant and financially disciplined foundations.',
-            hero_btn_simulator: 'Launch Architecture & FinOps Simulator',
+            hero_btn_telemetry: 'View 6-Cloud Live Radar',
+            hero_btn_simulator: 'Launch Architecture Simulator',
             hero_btn_proposal: 'Generate Proposal',
             pitch_listen: 'Play 30s Pitch',
             pitch_playing: 'Playing Audio...',
@@ -1524,6 +2256,9 @@
             stage2_summary: 'Orchestrating GKE across six clouds with Cloud Load Balancing and FinOps discipline, achieving zero-outage under explosive demand.',
             stage3_title: 'Canopy: ISO 42001 Trustworthy AI & Governance',
             stage3_summary: 'Embedding Zero Trust, DevSecOps, and Agentic AI into sustainable architectures designed to run reliably for decades.',
+            telemetry_badge: 'LIVE 6-CLOUD RESILIENCE & TELEMETRY',
+            telemetry_title: 'Live 6-Cloud Telemetry & Resilience Radar',
+            telemetry_subtitle: 'Track real-time latencies, throughput, and cluster health across 6 cloud platforms. Test chaos failover to witness instant sub-second zero-outage rerouting.',
             pillars_subtitle: 'Like structural cedar beams, we engineer durable digital backbones that withstand technological shifts and audit scrutiny.',
             pillar1_title: 'Cloud-Native & Multi-Cloud HA',
             pillar1_desc: 'Zero-outage infrastructure powered by Kubernetes (GKE/EKS), Service Mesh, and active-active multi-cloud failover.',
@@ -1533,13 +2268,23 @@
             pillar3_desc: 'Turning opaque cloud invoices into high-yield, transparent investment portfolios with 30%+ structural savings.',
             pillar4_title: 'Smart Manufacturing & AIoT Data Clean Core',
             pillar4_desc: 'Bridging OT and IT data silos with edge AI diagnostics and unified ERP/BPM architectural governance.',
-            sim_subtitle: 'Simulate your cloud cost savings, SLA uptime gains, and AI governance maturity in real time.'
+            scenarios_title: 'Enterprise Architecture & Modality Matrix',
+            scenarios_subtitle: 'Tailored architectural solutions across global gaming, smart manufacturing, financial AI governance, and emergency FinOps rescue.',
+            comparison_title: 'Paradigm Shift: Fragmented vs Cedar Evergreen Architecture',
+            comparison_subtitle: 'A transparent comparison between short-sighted patchwork systems and compounding evergreen digital foundations.',
+            sim_subtitle: 'Simulate your cloud cost savings, SLA uptime gains, and AI governance maturity in real time.',
+            faq_title: 'Enterprise Architecture FAQ',
+            faq_subtitle: 'Real-world insights on multi-cloud complexity, FinOps adoption, and ISO 42001 AI governance.'
           },
           jp: {
             nav_story: 'ブランドストーリー',
+            nav_telemetry: 'リアルタイム監視',
             nav_pillars: '4つの柱',
+            nav_scenarios: '業務形態',
+            nav_comparison: 'アーキテクチャ比較',
             nav_simulator: '効果試算',
             nav_identity: 'ビジュアル',
+            nav_faq: 'よくある質問',
             nav_governance: 'ガバナンス',
             nav_founder: '創業者紹介',
             cta_consult: '個別相談を予約',
@@ -1547,6 +2292,7 @@
             hero_title_1: 'マルチクラウドとAIの高嶺に大樹を植える',
             hero_title_2: '企業の長青を共創する技術パートナー',
             hero_desc: '雲杉長青（CEDAR PARTNERED）は、27年以上の製造業ERP/AIoTおよびグローバルゲーム配信の実績を結集し、ゼロダウンタイム、FinOpsコスト最適化、ISO 42001 AIガバナンスを実現する長期技術パートナーです。',
+            hero_btn_telemetry: '6大クラウド監視レーダー',
             hero_btn_simulator: '効果シミュレーターを起動',
             hero_btn_proposal: '提案書ドラフト作成',
             pitch_listen: '30秒紹介を再生',
@@ -1562,6 +2308,9 @@
             stage2_summary: 'GKEコンテナとFinOps手法で急増するトラフィックを高可用・低コストで処理。',
             stage3_title: '樹冠：ISO 42001 信頼できるAIと永続ガバナンス',
             stage3_summary: 'ゼロトラストとAgentic AIを統合し、10年先も揺るぎないデジタルエコシステムを構築。',
+            telemetry_badge: 'LIVE 6-CLOUD RESILIENCE & TELEMETRY',
+            telemetry_title: 'マルチクラウドリアルタイム遠隔測定と耐障害演習',
+            telemetry_subtitle: '世界6大クラウドのレイテンシとヘルス状態をリアルタイム表示。障害シミュレーションでミリ秒自動フェイルオーバーを体感。',
             pillars_subtitle: '建物の大黒柱となるヒマラヤスギのように、強固で永続的な技術基盤を提供します。',
             pillar1_title: 'クラウドネイティブ＆マルチクラウドHA',
             pillar1_desc: 'Kubernetesとグローバル負荷分散によるミリ秒障害復旧と完全な可用性。',
@@ -1571,7 +2320,13 @@
             pillar3_desc: 'クラウド支出を構造的に30%以上削減し、投資対効果を最大化。',
             pillar4_title: 'スマート製造とAIoTクリーンコア',
             pillar4_desc: '現場センサーと基幹ERPを連携させ、エッジAIによる異常予兆検知を実現。',
-            sim_subtitle: '貴社の月間クラウド予算に応じて、削減効果とガバナンス向上度を即座に試算します。'
+            scenarios_title: '4大ビジネス形態とアーキテクチャ',
+            scenarios_subtitle: 'ゲーム配信、半導体スマート工場、金融AIガバナンス、緊急コスト最適化の各領域に特化した実戦設計。',
+            comparison_title: '従来型アーキテクチャと雲杉長青の比較',
+            comparison_subtitle: '対症療法的なレガシー基盤と、長期的な投資価値を生み出す長青基盤の決定的な違い。',
+            sim_subtitle: '貴社の月間クラウド予算に応じて、削減効果とガバナンス向上度を即座に試算します。',
+            faq_title: 'エグゼクティブ向けFAQ',
+            faq_subtitle: 'マルチクラウド導入、FinOps効果、ISO 42001 AI監査に関する実務的な疑問にお答えします。'
           }
         },
 
@@ -1579,9 +2334,11 @@
           this.initCanvas();
           this.initChart();
           this.recalcSimulator();
+          this.startTelemetryJitter();
+          this.startTerminalLogStream();
 
           window.addEventListener('scroll', () => {
-            const sections = ['hero', 'story', 'pillars', 'simulator', 'brand-identity', 'founder', 'governance'];
+            const sections = ['hero', 'story', 'telemetry', 'pillars', 'scenarios', 'comparison', 'simulator', 'brand-identity', 'faq', 'founder', 'governance'];
             const scrollY = window.scrollY + 200;
             for (let s of sections) {
               const el = document.getElementById(s);
@@ -1593,12 +2350,210 @@
           });
         },
 
+        // Web Audio API feedback
+        playAudio(type = 'click') {
+          if (!this.soundEnabled) return;
+          try {
+            const AudioCtor = window.AudioContext || window.webkitAudioContext;
+            if (!AudioCtor) return;
+            if (!this.audioCtx) {
+              this.audioCtx = new AudioCtor();
+            }
+            if (this.audioCtx.state === 'suspended') {
+              this.audioCtx.resume();
+            }
+            const osc = this.audioCtx.createOscillator();
+            const gain = this.audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(this.audioCtx.destination);
+            const now = this.audioCtx.currentTime;
+
+            if (type === 'click') {
+              osc.type = 'sine';
+              osc.frequency.setValueAtTime(900, now);
+              osc.frequency.exponentialRampToValueAtTime(450, now + 0.04);
+              gain.gain.setValueAtTime(0.08, now);
+              gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+              osc.start(now);
+              osc.stop(now + 0.04);
+            } else if (type === 'toggle') {
+              osc.type = 'triangle';
+              osc.frequency.setValueAtTime(500, now);
+              osc.frequency.setValueAtTime(750, now + 0.03);
+              gain.gain.setValueAtTime(0.06, now);
+              gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
+              osc.start(now);
+              osc.stop(now + 0.06);
+            } else if (type === 'alert') {
+              osc.type = 'sawtooth';
+              osc.frequency.setValueAtTime(320, now);
+              osc.frequency.linearRampToValueAtTime(640, now + 0.12);
+              gain.gain.setValueAtTime(0.12, now);
+              gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+              osc.start(now);
+              osc.stop(now + 0.15);
+            } else if (type === 'success') {
+              osc.type = 'sine';
+              osc.frequency.setValueAtTime(523.25, now);
+              osc.frequency.setValueAtTime(659.25, now + 0.06);
+              osc.frequency.setValueAtTime(783.99, now + 0.12);
+              gain.gain.setValueAtTime(0.09, now);
+              gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+              osc.start(now);
+              osc.stop(now + 0.2);
+            }
+          } catch(e) {}
+        },
+
+        toggleSound() {
+          this.soundEnabled = !this.soundEnabled;
+          if (this.soundEnabled) this.playAudio('success');
+          this.showToast(this.soundEnabled ? '🔊 已開啟音效回饋' : '🔇 已關閉音效回饋');
+        },
+
+        togglePillarDrawer(id) {
+          this.pillarDrawer = this.pillarDrawer === id ? null : id;
+        },
+
+        toggleFaq(idx) {
+          this.faqOpen = this.faqOpen === idx ? null : idx;
+        },
+
+        // Real-Time Telemetry Jitter Simulation
+        startTelemetryJitter() {
+          setInterval(() => {
+            if (this.isFailoverSimulating) return;
+            this.cloudNodes.forEach(node => {
+              if (node.status === 'healthy') {
+                const delta = (Math.random() - 0.5) * 2;
+                node.latency = Math.max(2, Math.round((node.latency + delta) * 10) / 10);
+                const loadDelta = Math.floor((Math.random() - 0.5) * 4);
+                node.load = Math.min(85, Math.max(15, node.load + loadDelta));
+              }
+            });
+            this.telemetrySummary.avgLatency = Math.round((18.0 + (Math.random() - 0.5) * 0.8) * 10) / 10;
+            this.telemetrySummary.throughput = Math.round(184000 + (Math.random() - 0.5) * 3500);
+          }, 3000);
+        },
+
+        // Chaos Engineering Failover Simulator
+        triggerFailoverDemo() {
+          if (this.isFailoverSimulating) return;
+          this.isFailoverSimulating = true;
+
+          // Target GCP as fault node
+          const faultNode = this.cloudNodes.find(n => n.id === 'gcp');
+          if (!faultNode) return;
+
+          faultNode.status = 'down';
+          faultNode.weight = 0;
+
+          // Redistribute load to AWS and Azure
+          const awsNode = this.cloudNodes.find(n => n.id === 'aws');
+          const azureNode = this.cloudNodes.find(n => n.id === 'azure');
+          if (awsNode) awsNode.weight = 42;
+          if (azureNode) azureNode.weight = 34;
+
+          this.addTerminalLog('CHAOS-INJECT', 'bg-red-950 text-red-300 border border-red-500/40', 'text-red-300 font-bold', 'Simulated packet loss & kernel fault injected into GCP asia-east1.');
+          this.addTerminalLog('ANYCAST-FAILOVER', 'bg-amber-950 text-amber-300 border border-amber-500/40', 'text-amber-300', 'BGP Health check failed. Global traffic auto-rerouted to AWS & Azure in 86ms. Zero dropped transactions.');
+
+          this.showToast('💥 已模擬節點故障！Anycast 在 86ms 內自動完成跨雲無縫容災！');
+
+          // Auto recover after 8 seconds
+          setTimeout(() => {
+            this.restoreAllNodes();
+          }, 9000);
+        },
+
+        restoreAllNodes() {
+          this.cloudNodes.forEach(node => {
+            node.status = 'healthy';
+          });
+          const gcp = this.cloudNodes.find(n => n.id === 'gcp');
+          const aws = this.cloudNodes.find(n => n.id === 'aws');
+          const azure = this.cloudNodes.find(n => n.id === 'azure');
+          if (gcp) gcp.weight = 32;
+          if (aws) aws.weight = 26;
+          if (azure) azure.weight = 18;
+
+          this.isFailoverSimulating = false;
+          this.addTerminalLog('RECOVERY', 'bg-emerald-950 text-emerald-300 border border-emerald-500/40', 'text-emerald-300 font-bold', 'All 6 cloud clusters synchronized and rebalanced. Global topology: 100% HEALTHY.');
+          this.showToast('🟢 所有多雲節點健康度已完全恢復並自動重平衡！');
+        },
+
+        toggleSingleNodeFault(id) {
+          const node = this.cloudNodes.find(n => n.id === id);
+          if (!node) return;
+          if (node.status === 'down') {
+            node.status = 'healthy';
+            this.addTerminalLog('NODE-RESTART', 'bg-emerald-950 text-emerald-300 border border-emerald-500/40', 'text-emerald-300', `Node ${node.name} restarted and re-joined active service mesh.`);
+            this.showToast(`🟢 節點 ${node.name} 已重新上線！`);
+          } else {
+            node.status = 'down';
+            this.addTerminalLog('NODE-FAULT', 'bg-red-950 text-red-300 border border-red-500/40', 'text-red-300', `Simulated failure on node ${node.name}. Health probe failed.`);
+            this.showToast(`⚠️ 節點 ${node.name} 已模擬單點故障！`);
+          }
+        },
+
+        // DevSecOps Terminal Logs Stream
+        startTerminalLogStream() {
+          const mockEvents = [
+            { tag: 'DEVSECOPS', tagClass: 'bg-emerald-950 text-emerald-300 border border-emerald-500/30', textClass: 'text-slate-300', message: 'Trivy & Snyk container vulnerability scan passed with 0 HIGH/CRITICAL vulnerabilities.' },
+            { tag: 'AISDLC', tagClass: 'bg-cyan-950 text-cyan-300 border border-cyan-500/30', textClass: 'text-cyan-300', message: 'Prompt injection firewall blocked 3 suspicious inputs at Edge API Proxy.' },
+            { tag: 'FINOPS', tagClass: 'bg-amber-950 text-amber-300 border border-amber-500/30', textClass: 'text-amber-300', message: 'Spot price arbitrage executed: Swapped 12 on-demand instances to preemptible. -$310/day.' },
+            { tag: 'HEALTH', tagClass: 'bg-emerald-950 text-emerald-300 border border-emerald-500/30', textClass: 'text-slate-300', message: 'Cross-cloud eBPF network probe latency: Tokyo <-> Taipei roundtrip 28.4ms.' },
+            { tag: 'AUDIT', tagClass: 'bg-purple-950 text-purple-300 border border-purple-500/30', textClass: 'text-purple-300', message: 'Immutable audit ledger chunk sealed with SHA-256 hash. Validated under ISO 27001.' }
+          ];
+
+          let eventIdx = 0;
+          setInterval(() => {
+            if (this.terminalPaused) return;
+            const evt = mockEvents[eventIdx % mockEvents.length];
+            eventIdx++;
+            const now = new Date();
+            const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+            this.terminalLogs.push({
+              timestamp: timeStr,
+              tag: evt.tag,
+              tagClass: evt.tagClass,
+              textClass: evt.textClass,
+              message: evt.message
+            });
+            if (this.terminalLogs.length > 25) {
+              this.terminalLogs.shift();
+            }
+            const consoleDiv = document.getElementById('terminalConsole');
+            if (consoleDiv) {
+              consoleDiv.scrollTop = consoleDiv.scrollHeight;
+            }
+          }, 3200);
+        },
+
+        addTerminalLog(tag, tagClass, textClass, message) {
+          const now = new Date();
+          const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+          this.terminalLogs.push({ timestamp: timeStr, tag, tagClass, textClass, message });
+          const consoleDiv = document.getElementById('terminalConsole');
+          if (consoleDiv) consoleDiv.scrollTop = consoleDiv.scrollHeight;
+        },
+
+        clearTerminalLogs() {
+          this.terminalLogs = [];
+          this.addTerminalLog('SYSTEM', 'bg-slate-800 text-slate-300', 'text-slate-400', 'Terminal log buffer cleared by operator.');
+        },
+
+        injectSecurityAlert() {
+          this.addTerminalLog('SECURITY-ALERT', 'bg-red-950 text-red-300 border border-red-500/40', 'text-red-400 font-bold', 'Potential unauthenticated token burst detected on Ingress. Zero-Trust policy enforced: IP ratelimited.');
+          this.showToast('🚨 已注入安全防護警報！零信任防禦機制已自動生效！');
+        },
+
         t(key) {
           return (this.dict[this.lang] && this.dict[this.lang][key]) ? this.dict[this.lang][key] : (this.dict.zh[key] || '');
         },
 
         setLang(l) {
           this.lang = l;
+          this.playAudio('click');
         },
 
         showToast(msg) {
@@ -1648,12 +2603,10 @@ ${this.form.message || '（暫無額外補充，由總架構師於會議中深�
 
           const consultationBody = this.generateConsultationText(receiptId);
 
-          // 1. 自動複製到剪貼簿
           if (navigator.clipboard) {
             navigator.clipboard.writeText(consultationBody).catch(() => {});
           }
 
-          // 2. 自動下載確認需求文字單
           try {
             const blob = new Blob([consultationBody], { type: 'text/plain;charset=utf-8' });
             const url = URL.createObjectURL(blob);
@@ -1666,14 +2619,13 @@ ${this.form.message || '（暫無額外補充，由總架構師於會議中深�
             URL.revokeObjectURL(url);
           } catch(e) {}
 
-          // 3. 呼叫 mailto: 寄件至 Liao.Howard@gmail.com
           const subject = `【架構師諮詢預約】${this.form.company || '企業諮詢'} - ${this.form.contactName || ''} (${receiptId})`;
           const mailtoUrl = `mailto:Liao.Howard@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(consultationBody)}`;
           
           window.location.href = mailtoUrl;
 
-          // 4. 切換為成功彈窗
           this.openModal = 'consult_success';
+          this.playAudio('success');
           this.showToast('✅ 諮詢單已生成並複製到剪貼簿，正在開啟郵件！');
         },
 
@@ -1847,15 +2799,14 @@ ${this.form.message || '（暫無額外補充，由總架構師於會議中深�
             height = canvas.height = window.innerHeight;
           });
 
-          // Generate Node Network
-          const nodeCount = 45;
+          const nodeCount = 50;
           const nodes = [];
           for (let i = 0; i < nodeCount; i++) {
             nodes.push({
               x: Math.random() * width,
               y: Math.random() * height,
-              vx: (Math.random() - 0.5) * 0.4,
-              vy: (Math.random() - 0.5) * 0.4,
+              vx: (Math.random() - 0.5) * 0.45,
+              vy: (Math.random() - 0.5) * 0.45,
               radius: Math.random() * 2 + 1,
               isGreen: Math.random() > 0.4
             });
@@ -1864,7 +2815,6 @@ ${this.form.message || '（暫無額外補充，由總架構師於會議中深�
           function draw() {
             ctx.clearRect(0, 0, width, height);
 
-            // Draw connecting branches/edges
             for (let i = 0; i < nodes.length; i++) {
               for (let j = i + 1; j < nodes.length; j++) {
                 const dx = nodes[i].x - nodes[j].x;
@@ -1884,7 +2834,6 @@ ${this.form.message || '（暫無額外補充，由總架構師於會議中深�
               }
             }
 
-            // Draw and update nodes
             for (let i = 0; i < nodes.length; i++) {
               const node = nodes[i];
               node.x += node.vx;
